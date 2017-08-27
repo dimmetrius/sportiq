@@ -38,8 +38,12 @@ export default class Login extends Component {
     */
   };
 
-  // Handle Login with Facebook button tap
   loginWithFacebook = () => {
+    this.openURL('http://sportiq.io/signin/facebook');
+  }
+  // Handle Login with Facebook button tap
+  loginWithFacebook1= () => {
+
     fetch("http://sportiq.io/signin/facebook", {
       method: "POST",
       redirect: "error",
@@ -55,12 +59,6 @@ export default class Login extends Component {
         //Accept-Language: ru-RU,ru;q=0.8,en-US;q=0.6,en;q=0.4
         Cookie: "language=ru;"
       }
-      /*
-      body: JSON.stringify({
-        firstParam: "yourValue",
-        secondParam: "yourOtherValue"
-      })
-      */
     })
       .then(data => {
         console.log(data);
@@ -89,6 +87,8 @@ export default class Login extends Component {
 
   // Handle Login with Google button tap
   loginWithGoogle = () => this.openURL("http://sportiq.io/signin/google");
+
+  loginWithAbstract = () => this.props.navigation.navigate('MyCalendar');
 
   // Open URL in a browser
   openURL = url => {
@@ -148,13 +148,35 @@ export default class Login extends Component {
           >
             Login with Facebook
           </Icon.Button>
+        </View>
+        <View style={styles.buttons}>
           <Icon.Button
             name="google"
             backgroundColor="#DD4B39"
-            onPress={this.loginWithGoogle}
+            onPress={this.loginWithAbstract}
             {...iconStyles}
           >
             Or with Google
+          </Icon.Button>
+        </View>
+        <View style={styles.buttons}>
+          <Icon.Button
+            name="vk"
+            backgroundColor="#45688e"
+            onPress={this.loginWithAbstract}
+            {...iconStyles}
+          >
+            or with VK
+          </Icon.Button>
+        </View>
+        <View style={styles.buttons}>
+          <Icon.Button
+            name="instagram"
+            backgroundColor="#cc486a"
+            onPress={this.loginWithAbstract}
+            {...iconStyles}
+          >
+            Or with Instagram
           </Icon.Button>
         </View>
       </View>
@@ -163,7 +185,7 @@ export default class Login extends Component {
 }
 const iconStyles = {
   borderRadius: 10,
-  iconStyle: { paddingVertical: 5 }
+  iconStyle: { paddingVertical: 5},
 };
 
 const styles = StyleSheet.create({
@@ -196,7 +218,7 @@ const styles = StyleSheet.create({
   },
   buttons: {
     justifyContent: "space-between",
-    flexDirection: "row",
+    flexDirection: "column",
     margin: 20,
     marginBottom: 30
   }

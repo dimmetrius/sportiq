@@ -7,7 +7,7 @@ import Login from './Login';
 import MyCalendar from './MyCalendar';
 
 const stack = {
-  //Login: { screen: Login },
+  Login: { screen: Login },
   MyCalendar: { screen: MyCalendar },
 }
 
