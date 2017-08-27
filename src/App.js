@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from 'react';
 import { AppRegistry } from 'react-native';
 import {
   StackNavigator,
@@ -9,7 +9,7 @@ import MyCalendar from './MyCalendar';
 const stack = {
   Login: { screen: Login },
   MyCalendar: { screen: MyCalendar },
-}
+};
 
 const LoginStack = StackNavigator(
   stack,
@@ -18,9 +18,6 @@ const LoginStack = StackNavigator(
   },
 );
 
-export default class sportiq extends Component {
-  render() {
-    return <LoginStack/>
-  }
-}
-AppRegistry.registerComponent("sportiq", () => sportiq);
+const sportiq = () => <LoginStack />;
+export default sportiq;
+AppRegistry.registerComponent('sportiq', () => sportiq);
