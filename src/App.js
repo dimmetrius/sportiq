@@ -5,10 +5,12 @@ import {
 } from 'react-navigation';
 import Login from './Login';
 import MyCalendar from './MyCalendar';
+import OAuthView from './OAuthView';
 
 const stack = {
   Login: { screen: Login },
   MyCalendar: { screen: MyCalendar },
+  OAuthView: { screen: OAuthView },
 };
 
 const LoginStack = StackNavigator(

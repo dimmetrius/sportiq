@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View, Linking, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import PropTypes from 'prop-types';
+import { NavigationActions } from 'react-navigation';
 
 function serialize(params, obj, traditional, scope) {
   let type;
@@ -75,61 +76,31 @@ export default class Login extends Component {
     */
   };
 
-  loginWithFacebook1 = () => {
-    this.openURL('http://sportiq.io/signin/facebook');
-  };
-  // Handle Login with Facebook button tap
   loginWithFacebook = () => {
-    /*
-    const data = 'scope=publish_actions';
+    const fburl = [
+      'https://www.facebook.com/v2.5/dialog/oauth?client_id=115411419065159&',
+      'response_type=token&',
+      'redirect_uri=https%3A%2F%2Fsportiq.io%2Fmobilesign',
+    ].join('');
 
-    const xhr = new XMLHttpRequest();
-    xhr.withCredentials = true;
+    this.props.navigation.navigate('OAuthView', {
+      url: fburl,
+      onNavigationStateChange: (state) => {
+        if (state.url.indexOf('https://sportiq.io/mobilesign') >= 0) {
+          const url = state.url;
+          const i1 = url.indexOf('access_token=');
+          const i2 = url.indexOf('&expires_in');
+          if (i1 > 0 && i2 > 0) {
+            const token = url.substring(i1 + 'access_token='.length, i2);
+            console.log(token);
+            this.props.navigation.dispatch(NavigationActions.back());
 
-    xhr.addEventListener('readystatechange', function () {
-      if (this.readyState === 4) {
-        console.log(this.responseText);
-      }
+            const sportiqUrl = `http://sportiq.io/auth/facebook/signin?access_token=${token}`;
+            fetch(sportiqUrl).then(data => data.text()).then(data => console.log(data));
+          }
+        }
+      },
     });
-
-    xhr.open('POST', 'http://sportiq.io/signin/facebook');
-    xhr.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
-    xhr.send(data);
-    */
-
-
-    fetch('http://sportiq.io/signin/facebook', {
-      method: 'POST',
-      redirect: 'follow',
-      credentials: 'include',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: 'scope=public_profile',
-    })
-      .then((data) => {
-        console.log(data);
-        return data;
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-
-    /*
-    fetch('http://sportiq.io/loggedUser', {
-      headers: {
-        Cookie: 'language=ru; SESSION=3a0425be-d9d6-47b8-89dc-4e529d2b42f2;',
-      },
-    })
-      .then((data) => {
-        console.log(data);
-        return data.json();
-      })
-      .then(d => console.log(d))
-      .catch(e => console.log(e));
-      */
-    // this.openURL('http://sportiq.io/signin/facebook');
   };
 
   // Handle Login with Google button tap
