@@ -1,44 +1,21 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Linking, Image } from 'react-native';
+import { StyleSheet, Text, View, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import PropTypes from 'prop-types';
 import { NavigationActions } from 'react-navigation';
+import { connect } from 'react-redux';
+import { setToken } from './actions';
 
-function serialize(params, obj, traditional, scope) {
-  let type;
-  const array = false;
-  const hash = true;
-  const add = (arr, key, _value) => {
-    let value = _value;
-    if (value == null) value = '';
-    arr.push(`${encodeURIComponent(key)}=${encodeURIComponent(value)}`);
-  };
-  Object.keys(obj).forEach((value, _key) => {
-    let key = _key;
-    type = typeof value;
-    if (scope) {
-      key = traditional ? scope : `${scope}[${hash || type === 'object' || type === 'array' ? key : ''}]`;
-    }
-    // handle data in serializeArray() format
-    if (!scope && array) add(params, value.name, value.value);
-    else if (type === 'array' || (!traditional && type === 'object')) {
-      serialize(params, value, traditional, key);
-    } else add(params, key, value);
-  });
-}
-
-function param(obj, traditional) {
-  const params = [];
-  serialize(params, obj, traditional);
-  return params.join('&').replace(/%20/g, '+');
-}
-
-export default class Login extends Component {
+class Login extends Component {
   static propTypes = {
     navigation: PropTypes.shape({
       navigate: PropTypes.func.isRequired,
       dispatch: PropTypes.func.isRequired,
     }),
+    user: PropTypes.shape({
+      token: PropTypes.string,
+    }),
+    setToken: PropTypes.func.isRequired,
   };
 
   state = {
@@ -47,36 +24,15 @@ export default class Login extends Component {
 
   // Set up Linking
   componentDidMount() {
-    // Add event listener to handle OAuthLogin:// URLs
-    Linking.addEventListener('url', this.handleOpenURL);
-    // Launched from an external URL
-    Linking.getInitialURL().then((url) => {
-      if (url) {
-        this.handleOpenURL({ url });
-      }
-    });
   }
 
-  componentWillUnmount() {
-    // Remove event listener
-    Linking.removeEventListener('url', this.handleOpenURL);
+  componentDidUpdate() {
   }
 
-  handleOpenURL = ({ url }) => {
-    // Extract stringified user string out of the URL
-    const [, user_string] = url.match(/user=([^#]+)/);
-    this.setState({
-      // Decode the user string and parse it into JSON
-      user: JSON.parse(decodeURI(user_string)),
-    });
-    /*
-    if (Platform.OS === 'ios') {
-      SafariView.dismiss();
-    }
-    */
-  };
+  componentWillUnmount() {}
 
   loginWithFacebook = () => {
+    console.log(this.props.user);
     const fburl = [
       'https://www.facebook.com/v2.5/dialog/oauth?client_id=115411419065159&',
       'response_type=token&',
@@ -92,11 +48,12 @@ export default class Login extends Component {
           const i2 = url.indexOf('&expires_in');
           if (i1 > 0 && i2 > 0) {
             const token = url.substring(i1 + 'access_token='.length, i2);
-            console.log(token);
             this.props.navigation.dispatch(NavigationActions.back());
 
             const sportiqUrl = `http://sportiq.io/auth/facebook/signin?access_token=${token}`;
-            fetch(sportiqUrl).then(data => data.text()).then(data => console.log(data));
+            fetch(sportiqUrl).then(data => data.text()).then((data) => {
+              this.props.setToken(data);
+            });
           }
         }
       },
@@ -107,26 +64,6 @@ export default class Login extends Component {
   loginWithGoogle = () => this.openURL('http://sportiq.io/signin/google');
 
   loginWithAbstract = () => this.props.navigation.navigate('MyCalendar');
-
-  // Open URL in a browser
-  openURL = (url) => {
-    // Use SafariView on iOS
-    /*
-    if (Platform.OS === 'ios') {
-      SafariView.show({
-        url: url,
-        fromBottom: true,
-      });
-    }
-    // Or Linking.openURL on Android
-    else {
-      Linking.openURL(url);
-    }
-    */
-    // >>
-    Linking.openURL(url);
-    // <<
-  };
 
   renderUser(user) {
     if (user) {
@@ -224,3 +161,11 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
 });
+
+const mapStateToProps = state => ({
+  user: state.user,
+});
+
+export default connect(mapStateToProps, {
+  setToken,
+})(Login);

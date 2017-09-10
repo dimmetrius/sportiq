@@ -3,6 +3,8 @@ import { TouchableOpacity, Text, View, WebView } from 'react-native';
 import { NavigationActions } from 'react-navigation';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { connect } from 'react-redux';
+import { setToken } from './actions';
 
 const OAuthView = ({ navigation }) => (
   <View style={{ flex: 1, flexDirection: 'column' }}>
@@ -39,4 +41,10 @@ OAuthView.propTypes = {
   }),
 };
 
-export default OAuthView;
+const mapStateToProps = state => ({
+  user: state.user,
+});
+
+export default connect(mapStateToProps, {
+  setToken,
+})(OAuthView);
