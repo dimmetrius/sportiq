@@ -2,11 +2,10 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import PropTypes from 'prop-types';
-import { NavigationActions } from 'react-navigation'
 import { connect } from 'react-redux';
 import { setToken } from './actions';
 
-class Login extends Component {
+class Event extends Component {
   static propTypes = {
     navigation: PropTypes.shape({
       navigate: PropTypes.func.isRequired,
@@ -30,15 +29,6 @@ class Login extends Component {
   }
 
   componentWillUnmount() {}
-
-  /*
-  goToCalendar = () => this.props.navigation.dispatch(NavigationActions.reset({
-    index: 0,
-    actions: [
-      NavigationActions.navigate({ routeName: 'MyCalendar' }),
-    ],
-  }));
-  */
 
   goToCalendar = () => this.props.navigation.navigate('MyCalendar');
 
@@ -102,23 +92,7 @@ class Login extends Component {
       </View>
     );
   }
-  /*
-  <View style={styles.buttons}>
-    <Icon.Button name="google" backgroundColor="#DD4B39" onPress={this.loginWithAbstract} {...iconStyles}>
-      Or with Google
-    </Icon.Button>
-  </View>
-  <View style={styles.buttons}>
-    <Icon.Button name="vk" backgroundColor="#45688e" onPress={this.loginWithAbstract} {...iconStyles}>
-      or with VK
-    </Icon.Button>
-  </View>
-  <View style={styles.buttons}>
-    <Icon.Button name="instagram" backgroundColor="#cc486a" onPress={this.loginWithAbstract} {...iconStyles}>
-      Or with Instagram
-    </Icon.Button>
-  </View>
-*/
+
   render() {
     const { user } = this.state;
     return (
@@ -127,6 +101,21 @@ class Login extends Component {
         <View style={styles.buttons}>
           <Icon.Button name="facebook" backgroundColor="#3b5998" onPress={this.loginWithFacebook} {...iconStyles}>
             Login with Facebook
+          </Icon.Button>
+        </View>
+        <View style={styles.buttons}>
+          <Icon.Button name="google" backgroundColor="#DD4B39" onPress={this.loginWithAbstract} {...iconStyles}>
+            Or with Google
+          </Icon.Button>
+        </View>
+        <View style={styles.buttons}>
+          <Icon.Button name="vk" backgroundColor="#45688e" onPress={this.loginWithAbstract} {...iconStyles}>
+            or with VK
+          </Icon.Button>
+        </View>
+        <View style={styles.buttons}>
+          <Icon.Button name="instagram" backgroundColor="#cc486a" onPress={this.loginWithAbstract} {...iconStyles}>
+            Or with Instagram
           </Icon.Button>
         </View>
       </View>
@@ -180,4 +169,4 @@ const mapStateToProps = state => ({
 
 export default connect(mapStateToProps, {
   setToken,
-})(Login);
+})(Event);

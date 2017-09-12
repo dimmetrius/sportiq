@@ -8,12 +8,15 @@ import { persistStore } from 'redux-persist';
 import Login from './Login';
 import MyCalendar from './MyCalendar';
 import OAuthView from './OAuthView';
+import Event from './Event';
 import store from './store';
 
 const stack = {
-  Login: { screen: Login },
-  MyCalendar: { screen: MyCalendar },
+  MyCalendar: { screen: MyCalendar, navigationOptions: { gesturesEnabled: false } },
   OAuthView: { screen: OAuthView },
+  Event: { screen: Event },
+  //
+  Login: { screen: Login },
 };
 
 const LoginStack = StackNavigator(
@@ -41,7 +44,7 @@ class Sportiq extends Component {
 
   renderLoad = () => (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text> Loading </Text>
+      <Text> Загрузка... </Text>
     </View>
   );
 

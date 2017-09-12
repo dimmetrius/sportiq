@@ -1,6 +1,12 @@
+/* eslint-disable global-require */
 import React, { Component } from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { connect } from 'react-redux';
 import { Agenda, LocaleConfig } from 'react-native-calendars';
+import PropTypes from 'prop-types';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import ApiRequest from './utils/ApiRequest';
+import sport from './icons/sport';
 
 LocaleConfig.locales.ru = {
   monthNames: [
@@ -24,19 +30,108 @@ LocaleConfig.locales.ru = {
 
 LocaleConfig.defaultLocale = 'ru';
 
-export default class AgendaScreen extends Component {
+const padStart = (_str, _targetLength, _padString) => {
+  const str = _str.toString();
+  let padString = _padString;
+  let targetLength = _targetLength;
+  padString = padString || ' ';
+  if (str.length > targetLength) {
+    return str;
+  }
+  targetLength -= str.length;
+  if (targetLength > padString.length) {
+    padString += padString.repeat(targetLength / padString.length);
+  }
+  return padString.slice(0, targetLength) + str;
+};
+
+
+class AgendaScreen extends Component {
+  static propTypes = {
+    navigation: PropTypes.shape({
+      navigate: PropTypes.func.isRequired,
+      dispatch: PropTypes.func.isRequired,
+    }),
+  };
+
   constructor(props) {
     super(props);
     this.state = {
+      month: LocaleConfig.locales.ru.monthNames[(new Date()).getMonth()],
       items: {},
     };
   }
 
+  setMonth = (month) => {
+    this.setState({
+      month,
+    });
+  }
+
+  refreshState = () => {
+    const newItems = {};
+    Object.keys(this.state.items).forEach((key) => {
+      newItems[key] = this.state.items[key];
+    });
+
+    this.setState({
+      items: newItems,
+    });
+  }
+
+  addEmptyDays = (year, month) => {
+    const endDayNum = new Date(year, month, 0).getDate();
+    for (let i = 1; i <= endDayNum; i++) {
+      const dt = [
+        padStart(year, 4, '0'),
+        padStart(month, 2, '0'),
+        padStart(i, 2, '0'),
+      ].join('-');
+
+      const items = this.state.items;
+      if (!items[dt]) {
+        items[dt] = [];
+      }
+    }
+  }
+
   loadItems(day) {
+    console.log(JSON.stringify(day));
+    this.setMonth(LocaleConfig.locales.ru.monthNames[day.month]);
+    const startDate = [
+      padStart(day.year, 4, '0'),
+      padStart(day.month, 2, '0'),
+      '01',
+    ].join('-');
+
+    const endDayNum = new Date(day.year, day.month, 0).getDate();
+    const endDay = padStart(endDayNum, 2, '0');
+    const endDate = [
+      padStart(day.year, 4, '0'),
+      padStart(day.month, 2, '0'),
+      endDay,
+    ].join('-');
+
+    console.log('date', startDate, endDate);
+
+    ApiRequest.coach(startDate, endDate).then((data) => {
+      this.addItems(data, 'coach');
+      this.addEmptyDays(day.year, day.month);
+      this.refreshState();
+    });
+
+    ApiRequest.my(startDate, endDate).then((data) => {
+      this.addItems(data, 'my');
+      this.addEmptyDays(day.year, day.month);
+      this.refreshState();
+    });
+
+    /*
     setTimeout(() => {
       for (let i = -15; i < 85; i++) {
         const time = day.timestamp + i * 24 * 60 * 60 * 1000;
         const strTime = this.timeToString(time);
+
         if (!this.state.items[strTime]) {
           this.state.items[strTime] = [];
           const numItems = Math.floor(Math.random() * 5);
@@ -49,20 +144,48 @@ export default class AgendaScreen extends Component {
         }
       }
       // console.log(this.state.items);
-      const newItems = {};
-      Object.keys(this.state.items).forEach((key) => {
-        newItems[key] = this.state.items[key];
-      });
-      this.setState({
-        items: newItems,
-      });
     }, 1000);
+    */
     // console.log(`Load Items for ${day.year}-${day.month}`);
   }
 
 
   rowHasChanged(r1, r2) {
-    return r1.name !== r2.name;
+    return r1.id !== r2.id;
+  }
+
+  getColorByType(type) {
+    switch (type) {
+      case 'my': return '#ddecfb';
+      case 'coach': return '#ffe8e8';
+      default: return '#ffffff';
+    }
+  }
+
+  addItems = (data, type) => {
+    data.forEach((event) => {
+      const dt = event.start.split('T')[0];
+      const items = this.state.items;
+      if (!items[dt]) {
+        items[dt] = [];
+      }
+
+      const itemId = items[dt].find(item => item.id === event.id);
+
+      let curItem = {};
+      if (itemId) {
+        curItem = itemId;
+      } else {
+        items[dt].push(curItem);
+      }
+      curItem.type = type;
+      curItem.id = event.id;
+      curItem.start = event.start;
+      curItem.end = event.end;
+      curItem.name = event.group.name;
+      curItem.color = event.group.color;
+      curItem.icon = event.group.activities[0].className;
+    });
   }
 
   timeToString(time) {
@@ -72,36 +195,98 @@ export default class AgendaScreen extends Component {
 
   renderEmptyDate() {
     return (
-      <View style={styles.emptyDate}>
-        <Text>This is empty date!</Text>
+      <View style={[styles.item, { flexDirection: 'column' }]}>
+        <Text>{' '}</Text>
+        <Text>Нет занятий!</Text>
+        <Text>{' '}</Text>
       </View>
     );
   }
 
+  getStrTimer = (ms) => {
+    const hourInMS = 1000 * 60 * 60;
+    const minInMS = 1000 * 60;
+    // const secInMs = 1000;
+
+    let countTail = ms;
+    const hourPart = Math.floor(countTail / hourInMS);
+    countTail -= hourPart * hourInMS;
+
+    const minPart = Math.floor(countTail / minInMS);
+    countTail -= minPart * minInMS;
+
+    // const secPart = Math.floor(countTail / secInMs);
+
+    return `${hourPart} ч ${minPart} мин`;
+  };
+
   renderItem(item) {
+    const startDate = new Date(item.start);
+    const startTime = `${padStart(startDate.getHours(), 2, '0')}:${padStart(startDate.getMinutes(), 2, '0')}`;
+
+    const len = this.getStrTimer(new Date(item.end) - new Date(item.start));
     return (
-      <View style={[styles.item, { height: item.height }]}>
-        <Text>
-          {item.name}
-        </Text>
-      </View>
+      <TouchableOpacity
+        onPress={() => this.props.navigation.navigate('Event')}
+      >
+        <View style={[styles.item, { flexDirection: 'row', backgroundColor: this.getColorByType(item.type) }]}>
+          <View style={{ flex: 1, flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center' }}>
+            <View style={{ marginBottom: 5, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+              <Icon name="clock-o" size={12} color="black" />
+              <Text style={{ fontSize: 12, marginLeft: 5 }}>{startTime}</Text>
+            </View>
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+              <Text style={{ fontSize: 10 }}>{len}</Text>
+            </View>
+          </View>
+          <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+              <View style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: 5,
+                width: 40,
+                height: 40,
+                backgroundColor: item.color,
+              }}
+              >
+                <Text style={{ fontSize: 24, fontFamily: 'sports-48-x-48' }}>{sport[item.icon] || ''}</Text>
+              </View>
+            </View>
+          </View>
+          <View style={{ flex: 3, flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center' }}>
+            <View style={{ flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'center' }}>
+              <Text style={{ fontSize: 15, textAlign: 'left' }}>
+                {item.name}
+              </Text>
+            </View>
+          </View>
+        </View>
+      </TouchableOpacity>
     );
   }
 
   render() {
     return (
-      <Agenda
-        items={this.state.items}
-        loadItemsForMonth={day => this.loadItems(day)}
-        selected={'2017-08-27'}
-        renderItem={item => this.renderItem(item)}
-        renderEmptyDate={() => this.renderEmptyDate()}
-        rowHasChanged={(r1, r2) => this.rowHasChanged(r1, r2)}
-        firstDay={1}
-        // monthFormat={'yyyy'}
-        // theme={{calendarBackground: 'red', agendaKnobColor: 'green'}}
-        // renderDay={(day, item) => (<Text>{day ? day.day: 'item'}</Text>)}
-      />
+      <View style={{ flex: 1, paddingTop: 20 }}>
+        <Agenda
+          // ref={(ref) => { if (ref) { this.AgRef = ref; console.log(ref); } }}
+          items={this.state.items}
+          loadItemsForMonth={day => this.loadItems(day)}
+          selected={(new Date()).toJSON().split('T')[0]}
+          renderItem={item => this.renderItem(item)}
+          renderEmptyDate={() => this.renderEmptyDate()}
+          rowHasChanged={(r1, r2) => this.rowHasChanged(r1, r2)}
+          firstDay={1}
+          onDayChange={(day) => { this.setMonth(LocaleConfig.locales.ru.monthNames[day.month - 1]); }}
+          // renderKnob={() => (<Text> {this.state.month} </Text>)}
+          // hideKnob={false}
+          // monthFormat={'yyyy'}
+          // theme={{calendarBackground: 'red', agendaKnobColor: 'green'}}
+          // renderDay={(day, item) => (<Text>{day ? day.day: ''}</Text>)}
+        />
+      </View>
     );
   }
 }
@@ -121,3 +306,10 @@ const styles = StyleSheet.create({
     paddingTop: 30,
   },
 });
+
+const mapStateToProps = state => ({
+  user: state.user,
+  calendar: state.calendar,
+});
+
+export default connect(mapStateToProps, {})(AgendaScreen);

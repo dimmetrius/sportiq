@@ -22,10 +22,11 @@ const OAuthView = ({ navigation }) => (
     </View>
     <WebView
       style={{ flex: 1 }}
+      startInLoadingState
       source={{ uri: navigation.state.params.url }}
       renderLoading={() => (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <Text>Загрузка!</Text>
+          <Text>Загрузка...</Text>
         </View>
       )}
       onNavigationStateChange={navigation.state.params.onNavigationStateChange}

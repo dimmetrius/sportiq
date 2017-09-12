@@ -5,7 +5,6 @@
 	};
 	objectVersion = 46;
 	objects = {
-
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -47,6 +46,8 @@
 		CA5E6A9836BE4223B0DBAB6C /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 74B930E6BE0A458983F9B10C /* EvilIcons.ttf */; };
 		E110030E9D9F469D81101478 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 182CDBA904F04D32944291BC /* SimpleLineIcons.ttf */; };
 		F79262BD625B4149901184C7 /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 42304A7F9C8C4D0B9EB5147D /* Ionicons.ttf */; };
+		BCC613BFFB9F402B821794C3 /* finance.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9FD98EFCA2D45099D082AFD /* finance.ttf */; };
+		635D60530DDA49BAB742A83B /* sports-48-x-48.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 68D79B14240A42428A48601C /* sports-48-x-48.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -313,6 +314,8 @@
 		8B0A169C8CFF437FBB9A3B73 /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialCommunityIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
 		DD4CA6BC8E494B3CA1FC0CF0 /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
 		E45675C892C24225A2F67080 /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
+		E9FD98EFCA2D45099D082AFD /* finance.ttf */ = {isa = PBXFileReference; name = "finance.ttf"; path = "../assets/fonts/finance.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		68D79B14240A42428A48601C /* sports-48-x-48.ttf */ = {isa = PBXFileReference; name = "sports-48-x-48.ttf"; path = "../assets/fonts/sports-48-x-48.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -500,6 +503,8 @@
 				E45675C892C24225A2F67080 /* Octicons.ttf */,
 				182CDBA904F04D32944291BC /* SimpleLineIcons.ttf */,
 				1FA62CD669434589A9BF35F3 /* Zocial.ttf */,
+				E9FD98EFCA2D45099D082AFD /* finance.ttf */,
+				68D79B14240A42428A48601C /* sports-48-x-48.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -984,6 +989,8 @@
 				5206D6523C254EF6AC6D9314 /* Octicons.ttf in Resources */,
 				E110030E9D9F469D81101478 /* SimpleLineIcons.ttf in Resources */,
 				1B1E04034E27442FA1F5EEFC /* Zocial.ttf in Resources */,
+				BCC613BFFB9F402B821794C3 /* finance.ttf in Resources */,
+				635D60530DDA49BAB742A83B /* sports-48-x-48.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
