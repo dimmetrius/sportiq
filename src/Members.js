@@ -5,7 +5,7 @@ import { View, Text, TouchableOpacity, ActivityIndicator, ScrollView, Image, Dim
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ApiRequest from './utils/ApiRequest';
 
-var {height, width} = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
 class Members extends Component {
   static propTypes = {
@@ -50,11 +50,28 @@ class Members extends Component {
             <Image style={{ width: 50, height: 50 }} source={{ uri: img }} />
           </View>
           <View style={{ flexDirection: 'row', width: width - 60, height: 50 }}>
-            <View style={{ flex: 1, flexDirection: 'row', height: 50, alignItems: 'center', justifyContent: 'flex-start' }}>
+            <View
+              style={{
+                flex: 1,
+                flexDirection: 'row',
+                height: 50,
+                alignItems: 'center',
+                justifyContent: 'flex-start',
+              }}
+            >
               <Text style={{ marginLeft: 10 }}>{member.user.name}</Text>
             </View>
             <View style={{ width: 100, height: 50, alignItems: 'center', justifyContent: 'center' }}>
-              <TouchableOpacity style={{ width: 80, height: 30, alignItems: 'center', justifyContent: 'center', borderRadius: 15, backgroundColor: '#2ecc71' }}>
+              <TouchableOpacity
+                style={{
+                  width: 80,
+                  height: 30,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: 15,
+                  backgroundColor: '#2ecc71',
+                }}
+              >
                 <Text style={{ fontSize: 11 }}>Отметить</Text>
               </TouchableOpacity>
             </View>

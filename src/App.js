@@ -8,7 +8,6 @@ import { persistStore } from 'redux-persist';
 import Login from './Login';
 import MyCalendar from './MyCalendar';
 import OAuthView from './OAuthView';
-import Event from './Event';
 import FeedBack from './FeedBack';
 import Members from './Members';
 import store from './store';

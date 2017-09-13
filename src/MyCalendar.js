@@ -1,6 +1,6 @@
 /* eslint-disable global-require */
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 import { Agenda, LocaleConfig } from 'react-native-calendars';
 import PropTypes from 'prop-types';
@@ -62,11 +62,40 @@ class AgendaScreen extends Component {
     };
   }
 
+  onClickItem = (item) => {
+    if (item.type === 'my') {
+      this.props.navigation.navigate('FeedBack', {
+        id: item.id,
+      });
+    } else if (item.type === 'coach') {
+      this.props.navigation.navigate('Members', {
+        id: item.id,
+      });
+    }
+  };
+
   setMonth = (month) => {
     this.setState({
       month,
     });
   }
+
+  getStrTimer = (ms) => {
+    const hourInMS = 1000 * 60 * 60;
+    const minInMS = 1000 * 60;
+    // const secInMs = 1000;
+
+    let countTail = ms;
+    const hourPart = Math.floor(countTail / hourInMS);
+    countTail -= hourPart * hourInMS;
+
+    const minPart = Math.floor(countTail / minInMS);
+    countTail -= minPart * minInMS;
+
+    // const secPart = Math.floor(countTail / secInMs);
+
+    return `${hourPart} ч ${minPart} мин`;
+  };
 
   getColorByType(type) {
     switch (type) {
@@ -76,15 +105,35 @@ class AgendaScreen extends Component {
     }
   }
 
-  refreshState = () => {
-    const newItems = {};
-    Object.keys(this.state.items).forEach((key) => {
-      newItems[key] = this.state.items[key];
-    });
+  addItems = (data, type) => {
+    data.forEach((event) => {
+      const dt = event.start.split('T')[0];
+      const items = this.state.items;
+      if (!items[dt]) {
+        items[dt] = [];
+      }
 
-    this.setState({
-      items: newItems,
+      const itemId = items[dt].find(item => item.id === event.id);
+
+      let curItem = {};
+      if (itemId) {
+        curItem = itemId;
+      } else {
+        items[dt].push(curItem);
+      }
+      curItem.type = type;
+      curItem.id = event.id;
+      curItem.groupId = event.group.id;
+      curItem.start = event.start;
+      curItem.end = event.end;
+      curItem.name = event.group.name;
+      curItem.color = event.group.color;
+      curItem.icon = event.group.activities[0].className;
     });
+  }
+
+  rowHasChanged(r1, r2) {
+    return r1.id !== r2.id;
   }
 
   addEmptyDays = (year, month) => {
@@ -157,65 +206,16 @@ class AgendaScreen extends Component {
     // console.log(`Load Items for ${day.year}-${day.month}`);
   }
 
-  rowHasChanged(r1, r2) {
-    return r1.id !== r2.id;
-  }
+  refreshState = () => {
+    const newItems = {};
+    Object.keys(this.state.items).forEach((key) => {
+      newItems[key] = this.state.items[key];
+    });
 
-  addItems = (data, type) => {
-    data.forEach((event) => {
-      const dt = event.start.split('T')[0];
-      const items = this.state.items;
-      if (!items[dt]) {
-        items[dt] = [];
-      }
-
-      const itemId = items[dt].find(item => item.id === event.id);
-
-      let curItem = {};
-      if (itemId) {
-        curItem = itemId;
-      } else {
-        items[dt].push(curItem);
-      }
-      curItem.type = type;
-      curItem.id = event.id;
-      curItem.groupId = event.group.id;
-      curItem.start = event.start;
-      curItem.end = event.end;
-      curItem.name = event.group.name;
-      curItem.color = event.group.color;
-      curItem.icon = event.group.activities[0].className;
+    this.setState({
+      items: newItems,
     });
   }
-
-  onClickItem = (item) => {
-    if (item.type === 'my') {
-      this.props.navigation.navigate('FeedBack', {
-        id: item.id,
-      });
-    } else if (item.type === 'coach') {
-      this.props.navigation.navigate('Members', {
-        id: item.id,
-      });
-    }
-  };
-
-  getStrTimer = (ms) => {
-    const hourInMS = 1000 * 60 * 60;
-    const minInMS = 1000 * 60;
-    // const secInMs = 1000;
-
-    let countTail = ms;
-    const hourPart = Math.floor(countTail / hourInMS);
-    countTail -= hourPart * hourInMS;
-
-    const minPart = Math.floor(countTail / minInMS);
-    countTail -= minPart * minInMS;
-
-    // const secPart = Math.floor(countTail / secInMs);
-
-    return `${hourPart} ч ${minPart} мин`;
-  };
 
   timeToString(time) {
     const date = new Date(time);
