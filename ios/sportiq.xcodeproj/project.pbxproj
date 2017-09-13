@@ -5,6 +5,7 @@
 	};
 	objectVersion = 46;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -39,15 +40,15 @@
 		4CCDEC0101AD4E479AF7C8E0 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DD4CA6BC8E494B3CA1FC0CF0 /* MaterialIcons.ttf */; };
 		5206D6523C254EF6AC6D9314 /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E45675C892C24225A2F67080 /* Octicons.ttf */; };
 		5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
+		635D60530DDA49BAB742A83B /* sports-48-x-48.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 68D79B14240A42428A48601C /* sports-48-x-48.ttf */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		9EB4B67B66654212AF2975B0 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 80C0DB60C8D04FA6BD1DF5E2 /* FontAwesome.ttf */; };
+		BCC613BFFB9F402B821794C3 /* finance.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9FD98EFCA2D45099D082AFD /* finance.ttf */; };
 		C2C2F1FBDEEC479EABAD2E83 /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 187149C9207B4D52B090FA63 /* libRNVectorIcons.a */; };
 		C7A31C03B6E64CA2BFEFFF19 /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8B0A169C8CFF437FBB9A3B73 /* MaterialCommunityIcons.ttf */; };
 		CA5E6A9836BE4223B0DBAB6C /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 74B930E6BE0A458983F9B10C /* EvilIcons.ttf */; };
 		E110030E9D9F469D81101478 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 182CDBA904F04D32944291BC /* SimpleLineIcons.ttf */; };
 		F79262BD625B4149901184C7 /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 42304A7F9C8C4D0B9EB5147D /* Ionicons.ttf */; };
-		BCC613BFFB9F402B821794C3 /* finance.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9FD98EFCA2D45099D082AFD /* finance.ttf */; };
-		635D60530DDA49BAB742A83B /* sports-48-x-48.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 68D79B14240A42428A48601C /* sports-48-x-48.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -306,6 +307,7 @@
 		42304A7F9C8C4D0B9EB5147D /* Ionicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ionicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
 		48840E17A385480886CB55BB /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
+		68D79B14240A42428A48601C /* sports-48-x-48.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "sports-48-x-48.ttf"; path = "../assets/fonts/sports-48-x-48.ttf"; sourceTree = "<group>"; };
 		74B930E6BE0A458983F9B10C /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
 		7688D12A9DC44646AD2C659F /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
@@ -314,8 +316,7 @@
 		8B0A169C8CFF437FBB9A3B73 /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialCommunityIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
 		DD4CA6BC8E494B3CA1FC0CF0 /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
 		E45675C892C24225A2F67080 /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
-		E9FD98EFCA2D45099D082AFD /* finance.ttf */ = {isa = PBXFileReference; name = "finance.ttf"; path = "../assets/fonts/finance.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		68D79B14240A42428A48601C /* sports-48-x-48.ttf */ = {isa = PBXFileReference; name = "sports-48-x-48.ttf"; path = "../assets/fonts/sports-48-x-48.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		E9FD98EFCA2D45099D082AFD /* finance.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = finance.ttf; path = ../assets/fonts/finance.ttf; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1181,7 +1182,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = io.sportiq;
 				PRODUCT_NAME = sportiq;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -1205,7 +1206,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = io.sportiq;
 				PRODUCT_NAME = sportiq;
 				VERSIONING_SYSTEM = "apple-generic";
 			};

@@ -9,14 +9,16 @@ import Login from './Login';
 import MyCalendar from './MyCalendar';
 import OAuthView from './OAuthView';
 import Event from './Event';
+import FeedBack from './FeedBack';
+import Members from './Members';
 import store from './store';
 
 const stack = {
+  Login: { screen: Login },
   MyCalendar: { screen: MyCalendar, navigationOptions: { gesturesEnabled: false } },
   OAuthView: { screen: OAuthView },
-  Event: { screen: Event },
-  //
-  Login: { screen: Login },
+  FeedBack: { screen: FeedBack },
+  Members: { screen: Members },
 };
 
 const LoginStack = StackNavigator(

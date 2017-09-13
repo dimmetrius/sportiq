@@ -68,6 +68,14 @@ class AgendaScreen extends Component {
     });
   }
 
+  getColorByType(type) {
+    switch (type) {
+      case 'my': return '#ddecfb';
+      case 'coach': return '#ffe8e8';
+      default: return '#ffffff';
+    }
+  }
+
   refreshState = () => {
     const newItems = {};
     Object.keys(this.state.items).forEach((key) => {
@@ -149,17 +157,8 @@ class AgendaScreen extends Component {
     // console.log(`Load Items for ${day.year}-${day.month}`);
   }
 
-
   rowHasChanged(r1, r2) {
     return r1.id !== r2.id;
-  }
-
-  getColorByType(type) {
-    switch (type) {
-      case 'my': return '#ddecfb';
-      case 'coach': return '#ffe8e8';
-      default: return '#ffffff';
-    }
   }
 
   addItems = (data, type) => {
@@ -180,6 +179,7 @@ class AgendaScreen extends Component {
       }
       curItem.type = type;
       curItem.id = event.id;
+      curItem.groupId = event.group.id;
       curItem.start = event.start;
       curItem.end = event.end;
       curItem.name = event.group.name;
@@ -188,20 +188,17 @@ class AgendaScreen extends Component {
     });
   }
 
-  timeToString(time) {
-    const date = new Date(time);
-    return date.toISOString().split('T')[0];
-  }
-
-  renderEmptyDate() {
-    return (
-      <View style={[styles.item, { flexDirection: 'column' }]}>
-        <Text>{' '}</Text>
-        <Text>Нет занятий!</Text>
-        <Text>{' '}</Text>
-      </View>
-    );
-  }
+  onClickItem = (item) => {
+    if (item.type === 'my') {
+      this.props.navigation.navigate('FeedBack', {
+        id: item.id,
+      });
+    } else if (item.type === 'coach') {
+      this.props.navigation.navigate('Members', {
+        id: item.id,
+      });
+    }
+  };
 
   getStrTimer = (ms) => {
     const hourInMS = 1000 * 60 * 60;
@@ -220,6 +217,21 @@ class AgendaScreen extends Component {
     return `${hourPart} ч ${minPart} мин`;
   };
 
+  timeToString(time) {
+    const date = new Date(time);
+    return date.toISOString().split('T')[0];
+  }
+
+  renderEmptyDate() {
+    return (
+      <View style={[styles.item, { flexDirection: 'column' }]}>
+        <Text>{' '}</Text>
+        <Text>Нет занятий!</Text>
+        <Text>{' '}</Text>
+      </View>
+    );
+  }
+
   renderItem(item) {
     const startDate = new Date(item.start);
     const startTime = `${padStart(startDate.getHours(), 2, '0')}:${padStart(startDate.getMinutes(), 2, '0')}`;
@@ -227,7 +239,7 @@ class AgendaScreen extends Component {
     const len = this.getStrTimer(new Date(item.end) - new Date(item.start));
     return (
       <TouchableOpacity
-        onPress={() => this.props.navigation.navigate('Event')}
+        onPress={() => this.onClickItem(item)}
       >
         <View style={[styles.item, { flexDirection: 'row', backgroundColor: this.getColorByType(item.type) }]}>
           <View style={{ flex: 1, flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center' }}>

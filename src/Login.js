@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import PropTypes from 'prop-types';
-import { NavigationActions } from 'react-navigation'
 import { connect } from 'react-redux';
 import { setToken } from './actions';
 
