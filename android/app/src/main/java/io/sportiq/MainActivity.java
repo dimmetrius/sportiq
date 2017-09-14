@@ -1,4 +1,4 @@
-package com.sportiq;
+package io.sportiq;
 
 import com.facebook.react.ReactActivity;
 
