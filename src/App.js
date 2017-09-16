@@ -7,6 +7,7 @@ import { Provider } from 'react-redux';
 import { persistStore } from 'redux-persist';
 import Login from './Login';
 import MyCalendar from './MyCalendar';
+import TabsNavigator from './TabsNavigator';
 import OAuthView from './OAuthView';
 import FeedBack from './FeedBack';
 import Members from './Members';
@@ -14,6 +15,7 @@ import store from './store';
 
 const stack = {
   Login: { screen: Login },
+  TabsNavigator: { screen: TabsNavigator, navigationOptions: { gesturesEnabled: false } },
   MyCalendar: { screen: MyCalendar, navigationOptions: { gesturesEnabled: false } },
   OAuthView: { screen: OAuthView },
   FeedBack: { screen: FeedBack },

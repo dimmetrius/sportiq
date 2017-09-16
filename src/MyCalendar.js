@@ -1,12 +1,16 @@
 /* eslint-disable global-require */
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity, Platform } from 'react-native';
 import { connect } from 'react-redux';
 import { Agenda, LocaleConfig } from 'react-native-calendars';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ApiRequest from './utils/ApiRequest';
 import sport from './icons/sport';
+import padStart from './utils/padStart';
+import getStrTimer from './utils/getStrTimer';
+
+const isIos = Platform.OS === 'ios';
 
 LocaleConfig.locales.ru = {
   monthNames: [
@@ -30,21 +34,6 @@ LocaleConfig.locales.ru = {
 
 LocaleConfig.defaultLocale = 'ru';
 
-const padStart = (_str, _targetLength, _padString) => {
-  const str = _str.toString();
-  let padString = _padString;
-  let targetLength = _targetLength;
-  padString = padString || ' ';
-  if (str.length > targetLength) {
-    return str;
-  }
-  targetLength -= str.length;
-  if (targetLength > padString.length) {
-    padString += padString.repeat(targetLength / padString.length);
-  }
-  return padString.slice(0, targetLength) + str;
-};
-
 
 class AgendaScreen extends Component {
   static propTypes = {
@@ -64,13 +53,9 @@ class AgendaScreen extends Component {
 
   onClickItem = (item) => {
     if (item.type === 'my') {
-      this.props.navigation.navigate('FeedBack', {
-        id: item.id,
-      });
+      this.props.navigation.navigate('FeedBack', item);
     } else if (item.type === 'coach') {
-      this.props.navigation.navigate('Members', {
-        id: item.id,
-      });
+      this.props.navigation.navigate('Members', item);
     }
   };
 
@@ -79,23 +64,6 @@ class AgendaScreen extends Component {
       month,
     });
   }
-
-  getStrTimer = (ms) => {
-    const hourInMS = 1000 * 60 * 60;
-    const minInMS = 1000 * 60;
-    // const secInMs = 1000;
-
-    let countTail = ms;
-    const hourPart = Math.floor(countTail / hourInMS);
-    countTail -= hourPart * hourInMS;
-
-    const minPart = Math.floor(countTail / minInMS);
-    countTail -= minPart * minInMS;
-
-    // const secPart = Math.floor(countTail / secInMs);
-
-    return `${hourPart} ч ${minPart} мин`;
-  };
 
   getColorByType(type) {
     switch (type) {
@@ -115,20 +83,21 @@ class AgendaScreen extends Component {
 
       const itemId = items[dt].find(item => item.id === event.id);
 
-      let curItem = {};
+      const curItem = {
+        type,
+        ...event,
+      };
       if (itemId) {
-        curItem = itemId;
+        Object.assign(itemId, curItem);
       } else {
         items[dt].push(curItem);
       }
-      curItem.type = type;
-      curItem.id = event.id;
-      curItem.groupId = event.group.id;
-      curItem.start = event.start;
-      curItem.end = event.end;
+
+      /*
       curItem.name = event.group.name;
       curItem.color = event.group.color;
       curItem.icon = event.group.activities[0].className;
+      */
     });
   }
 
@@ -236,7 +205,7 @@ class AgendaScreen extends Component {
     const startDate = new Date(item.start);
     const startTime = `${padStart(startDate.getHours(), 2, '0')}:${padStart(startDate.getMinutes(), 2, '0')}`;
 
-    const len = this.getStrTimer(new Date(item.end) - new Date(item.start));
+    const len = getStrTimer(new Date(item.end) - new Date(item.start));
     return (
       <TouchableOpacity
         onPress={() => this.onClickItem(item)}
@@ -245,7 +214,7 @@ class AgendaScreen extends Component {
           <View style={{ flex: 1, flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center' }}>
             <View style={{ marginBottom: 5, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
               <Icon name="clock-o" size={12} color="black" />
-              <Text style={{ fontSize: 12, marginLeft: 5 }}>{startTime}</Text>
+              <Text style={{ fontSize: 12, marginLeft: 2 }}>{startTime}</Text>
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
               <Text style={{ fontSize: 10 }}>{len}</Text>
@@ -257,20 +226,24 @@ class AgendaScreen extends Component {
                 flexDirection: 'row',
                 alignItems: 'center',
                 justifyContent: 'center',
+                marginLeft: 5,
                 borderRadius: 5,
                 width: 40,
                 height: 40,
-                backgroundColor: item.color,
+                backgroundColor: item.group.color,
               }}
               >
-                <Text style={{ fontSize: 24, fontFamily: 'sports-48-x-48' }}>{sport[item.icon] || ''}</Text>
+                <Text style={{ fontSize: 24, fontFamily: 'sports-48-x-48' }}>
+                  {sport[item.group.activities[0].className] || ''}
+                </Text>
+                <Text style={{ fontSize: 11, position: 'absolute', top: 1, right: 1 }}>{item.billable ? '$' : ''}</Text>
               </View>
             </View>
           </View>
           <View style={{ flex: 3, flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center' }}>
             <View style={{ flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'center' }}>
-              <Text style={{ fontSize: 15, textAlign: 'left' }}>
-                {item.name}
+              <Text style={{ marginLeft: 5, fontSize: 15, textAlign: 'left' }}>
+                {item.group.name}
               </Text>
             </View>
           </View>
@@ -281,7 +254,7 @@ class AgendaScreen extends Component {
 
   render() {
     return (
-      <View style={{ flex: 1, paddingTop: 20 }}>
+      <View style={styles.container}>
         <Agenda
           // ref={(ref) => { if (ref) { this.AgRef = ref; console.log(ref); } }}
           items={this.state.items}
@@ -304,6 +277,10 @@ class AgendaScreen extends Component {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingTop: isIos ? 20 : 0,
+  },
   item: {
     backgroundColor: 'white',
     flex: 1,

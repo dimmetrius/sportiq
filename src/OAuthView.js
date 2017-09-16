@@ -2,7 +2,7 @@ import React from 'react';
 import { TouchableOpacity, Text, View, WebView } from 'react-native';
 import { NavigationActions } from 'react-navigation';
 import PropTypes from 'prop-types';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/Entypo';
 import { connect } from 'react-redux';
 import { setToken } from './actions';
 
@@ -14,9 +14,16 @@ const OAuthView = ({ navigation }) => (
           navigation.dispatch(NavigationActions.back());
         }}
       >
-        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginLeft: 10 }}>
-          <Icon name="chevron-left" size={20} color="black" />
-          <Text> Back </Text>
+        <View style={{
+          height: 40,
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginLeft: 10,
+        }}
+        >
+          <Icon name="chevron-thin-left" size={17} color="black" />
+          <Text>Back </Text>
         </View>
       </TouchableOpacity>
     </View>

@@ -1,11 +1,27 @@
+/* eslint-disable no-underscore-dangle */
+
 import React, { Component } from 'react';
 import { NavigationActions } from 'react-navigation';
 import PropTypes from 'prop-types';
-import { View, Text, TouchableOpacity, ActivityIndicator, ScrollView, Image, Dimensions } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ActivityIndicator,
+  ScrollView,
+  Image,
+  Dimensions,
+  Switch,
+  Platform,
+} from 'react-native';
+import Icon from 'react-native-vector-icons/Entypo';
 import ApiRequest from './utils/ApiRequest';
+import GroupHeader from './components/GroupHeader';
+import WebViewAutoHeight from './components/WebViewAutoHeight';
 
 const { width } = Dimensions.get('window');
+const ROW_HEIGHT = 60;
+const isIos = Platform.OS === 'ios';
 
 class Members extends Component {
   static propTypes = {
@@ -20,15 +36,21 @@ class Members extends Component {
     super(props);
     this.state = {
       loading: true,
+      switches: {},
       members: [],
     };
   }
 
   componentDidMount() {
+    this.refreshMembers();
+  }
+
+  refreshMembers = () => {
     ApiRequest.getMember(this.props.navigation.state.params.id).then((data) => {
       const newState = {
         ...this.state,
         members: data,
+        switches: {},
         loading: false,
       };
       console.log(newState);
@@ -36,44 +58,111 @@ class Members extends Component {
     });
   }
 
-  saveResult = () => {}
+  checkMember = (member) => {
+    const { id } = this.props.navigation.state.params;
+    const was = member._links.uncheck !== undefined;
+    const switches = this.state.switches;
+    const s = {}; s[member.id] = !was;
+    this.setState({
+      switches: {
+        ...switches,
+        ...s,
+      },
+    });
+    ApiRequest.checkMember(id, member.user.id, was).then(() => {
+      this.refreshMembers();
+    });
+  }
+
+  renderCheck = (member) => {
+    const { billable } = this.props.navigation.state.params;
+    let was = member._links.uncheck !== undefined;
+    let disabled = false;
+    const switches = this.state.switches;
+    if (switches[member.id] !== undefined) {
+      was = switches[member.id];
+      disabled = true;
+    }
+    if (!billable) return null;
+    if (member._links.check || member._links.uncheck) {
+      return (
+        <View
+          style={{
+            width: 80,
+            height: 30,
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderRadius: 15,
+            flexDirection: 'column',
+            // backgroundColor: '#2ecc71',
+          }}
+        >
+          <Text style={{ fontSize: 10, color: was ? 'black' : 'red' }}>
+            {was ? 'Присутствовал' : 'Отсутствовал'}
+          </Text>
+          <View style={{ alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }}>
+            <Switch
+              style={{ margin: 5 }}
+              disabled={disabled}
+              value={was}
+              onValueChange={() => {
+                console.log('onValueChange');
+                this.checkMember(member);
+              }}
+            />
+          </View>
+        </View>
+      );
+    }
+    return (
+      <View
+        style={{
+          width: 80,
+          height: 30,
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <View style={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+          <Text style={{ fontSize: 11, color: 'red' }}>Нет</Text>
+          <Text style={{ fontSize: 11, color: 'red' }}>абонемента</Text>
+        </View>
+      </View>
+    );
+  }
 
   renderMember = (member) => {
     const img = member.user.image.list.url;
     return (
       <View
         key={member.id}
-        style={{ flex: 1, marginTop: 5, marginBottom: 5, backgroundColor: '#ffffff' }}
+        style={{ flex: 1, marginLeft: 10, marginRight: 10, marginTop: 5, marginBottom: 5, backgroundColor: '#ffffff' }}
       >
-        <View style={{ flexDirection: 'row', alignItems: 'center', height: 50 }}>
-          <View style={{ flexDirection: 'row', justifyContent: 'center', width: 50, height: 50 }}>
-            <Image style={{ width: 50, height: 50 }} source={{ uri: img }} />
+        <View style={{ flexDirection: 'row', alignItems: 'center', height: ROW_HEIGHT }}>
+          <View style={{ flexDirection: 'row', justifyContent: 'center', width: ROW_HEIGHT, height: ROW_HEIGHT }}>
+            <Image style={{ width: ROW_HEIGHT, height: ROW_HEIGHT }} source={{ uri: img }} />
           </View>
-          <View style={{ flexDirection: 'row', width: width - 60, height: 50 }}>
+          <View style={{ flexDirection: 'row', width: width - (ROW_HEIGHT + 20), height: ROW_HEIGHT }}>
             <View
               style={{
                 flex: 1,
                 flexDirection: 'row',
-                height: 50,
+                height: ROW_HEIGHT,
                 alignItems: 'center',
                 justifyContent: 'flex-start',
               }}
             >
               <Text style={{ marginLeft: 10 }}>{member.user.name}</Text>
             </View>
-            <View style={{ width: 100, height: 50, alignItems: 'center', justifyContent: 'center' }}>
-              <TouchableOpacity
-                style={{
-                  width: 80,
-                  height: 30,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  borderRadius: 15,
-                  backgroundColor: '#2ecc71',
-                }}
-              >
-                <Text style={{ fontSize: 11 }}>Отметить</Text>
-              </TouchableOpacity>
+            <View
+              style={{
+                width: 100,
+                height: ROW_HEIGHT,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              {this.renderCheck(member)}
             </View>
           </View>
         </View>
@@ -81,20 +170,56 @@ class Members extends Component {
     );
   }
 
+  renderDescription = () => {
+    const { description } = this.props.navigation.state.params;
+    if (!description) return null;
+    const html = description.replace(' class="MsoNormal"', '', 'g');
+    return (
+      <View style={{
+        backgroundColor: 'white',
+        borderRadius: 10,
+        marginLeft: 10,
+        marginRight: 10,
+      }}
+      >
+        <WebViewAutoHeight
+          automaticallyAdjustContentInsets={false}
+          scalesPageToFit={false}
+          style={{
+            width: width - 31,
+            height: 0,
+            margin: 5,
+          }}
+          source={{ html: `<body>${html}</body>` }}
+        />
+      </View>
+    );
+  }
+
   render() {
     const { navigation } = this.props;
     const { loading, members } = this.state;
+    const item = this.props.navigation.state.params;
+
+
     return (
       <View style={{ flex: 1, flexDirection: 'column' }}>
-        <View style={{ marginTop: 20, height: 40, alignItems: 'flex-start', justifyContent: 'center' }}>
+        <View style={{ marginTop: isIos ? 20 : 0, height: 40, alignItems: 'flex-start', justifyContent: 'center' }}>
           <TouchableOpacity
             onPress={() => {
               navigation.dispatch(NavigationActions.back());
             }}
           >
-            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginLeft: 10 }}>
-              <Icon name="chevron-left" size={20} color="black" />
-              <Text> Back </Text>
+            <View style={{
+              height: 40,
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginLeft: 10,
+            }}
+            >
+              <Icon name="chevron-thin-left" size={17} color="black" />
+              <Text>Back </Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -103,6 +228,19 @@ class Members extends Component {
             loading ?
               <ActivityIndicator animating color={'white'} size={1} /> :
               <ScrollView>
+                <View style={{ flexDirection: 'column' }}>
+                  <GroupHeader item={item} />
+                  <Text style={{
+                    fontSize: 15,
+                    fontWeight: 'bold',
+                    margin: 10,
+                    marginVertical: 5,
+                  }}
+                  >
+                    {item.group.name}
+                  </Text>
+                  {this.renderDescription()}
+                </View>
                 {members.map(member => this.renderMember(member))}
               </ScrollView>
           }

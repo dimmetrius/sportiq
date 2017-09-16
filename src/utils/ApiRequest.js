@@ -18,10 +18,31 @@ const checkData = (data) => {
   return {};
 };
 
+const checkResponse = (data) => {
+  console.log(`checkResponse:${JSON.stringify(data)}`);
+  if (data.status === 200) {
+    return {};
+  }
+  if (data.status === 401) {
+    console.log('unauthorized');
+    return {};
+  }
+  return {};
+};
+
 const embeddedTimetable = (data) => {
   if (data._embedded) {
     if (data._embedded.timetable) {
       return data._embedded.timetable;
+    }
+  }
+  return [];
+};
+
+const embeddedSubscriptions = (data) => {
+  if (data._embedded) {
+    if (data._embedded.subscription) {
+      return data._embedded.subscription;
     }
   }
   return [];
@@ -72,4 +93,12 @@ export default {
     `http://sportiq.io/timetable/${id}/member`,
     fetchOptions(),
   ).then(checkData).then(embeddedMembers),
+  checkMember: (id, memberId, was) => fetch(
+    `http://sportiq.io/timetable/${id}/member/${memberId}/checkin`,
+    fetchOptions(was ? 'DELETE' : 'POST'),
+  ).then(checkResponse),
+  getSubscriptions: () => fetch(
+    'http://sportiq.io/subscription/my',
+    fetchOptions(),
+  ).then(checkData).then(embeddedSubscriptions),
 };

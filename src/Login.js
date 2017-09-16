@@ -39,7 +39,7 @@ class Login extends Component {
   }));
   */
 
-  goToCalendar = () => this.props.navigation.navigate('MyCalendar');
+  goToCalendar = () => this.props.navigation.navigate('TabsNavigator');
 
   loginWithFacebook = () => {
     const fburl = [
