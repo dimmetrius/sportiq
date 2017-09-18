@@ -93,6 +93,8 @@ class AgendaScreen extends Component {
         items[dt].push(curItem);
       }
 
+      items[dt].sort((a, b) => new Date(a.start) - new Date(b.start));
+
       /*
       curItem.name = event.group.name;
       curItem.color = event.group.color;
