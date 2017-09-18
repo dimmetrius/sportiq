@@ -70,6 +70,39 @@ class Login extends Component {
     });
   };
 
+  loginWithVk = () => {
+    const vkurl = [
+      'https://oauth.vk.com/authorize?',
+      'client_id=6081473&',
+      'display=mobile&',
+      'redirect_uri=https://sportiq.io/mobilesign&',
+      'scope=friends&response_type=token&v=5.68',
+    ].join('');
+
+    this.props.navigation.navigate('OAuthView', {
+      url: vkurl,
+      onNavigationStateChange: (state) => {
+        if (state.url.indexOf('https://sportiq.io/mobilesign') >= 0) {
+          const url = state.url;
+          const i1 = url.indexOf('access_token=');
+          const i2 = url.indexOf('&expires_in');
+          const i3 = url.indexOf('&user_id=');
+          if (i1 > 0 && i2 > 0 && i3 > 0) {
+            const token = url.substring(i1 + 'access_token='.length, i2);
+            const uid = url.substring(i3 + '&user_id='.length, url.length);
+            // this.props.navigation.dispatch(NavigationActions.back());
+
+            const sportiqUrl = `http://sportiq.io/auth/vkontakte/signin?access_token=${token}&uid=${uid}`;
+            fetch(sportiqUrl).then(data => data.text()).then((data) => {
+              this.props.setToken(data);
+              this.goToCalendar();
+            });
+          }
+        }
+      },
+    });
+  };
+
   // Handle Login with Google button tap
   loginWithGoogle = () => this.openURL('http://sportiq.io/signin/google');
 
@@ -108,11 +141,6 @@ class Login extends Component {
     </Icon.Button>
   </View>
   <View style={styles.buttons}>
-    <Icon.Button name="vk" backgroundColor="#45688e" onPress={this.loginWithAbstract} {...iconStyles}>
-      or with VK
-    </Icon.Button>
-  </View>
-  <View style={styles.buttons}>
     <Icon.Button name="instagram" backgroundColor="#cc486a" onPress={this.loginWithAbstract} {...iconStyles}>
       Or with Instagram
     </Icon.Button>
@@ -126,6 +154,11 @@ class Login extends Component {
         <View style={styles.buttons}>
           <Icon.Button name="facebook" backgroundColor="#3b5998" onPress={this.loginWithFacebook} {...iconStyles}>
             Login with Facebook
+          </Icon.Button>
+        </View>
+        <View style={styles.buttons}>
+          <Icon.Button name="vk" backgroundColor="#45688e" onPress={this.loginWithVk} {...iconStyles}>
+            or with VK
           </Icon.Button>
         </View>
       </View>
