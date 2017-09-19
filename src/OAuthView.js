@@ -1,14 +1,16 @@
 import React from 'react';
-import { TouchableOpacity, Text, View, WebView } from 'react-native';
+import { TouchableOpacity, Text, View, WebView, Platform } from 'react-native';
 import { NavigationActions } from 'react-navigation';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/Entypo';
 import { connect } from 'react-redux';
 import { setToken } from './actions';
 
+const isIos = Platform.OS === 'ios';
+
 const OAuthView = ({ navigation }) => (
   <View style={{ flex: 1, flexDirection: 'column' }}>
-    <View style={{ marginTop: 20, height: 40, alignItems: 'flex-start', justifyContent: 'center' }}>
+    <View style={{ marginTop: isIos ? 20 : 0, height: 40, alignItems: 'flex-start', justifyContent: 'center' }}>
       <TouchableOpacity
         onPress={() => {
           navigation.dispatch(NavigationActions.back());

@@ -136,6 +136,11 @@ class Login extends Component {
   }
   /*
   <View style={styles.buttons}>
+    <Icon.Button name="vk" backgroundColor="#45688e" onPress={this.loginWithVk} {...iconStyles}>
+      or with VK
+    </Icon.Button>
+  </View>
+  <View style={styles.buttons}>
     <Icon.Button name="google" backgroundColor="#DD4B39" onPress={this.loginWithAbstract} {...iconStyles}>
       Or with Google
     </Icon.Button>
@@ -154,11 +159,6 @@ class Login extends Component {
         <View style={styles.buttons}>
           <Icon.Button name="facebook" backgroundColor="#3b5998" onPress={this.loginWithFacebook} {...iconStyles}>
             Login with Facebook
-          </Icon.Button>
-        </View>
-        <View style={styles.buttons}>
-          <Icon.Button name="vk" backgroundColor="#45688e" onPress={this.loginWithVk} {...iconStyles}>
-            or with VK
           </Icon.Button>
         </View>
       </View>

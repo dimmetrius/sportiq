@@ -13,7 +13,7 @@ const routes = {
     navigationOptions: {
       tabBarLabel: 'Календарь',
       // eslint-disable-next-line react/prop-types
-      tabBarIcon: ({ tintColor }) => <Icon size={20} name="calendar" color={tintColor} />,
+      tabBarIcon: ({ tintColor }) => <Icon size={isIos ? 20 : 15} name="calendar" color={tintColor} />,
     },
   },
   subscriptions: {
@@ -21,7 +21,7 @@ const routes = {
     navigationOptions: {
       tabBarLabel: 'Абонементы',
       // eslint-disable-next-line react/prop-types
-      tabBarIcon: ({ tintColor }) => <Icon size={20} name="list" color={tintColor} />,
+      tabBarIcon: ({ tintColor }) => <Icon size={isIos ? 20 : 15} name="list" color={tintColor} />,
     },
   },
 };
@@ -30,15 +30,16 @@ const config = {
   tabBarPosition: 'bottom',
   initialRouteName: 'calendar',
   tabBarOptions: {
+    showIcon: true,
     activeTintColor: 'blue',
     inactiveTintColor: 'gray',
     style: {
       backgroundColor: 'white',
-      bottom: isIos ? 0 : 25,
+      // bottom: isIos ? 0 : 25,
     },
     tabStyle: {
       flex: 1,
-      justifyContet: 'center',
+      justifyContent: 'center',
       alignItems: 'center',
     },
     labelStyle: {
