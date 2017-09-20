@@ -1,3 +1,4 @@
+/* eslint-disable global-require */
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -120,7 +121,7 @@ class Login extends Component {
       <View style={styles.content}>
         <Text style={styles.header}>Welcome Stranger!</Text>
         <View style={styles.avatar}>
-          <Icon name="user-circle" size={100} color="rgba(0,0,0,.09)" />
+          <Image source={require('./icons/ic.png')} style={styles.avatarImage} />
         </View>
         <Text style={styles.text}>
             Please log in to continue {'\n'}
