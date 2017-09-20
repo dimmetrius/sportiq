@@ -4,6 +4,8 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { setToken } from './actions';
+import ApiRequest from './utils/ApiRequest';
+import { mobileSignUrl } from './utils/constants';
 
 class Login extends Component {
   static propTypes = {
@@ -43,24 +45,23 @@ class Login extends Component {
 
   loginWithFacebook = () => {
     const fburl = [
-      'https://www.facebook.com/v2.5/dialog/oauth?client_id=115411419065159&',
+      'https://www.facebook.com/v2.5/dialog/oauth?',
+      'client_id=115411419065159&',
       'response_type=token&',
-      'redirect_uri=https%3A%2F%2Fsportiq.io%2Fmobilesign',
+      `redirect_uri=${mobileSignUrl}`,
     ].join('');
 
     this.props.navigation.navigate('OAuthView', {
       url: fburl,
       onNavigationStateChange: (state) => {
-        if (state.url.indexOf('https://sportiq.io/mobilesign') >= 0) {
+        if (state.url.indexOf(mobileSignUrl) >= 0) {
           const url = state.url;
           const i1 = url.indexOf('access_token=');
           const i2 = url.indexOf('&expires_in');
           if (i1 > 0 && i2 > 0) {
             const token = url.substring(i1 + 'access_token='.length, i2);
             // this.props.navigation.dispatch(NavigationActions.back());
-
-            const sportiqUrl = `http://sportiq.io/auth/facebook/signin?access_token=${token}`;
-            fetch(sportiqUrl).then(data => data.text()).then((data) => {
+            ApiRequest.getToken('facebook', token).then(data => data.text()).then((data) => {
               this.props.setToken(data);
               this.goToCalendar();
             });
@@ -75,14 +76,14 @@ class Login extends Component {
       'https://oauth.vk.com/authorize?',
       'client_id=6081473&',
       'display=mobile&',
-      'redirect_uri=https://sportiq.io/mobilesign&',
+      `redirect_uri=${mobileSignUrl}&`,
       'scope=friends&response_type=token&v=5.68',
     ].join('');
 
     this.props.navigation.navigate('OAuthView', {
       url: vkurl,
       onNavigationStateChange: (state) => {
-        if (state.url.indexOf('https://sportiq.io/mobilesign') >= 0) {
+        if (state.url.indexOf(mobileSignUrl) >= 0) {
           const url = state.url;
           const i1 = url.indexOf('access_token=');
           const i2 = url.indexOf('&expires_in');
@@ -92,8 +93,7 @@ class Login extends Component {
             const uid = url.substring(i3 + '&user_id='.length, url.length);
             // this.props.navigation.dispatch(NavigationActions.back());
 
-            const sportiqUrl = `http://sportiq.io/auth/vkontakte/signin?access_token=${token}&uid=${uid}`;
-            fetch(sportiqUrl).then(data => data.text()).then((data) => {
+            ApiRequest.getToken('vkontakte', token, uid).then(data => data.text()).then((data) => {
               this.props.setToken(data);
               this.goToCalendar();
             });
@@ -102,11 +102,6 @@ class Login extends Component {
       },
     });
   };
-
-  // Handle Login with Google button tap
-  loginWithGoogle = () => this.openURL('http://sportiq.io/signin/google');
-
-  loginWithAbstract = () => this.props.navigation.navigate('MyCalendar');
 
   renderUser(user) {
     if (user) {

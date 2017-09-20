@@ -1,5 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 import store from '../store';
+import { sportiqHost } from './constants';
 
 const getToken = () => {
   const state = store.getState();
@@ -73,32 +74,35 @@ const fetchOptions = (method, data) => {
 };
 
 export default {
+  getToken: (social, token, uid = '') => fetch(
+    `${sportiqHost}/auth/${social}/signin?access_token=${token}${uid ? `&uid=${uid}` : ''}`,
+  ),
   coach: (start, end) => fetch(
-    `http://sportiq.io/timetable/coach?end=${end}T00:00:00.000Z&start=${start}T00:00:00.000Z`,
+    `${sportiqHost}/timetable/coach?end=${end}T00:00:00.000Z&start=${start}T00:00:00.000Z`,
     fetchOptions(),
   ).then(checkData).then(embeddedTimetable),
   my: (start, end) => fetch(
-    `http://sportiq.io/timetable/my?end=${end}T00:00:00.000Z&start=${start}T00:00:00.000Z`,
+    `${sportiqHost}/timetable/my?end=${end}T00:00:00.000Z&start=${start}T00:00:00.000Z`,
     fetchOptions(),
   ).then(checkData).then(embeddedTimetable),
   getFeedback: id => fetch(
-    `http://sportiq.io/timetable/${id}/feedback`,
+    `${sportiqHost}/timetable/${id}/feedback`,
     fetchOptions(),
   ).then(checkData).then(embeddedFeedBack),
   sendFeedback: (id, data) => fetch(
-    `http://sportiq.io/timetable/${id}/feedback`,
+    `${sportiqHost}/timetable/${id}/feedback`,
     fetchOptions('PUT', data),
   ).then(checkData).then(embeddedFeedBack),
   getMember: id => fetch(
-    `http://sportiq.io/timetable/${id}/member`,
+    `${sportiqHost}/timetable/${id}/member`,
     fetchOptions(),
   ).then(checkData).then(embeddedMembers),
   checkMember: (id, memberId, was) => fetch(
-    `http://sportiq.io/timetable/${id}/member/${memberId}/checkin`,
+    `${sportiqHost}/timetable/${id}/member/${memberId}/checkin`,
     fetchOptions(was ? 'DELETE' : 'POST'),
   ).then(checkResponse),
   getSubscriptions: () => fetch(
-    'http://sportiq.io/subscription/my',
+    `${sportiqHost}/subscription/my`,
     fetchOptions(),
   ).then(checkData).then(embeddedSubscriptions),
 };

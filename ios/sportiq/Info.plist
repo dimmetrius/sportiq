@@ -25,8 +25,8 @@
 		<dict/>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>4</string>
-        <key>ITSAppUsesNonExemptEncryption</key>
+	<string>5</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
