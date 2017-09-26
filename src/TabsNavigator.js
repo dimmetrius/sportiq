@@ -1,5 +1,5 @@
 import React from 'react';
-import { TabNavigator } from 'react-navigation';
+import { TabNavigator /* , TabBarBottom */ } from 'react-navigation';
 import { Platform } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import MyCalendar from './MyCalendar';
@@ -7,7 +7,7 @@ import Subscriptions from './Subscriptions';
 
 const isIos = Platform.OS === 'ios';
 
-const routes = {
+const initroutes = {
   calendar: {
     screen: MyCalendar,
     navigationOptions: {
@@ -25,6 +25,17 @@ const routes = {
     },
   },
 };
+
+/*
+const tabBarComponent = ({ navigation, ...rest }) =>
+  (<TabBarBottom
+    {...rest}
+    navigation={{
+      ...navigation,
+      state: { ...navigation.state, routes: navigation.state.routes.filter(r => true) },
+    }}
+  />);
+*/
 
 const config = {
   tabBarPosition: 'bottom',
@@ -48,6 +59,6 @@ const config = {
   },
 };
 
-const TabsNavigator = TabNavigator(routes, config);
+const TabsNavigator = TabNavigator(initroutes, config);
 
 export default TabsNavigator;

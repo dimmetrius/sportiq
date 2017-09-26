@@ -201,10 +201,17 @@ class Members extends Component {
     const { loading, members } = this.state;
     const item = this.props.navigation.state.params;
 
-
     return (
       <View style={{ flex: 1, flexDirection: 'column' }}>
-        <View style={{ marginTop: isIos ? 20 : 0, height: 40, alignItems: 'flex-start', justifyContent: 'center' }}>
+        <View style={{
+          marginHorizontal: 10,
+          marginTop: isIos ? 20 : 0,
+          height: 40,
+          flexDirection: 'row',
+          alignItems: 'flex-start',
+          justifyContent: 'space-between',
+        }}
+        >
           <TouchableOpacity
             onPress={() => {
               navigation.dispatch(NavigationActions.back());
@@ -215,7 +222,6 @@ class Members extends Component {
               flexDirection: 'row',
               alignItems: 'center',
               justifyContent: 'center',
-              marginLeft: 10,
             }}
             >
               <Icon name="chevron-thin-left" size={17} color="black" />

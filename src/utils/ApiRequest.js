@@ -9,7 +9,7 @@ const getToken = () => {
 
 const checkData = (data) => {
   console.log(`checkData:${JSON.stringify(data)}`);
-  if (data.status === 200) {
+  if (data.status >= 200 && data.status < 300) {
     return data.json();
   }
   if (data.status === 401) {
@@ -21,7 +21,7 @@ const checkData = (data) => {
 
 const checkResponse = (data) => {
   console.log(`checkResponse:${JSON.stringify(data)}`);
-  if (data.status === 200) {
+  if (data.status >= 200 && data.status < 300) {
     return {};
   }
   if (data.status === 401) {
@@ -74,8 +74,8 @@ const fetchOptions = (method, data) => {
 };
 
 export default {
-  getToken: (social, token, uid = '') => fetch(
-    `${sportiqHost}/auth/${social}/signin?access_token=${token}${uid ? `&uid=${uid}` : ''}`,
+  getToken: (social, authkey, keyvalue) => fetch(
+    `${sportiqHost}/auth/${social}/signin?${authkey}=${keyvalue}`,
   ),
   coach: (start, end) => fetch(
     `${sportiqHost}/timetable/coach?end=${end}T00:00:00.000Z&start=${start}T00:00:00.000Z`,
@@ -105,4 +105,20 @@ export default {
     `${sportiqHost}/subscription/my`,
     fetchOptions(),
   ).then(checkData).then(embeddedSubscriptions),
+  openTransaction: timetableId => fetch(
+    `${sportiqHost}/access_transaction/`,
+    fetchOptions('POST', JSON.stringify({ timetableId })),
+  ).then(checkData),
+  closeTransaction: (transactionId, timetableId) => fetch(
+    `${sportiqHost}/access_transaction/`,
+    fetchOptions('PUT', JSON.stringify({ id: transactionId, timetableId })),
+  ).then(checkData),
+  loggedUser: () => fetch(
+    `${sportiqHost}/loggedUser`,
+    fetchOptions(),
+  ).then(checkData),
+  getUser: id => fetch(
+    `${sportiqHost}/user/${id}`,
+    fetchOptions(),
+  ).then(checkData),
 };

@@ -62,7 +62,7 @@ class Login extends Component {
           if (i1 > 0 && i2 > 0) {
             const token = url.substring(i1 + 'access_token='.length, i2);
             // this.props.navigation.dispatch(NavigationActions.back());
-            ApiRequest.getToken('facebook', token).then(data => data.text()).then((data) => {
+            ApiRequest.getToken('facebook', 'access_token', token).then(data => data.text()).then((data) => {
               this.props.setToken(data);
               this.goToCalendar();
             });
@@ -78,7 +78,7 @@ class Login extends Component {
       'client_id=6081473&',
       'display=mobile&',
       `redirect_uri=${mobileSignUrl}&`,
-      'scope=friends&response_type=token&v=5.68',
+      'scope=friends&response_type=code&v=5.68',
     ].join('');
 
     this.props.navigation.navigate('OAuthView', {
@@ -86,15 +86,39 @@ class Login extends Component {
       onNavigationStateChange: (state) => {
         if (state.url.indexOf(mobileSignUrl) >= 0) {
           const url = state.url;
+          const i1 = url.indexOf('code=');
+          if (i1 > 0) {
+            const code = url.substring(i1 + 'code='.length, url.length);
+
+            ApiRequest.getToken('vkontakte', 'code', code).then(data => data.text()).then((data) => {
+              this.props.setToken(data);
+              this.goToCalendar();
+            });
+          }
+        }
+      },
+    });
+  };
+
+  loginWithInstagram = () => {
+    const instaurl = [
+      'https://api.instagram.com/oauth/authorize?',
+      'client_id=1e1aeecdb87e40dcbca8fb8f9dcf2870&',
+      'response_type=code&',
+      `redirect_uri=${mobileSignUrl}`,
+    ].join('');
+
+    this.props.navigation.navigate('OAuthView', {
+      url: instaurl,
+      onNavigationStateChange: (state) => {
+        if (state.url.indexOf(mobileSignUrl) >= 0) {
+          const url = state.url;
           const i1 = url.indexOf('access_token=');
           const i2 = url.indexOf('&expires_in');
-          const i3 = url.indexOf('&user_id=');
-          if (i1 > 0 && i2 > 0 && i3 > 0) {
+          if (i1 > 0 && i2 > 0) {
             const token = url.substring(i1 + 'access_token='.length, i2);
-            const uid = url.substring(i3 + '&user_id='.length, url.length);
             // this.props.navigation.dispatch(NavigationActions.back());
-
-            ApiRequest.getToken('vkontakte', token, uid).then(data => data.text()).then((data) => {
+            ApiRequest.getToken('instagram', token).then(data => data.text()).then((data) => {
               this.props.setToken(data);
               this.goToCalendar();
             });
@@ -132,20 +156,16 @@ class Login extends Component {
   }
   /*
   <View style={styles.buttons}>
-    <Icon.Button name="vk" backgroundColor="#45688e" onPress={this.loginWithVk} {...iconStyles}>
-      or with VK
-    </Icon.Button>
-  </View>
-  <View style={styles.buttons}>
     <Icon.Button name="google" backgroundColor="#DD4B39" onPress={this.loginWithAbstract} {...iconStyles}>
       Or with Google
     </Icon.Button>
   </View>
   <View style={styles.buttons}>
-    <Icon.Button name="instagram" backgroundColor="#cc486a" onPress={this.loginWithAbstract} {...iconStyles}>
+    <Icon.Button name="instagram" backgroundColor="#cc486a" onPress={this.loginWithInstagram} {...iconStyles}>
       Or with Instagram
     </Icon.Button>
   </View>
+
 */
   render() {
     const { user } = this.state;
@@ -157,11 +177,17 @@ class Login extends Component {
             Login with Facebook
           </Icon.Button>
         </View>
+        <View style={styles.buttons}>
+          <Icon.Button name="vk" backgroundColor="#45688e" onPress={this.loginWithVk} {...iconStyles}>
+            Login with VK
+          </Icon.Button>
+        </View>
       </View>
     );
   }
 }
 const iconStyles = {
+  justifyContent: 'center',
   borderRadius: 10,
   iconStyle: { paddingVertical: 5 },
 };

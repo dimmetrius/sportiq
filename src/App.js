@@ -11,6 +11,7 @@ import TabsNavigator from './TabsNavigator';
 import OAuthView from './OAuthView';
 import FeedBack from './FeedBack';
 import Members from './Members';
+import QrCode from './QrCode';
 import store from './store';
 
 const stack = {
@@ -20,6 +21,7 @@ const stack = {
   OAuthView: { screen: OAuthView },
   FeedBack: { screen: FeedBack },
   Members: { screen: Members },
+  QrCode: { screen: QrCode },
 };
 
 const LoginStack = StackNavigator(

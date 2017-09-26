@@ -1,14 +1,16 @@
 import React, { Component } from 'react';
 import { NavigationActions } from 'react-navigation';
 import PropTypes from 'prop-types';
-import { View, Text, TouchableOpacity, ActivityIndicator, Dimensions, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, ActivityIndicator, Dimensions, ScrollView, Platform } from 'react-native';
 import Icon from 'react-native-vector-icons/Entypo';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Stars from './components/Stars';
 import ApiRequest from './utils/ApiRequest';
 import GroupHeader from './components/GroupHeader';
 import WebViewAutoHeight from './components/WebViewAutoHeight';
 
 const { width } = Dimensions.get('window');
+const isIos = Platform.OS === 'ios';
 
 const rateSize = 50;
 class FeedBack extends Component {
@@ -92,10 +94,20 @@ class FeedBack extends Component {
   render() {
     const { navigation } = this.props;
     const item = this.props.navigation.state.params;
+    // eslint-disable-next-line
+    const canQrGenerate = item.billable && item._links.get_access_code
     const { loading, result, coach, program, equipment } = this.state;
     return (
       <View style={{ flex: 1, flexDirection: 'column' }}>
-        <View style={{ marginTop: 20, height: 40, alignItems: 'flex-start', justifyContent: 'center' }}>
+        <View style={{
+          marginHorizontal: 10,
+          marginTop: isIos ? 20 : 0,
+          height: 40,
+          flexDirection: 'row',
+          alignItems: 'flex-start',
+          justifyContent: 'space-between',
+        }}
+        >
           <TouchableOpacity
             onPress={() => {
               navigation.dispatch(NavigationActions.back());
@@ -106,13 +118,33 @@ class FeedBack extends Component {
               flexDirection: 'row',
               alignItems: 'center',
               justifyContent: 'center',
-              marginLeft: 10,
             }}
             >
               <Icon name="chevron-thin-left" size={17} color="black" />
               <Text>Back </Text>
             </View>
           </TouchableOpacity>
+          {
+            canQrGenerate ?
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate('QrCode', { type: 'gen', item });
+                }}
+              >
+                <View style={{
+                  height: 40,
+                  width: 80,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+                >
+                  <Text style={{ marginRight: 5 }}>Билет</Text>
+                  <FontAwesome name="qrcode" size={25} color="black" />
+                </View>
+              </TouchableOpacity>
+              : null
+          }
         </View>
         <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
           <ScrollView>

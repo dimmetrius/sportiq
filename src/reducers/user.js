@@ -11,6 +11,16 @@ function token(state = '', action) {
   }
 }
 
+function loggedUser(state = {}, action) {
+  switch (action.type) {
+    case ActionTypes.SET_LOGGED_USER:
+      return action.loggedUser;
+    default:
+      return state;
+  }
+}
+
 export const user = combineReducers({
   token,
+  loggedUser,
 });

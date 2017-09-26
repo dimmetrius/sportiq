@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { Agenda, LocaleConfig } from 'react-native-calendars';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { setLoggedUser } from './actions';
 import ApiRequest from './utils/ApiRequest';
 import sport from './icons/sport';
 import padStart from './utils/padStart';
@@ -41,6 +42,8 @@ class AgendaScreen extends Component {
       navigate: PropTypes.func.isRequired,
       dispatch: PropTypes.func.isRequired,
     }),
+    user: PropTypes.shape(),
+    setLoggedUser: PropTypes.func.isRequired,
   };
 
   constructor(props) {
@@ -49,6 +52,12 @@ class AgendaScreen extends Component {
       month: LocaleConfig.locales.ru.monthNames[(new Date()).getMonth()],
       items: {},
     };
+  }
+
+  componentDidMount() {
+    ApiRequest.loggedUser().then((data) => {
+      this.props.setLoggedUser(data);
+    });
   }
 
   onClickItem = (item) => {
@@ -193,6 +202,12 @@ class AgendaScreen extends Component {
     return date.toISOString().split('T')[0];
   }
 
+  canQrScan() {
+    const { loggedUser } = this.props.user;
+    // eslint-disable-next-line
+    return loggedUser && loggedUser._links && loggedUser._links.check_access_code;
+  }
+
   renderEmptyDate() {
     return (
       <View style={[styles.item, { flexDirection: 'column' }]}>
@@ -273,6 +288,29 @@ class AgendaScreen extends Component {
           // theme={{calendarBackground: 'red', agendaKnobColor: 'green'}}
           // renderDay={(day, item) => (<Text>{day ? day.day: ''}</Text>)}
         />
+        {
+          this.canQrScan() ?
+            <TouchableOpacity
+              style={{
+                position: 'absolute',
+                width: 50,
+                height: 50,
+                borderRadius: 25,
+                alignItems: 'center',
+                justifyContent: 'center',
+                right: 10,
+                bottom: 10,
+                borderColor: 'gray',
+                borderWidth: 1,
+                backgroundColor: 'white',
+              }}
+              onPress={() => this.props.navigation.navigate('QrCode', { type: 'scan' })}
+            >
+              <Icon name="qrcode" size={25} color="black" />
+            </TouchableOpacity>
+            :
+            null
+        }
       </View>
     );
   }
@@ -303,4 +341,6 @@ const mapStateToProps = state => ({
   calendar: state.calendar,
 });
 
-export default connect(mapStateToProps, {})(AgendaScreen);
+export default connect(mapStateToProps, {
+  setLoggedUser,
+})(AgendaScreen);
