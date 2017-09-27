@@ -7,7 +7,6 @@ import { connect } from 'react-redux';
 import { setToken } from './actions';
 
 const isIos = Platform.OS === 'ios';
-
 const OAuthView = ({ navigation }) => (
   <View style={{ flex: 1, flexDirection: 'column' }}>
     <View style={{ marginTop: isIos ? 20 : 0, height: 40, alignItems: 'flex-start', justifyContent: 'center' }}>
@@ -30,6 +29,8 @@ const OAuthView = ({ navigation }) => (
       </TouchableOpacity>
     </View>
     <WebView
+      ref={(component) => { this.webView = component; }}
+      userAgent={'Mozilla/5.0 Google'}
       style={{ flex: 1 }}
       startInLoadingState
       source={{ uri: navigation.state.params.url }}
@@ -38,7 +39,13 @@ const OAuthView = ({ navigation }) => (
           <Text>Загрузка...</Text>
         </View>
       )}
-      onNavigationStateChange={navigation.state.params.onNavigationStateChange}
+      onNavigationStateChange={(state) => {
+        navigation.state.params.onNavigationStateChange(state, () => {
+          if (this.webView && this.webView.stopLoading) {
+            this.webView.stopLoading();
+          }
+        });
+      }}
     />
   </View>
 );

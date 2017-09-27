@@ -54,7 +54,7 @@ class Login extends Component {
 
     this.props.navigation.navigate('OAuthView', {
       url: fburl,
-      onNavigationStateChange: (state) => {
+      onNavigationStateChange: (state, stopLoading) => {
         if (state.url.indexOf(mobileSignUrl) >= 0) {
           const url = state.url;
           const i1 = url.indexOf('access_token=');
@@ -63,6 +63,7 @@ class Login extends Component {
             const token = url.substring(i1 + 'access_token='.length, i2);
             // this.props.navigation.dispatch(NavigationActions.back());
             ApiRequest.getToken('facebook', 'access_token', token).then(data => data.text()).then((data) => {
+              stopLoading();
               this.props.setToken(data);
               this.goToCalendar();
             });
@@ -83,7 +84,7 @@ class Login extends Component {
 
     this.props.navigation.navigate('OAuthView', {
       url: vkurl,
-      onNavigationStateChange: (state) => {
+      onNavigationStateChange: (state, stopLoading) => {
         if (state.url.indexOf(mobileSignUrl) >= 0) {
           const url = state.url;
           const i1 = url.indexOf('code=');
@@ -91,6 +92,7 @@ class Login extends Component {
             const code = url.substring(i1 + 'code='.length, url.length);
 
             ApiRequest.getToken('vkontakte', 'code', code).then(data => data.text()).then((data) => {
+              stopLoading();
               this.props.setToken(data);
               this.goToCalendar();
             });
@@ -110,15 +112,59 @@ class Login extends Component {
 
     this.props.navigation.navigate('OAuthView', {
       url: instaurl,
-      onNavigationStateChange: (state) => {
+      onNavigationStateChange: (state, stopLoading) => {
         if (state.url.indexOf(mobileSignUrl) >= 0) {
           const url = state.url;
-          const i1 = url.indexOf('access_token=');
-          const i2 = url.indexOf('&expires_in');
-          if (i1 > 0 && i2 > 0) {
-            const token = url.substring(i1 + 'access_token='.length, i2);
+          const i1 = url.indexOf('code=');
+          if (i1 > 0) {
+            const code = url.substring(i1 + 'code='.length, url.length);
             // this.props.navigation.dispatch(NavigationActions.back());
-            ApiRequest.getToken('instagram', token).then(data => data.text()).then((data) => {
+            ApiRequest.getToken('instagram', 'code', code).then(data => data.text()).then((data) => {
+              stopLoading();
+              this.props.setToken(data);
+              this.goToCalendar();
+            });
+          }
+        }
+      },
+    });
+  };
+
+  loginWithGoogle = () => {
+    const googleurl = [
+      /*
+      'https://accounts.google.com/o/oauth2/auth?',
+      'client_id=425199437936-d7up002g8se91n4f74i4jlpa68fqvshr.apps.googleusercontent.com&',
+      'response_type=code&',
+      `redirect_uri=${mobileSignUrl}`,
+      '&scope=https://www.googleapis.com/auth/userinfo.profile+',
+      'https://www.googleapis.com/auth/userinfo#email+',
+      'https://www.googleapis.com/auth/plus.me+',
+      'https://www.googleapis.com/auth/tasks+',
+      'https://www-opensocial.googleusercontent.com/api/people+',
+      'https://www.googleapis.com/auth/plus.login',
+      '&state=950198d1-c7b2-4715-a28b-74f19308b80f',
+      */
+      'https://accounts.google.com/o/oauth2/v2/auth?',
+      'scope=email profile&',
+      'response_type=code&',
+      'state=security_token=138r5719ru3e1&',
+      'url=https://oauth2.example.com/token&',
+      `redirect_uri=${mobileSignUrl}`,
+      '&client_id=425199437936-d7up002g8se91n4f74i4jlpa68fqvshr.apps.googleusercontent.com',
+    ].join('');
+
+    this.props.navigation.navigate('OAuthView', {
+      url: googleurl,
+      onNavigationStateChange: (state, stopLoading) => {
+        if (state.url.indexOf(mobileSignUrl) >= 0) {
+          const url = state.url;
+          const i1 = url.indexOf('code=');
+          if (i1 > 0) {
+            const code = url.substring(i1 + 'code='.length, url.length);
+            // this.props.navigation.dispatch(NavigationActions.back());
+            ApiRequest.getToken('google', 'code', code).then(data => data.text()).then((data) => {
+              stopLoading();
               this.props.setToken(data);
               this.goToCalendar();
             });
@@ -155,18 +201,8 @@ class Login extends Component {
     );
   }
   /*
-  <View style={styles.buttons}>
-    <Icon.Button name="google" backgroundColor="#DD4B39" onPress={this.loginWithAbstract} {...iconStyles}>
-      Or with Google
-    </Icon.Button>
-  </View>
-  <View style={styles.buttons}>
-    <Icon.Button name="instagram" backgroundColor="#cc486a" onPress={this.loginWithInstagram} {...iconStyles}>
-      Or with Instagram
-    </Icon.Button>
-  </View>
 
-*/
+  */
   render() {
     const { user } = this.state;
     return (
@@ -180,6 +216,16 @@ class Login extends Component {
         <View style={styles.buttons}>
           <Icon.Button name="vk" backgroundColor="#45688e" onPress={this.loginWithVk} {...iconStyles}>
             Login with VK
+          </Icon.Button>
+        </View>
+        <View style={styles.buttons}>
+          <Icon.Button name="instagram" backgroundColor="#cc486a" onPress={this.loginWithInstagram} {...iconStyles}>
+            Login with Instagram
+          </Icon.Button>
+        </View>
+        <View style={styles.buttons}>
+          <Icon.Button name="google" backgroundColor="#DD4B39" onPress={this.loginWithGoogle} {...iconStyles}>
+            Login with Google
           </Icon.Button>
         </View>
       </View>
@@ -224,7 +270,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     flexDirection: 'column',
     margin: 20,
-    marginBottom: 30,
+    marginBottom: 15,
   },
 });
 
