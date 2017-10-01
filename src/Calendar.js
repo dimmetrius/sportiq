@@ -1,6 +1,6 @@
 /* eslint-disable global-require */
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, TouchableOpacity, Platform } from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 import { Agenda, LocaleConfig } from 'react-native-calendars';
 import PropTypes from 'prop-types';
@@ -10,8 +10,6 @@ import ApiRequest from './utils/ApiRequest';
 import sport from './icons/sport';
 import padStart from './utils/padStart';
 import getStrTimer from './utils/getStrTimer';
-
-const isIos = Platform.OS === 'ios';
 
 LocaleConfig.locales.ru = {
   monthNames: [
@@ -319,7 +317,7 @@ class AgendaScreen extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: isIos ? 20 : 0,
+    // paddingTop: isIos ? 20 : 0,
   },
   item: {
     backgroundColor: 'white',

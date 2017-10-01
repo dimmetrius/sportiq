@@ -6,8 +6,7 @@ import {
 import { Provider } from 'react-redux';
 import { persistStore } from 'redux-persist';
 import Login from './Login';
-import MyCalendar from './MyCalendar';
-import TabsNavigator from './TabsNavigator';
+import DrawersNavigator from './DrawersNavigator';
 import OAuthView from './OAuthView';
 import FeedBack from './FeedBack';
 import Members from './Members';
@@ -15,9 +14,8 @@ import QrCode from './QrCode';
 import store from './store';
 
 const stack = {
-  Login: { screen: Login },
-  TabsNavigator: { screen: TabsNavigator, navigationOptions: { gesturesEnabled: false } },
-  MyCalendar: { screen: MyCalendar, navigationOptions: { gesturesEnabled: false } },
+  Login: { screen: Login, navigationOptions: { header: null } },
+  DrawersNavigator: { screen: DrawersNavigator, navigationOptions: { header: null } },
   OAuthView: { screen: OAuthView },
   FeedBack: { screen: FeedBack },
   Members: { screen: Members },
@@ -27,7 +25,7 @@ const stack = {
 const LoginStack = StackNavigator(
   stack,
   {
-    headerMode: 'none',
+    // headerMode: 'none',
   },
 );
 

@@ -1,33 +1,11 @@
 import React from 'react';
-import { TouchableOpacity, Text, View, WebView, Platform } from 'react-native';
-import { NavigationActions } from 'react-navigation';
+import { Text, View, WebView } from 'react-native';
 import PropTypes from 'prop-types';
-import Icon from 'react-native-vector-icons/Entypo';
 import { connect } from 'react-redux';
 import { setToken } from './actions';
 
-const isIos = Platform.OS === 'ios';
 const OAuthView = ({ navigation }) => (
   <View style={{ flex: 1, flexDirection: 'column' }}>
-    <View style={{ marginTop: isIos ? 20 : 0, height: 40, alignItems: 'flex-start', justifyContent: 'center' }}>
-      <TouchableOpacity
-        onPress={() => {
-          navigation.dispatch(NavigationActions.back());
-        }}
-      >
-        <View style={{
-          height: 40,
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'center',
-          marginLeft: 10,
-        }}
-        >
-          <Icon name="chevron-thin-left" size={17} color="black" />
-          <Text>Back </Text>
-        </View>
-      </TouchableOpacity>
-    </View>
     <WebView
       ref={(component) => { this.webView = component; }}
       userAgent={'Mozilla/5.0 Google'}

@@ -42,7 +42,7 @@ class Login extends Component {
   }));
   */
 
-  goToCalendar = () => this.props.navigation.navigate('TabsNavigator');
+  goToCalendar = () => this.props.navigation.navigate('DrawersNavigator');
 
   loginWithFacebook = () => {
     const fburl = [

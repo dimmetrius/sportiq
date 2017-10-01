@@ -9,7 +9,6 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { NavigationActions } from 'react-navigation';
 import { setToken } from './actions';
 import ApiRequest from './utils/ApiRequest';
-import BackButton from './components/BackButton';
 import GroupHeader from './components/GroupHeader';
 
 const { width } = Dimensions.get('window');
@@ -256,19 +255,6 @@ class QrCode extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <View style={{
-          marginHorizontal: 10,
-          marginTop: 20,
-          height: 40,
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-        }}
-        >
-          <BackButton navigation={this.props.navigation} />
-          <Text style={{ fontSize: 16, fontWeight: 'bold' }}> QR Билет </Text>
-          <View style={{ width: 60 }} />
-        </View>
         <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
           {this.renderContent()}
         </View>

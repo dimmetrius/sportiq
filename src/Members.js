@@ -1,27 +1,22 @@
 /* eslint-disable no-underscore-dangle */
 
 import React, { Component } from 'react';
-import { NavigationActions } from 'react-navigation';
 import PropTypes from 'prop-types';
 import {
   View,
   Text,
-  TouchableOpacity,
   ActivityIndicator,
   ScrollView,
   Image,
   Dimensions,
   Switch,
-  Platform,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Entypo';
 import ApiRequest from './utils/ApiRequest';
 import GroupHeader from './components/GroupHeader';
 import WebViewAutoHeight from './components/WebViewAutoHeight';
 
 const { width } = Dimensions.get('window');
 const ROW_HEIGHT = 60;
-const isIos = Platform.OS === 'ios';
 
 class Members extends Component {
   static propTypes = {
@@ -197,44 +192,17 @@ class Members extends Component {
   }
 
   render() {
-    const { navigation } = this.props;
     const { loading, members } = this.state;
     const item = this.props.navigation.state.params;
 
     return (
       <View style={{ flex: 1, flexDirection: 'column' }}>
-        <View style={{
-          marginHorizontal: 10,
-          marginTop: isIos ? 20 : 0,
-          height: 40,
-          flexDirection: 'row',
-          alignItems: 'flex-start',
-          justifyContent: 'space-between',
-        }}
-        >
-          <TouchableOpacity
-            onPress={() => {
-              navigation.dispatch(NavigationActions.back());
-            }}
-          >
-            <View style={{
-              height: 40,
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-            >
-              <Icon name="chevron-thin-left" size={17} color="black" />
-              <Text>Back </Text>
-            </View>
-          </TouchableOpacity>
-        </View>
         <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
           {
             loading ?
               <ActivityIndicator animating color={'white'} size={1} /> :
               <ScrollView>
-                <View style={{ flexDirection: 'column' }}>
+                <View style={{ flexDirection: 'column', paddingTop: 10 }}>
                   <GroupHeader item={item} />
                   <Text style={{
                     fontSize: 15,

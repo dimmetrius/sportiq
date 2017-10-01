@@ -1,19 +1,50 @@
 import React from 'react';
-import { DrawerNavigator } from 'react-navigation';
-import { Platform, Text } from 'react-native';
+import { DrawerNavigator, StackNavigator } from 'react-navigation';
+import { Platform, View, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import MyCalendar from './MyCalendar';
-import Subscriptions from './Subscriptions';
+import _QrCode from './QrCode';
+import _Calendar from './Calendar';
+import _Subscriptions from './Subscriptions';
 
 const isIos = Platform.OS === 'ios';
 
-const routes = {
-  calendar: {
-    screen: MyCalendar,
-    navigationOptions: {
+// eslint-disable-next-line react/prop-types
+const MenuButton = ({ navigation }) => (
+  <View>
+    <TouchableOpacity onPress={() => navigation.navigate('DrawerOpen')}>
+      <Icon name="bars" style={{ color: 'black', padding: 10, marginLeft: 10, fontSize: 20 }} />
+    </TouchableOpacity>
+  </View>
+);
+
+const Calendar = StackNavigator({
+  MyCalendar: { screen: _Calendar,
+    navigationOptions: ({ navigation }) => ({
       title: 'Календарь',
       drawerLabel: 'Календарь',
-      headerLeft: <Text> Left </Text>,
+      headerLeft: <MenuButton navigation={navigation} />,
+      // eslint-disable-next-line react/prop-types
+      drawerIcon: ({ tintColor }) => <Icon size={isIos ? 20 : 15} name="calendar" color={tintColor} />,
+    }),
+  },
+});
+
+const Subscriptions = StackNavigator({
+  Subscriptions: { screen: _Subscriptions,
+    navigationOptions: ({ navigation }) => ({
+      title: 'Абонементы',
+      drawerLabel: 'Абонементы',
+      headerLeft: <MenuButton navigation={navigation} />,
+      // eslint-disable-next-line react/prop-types
+      drawerIcon: ({ tintColor }) => <Icon size={isIos ? 20 : 15} name="list" color={tintColor} />,
+    }),
+  },
+});
+
+const routes = {
+  calendar: {
+    screen: Calendar,
+    navigationOptions: {
       // eslint-disable-next-line react/prop-types
       drawerIcon: ({ tintColor }) => <Icon size={isIos ? 20 : 15} name="calendar" color={tintColor} />,
     },
@@ -21,7 +52,6 @@ const routes = {
   subscriptions: {
     screen: Subscriptions,
     navigationOptions: {
-      drawerLabel: 'Абонементы',
       // eslint-disable-next-line react/prop-types
       drawerIcon: ({ tintColor }) => <Icon size={isIos ? 20 : 15} name="list" color={tintColor} />,
     },
