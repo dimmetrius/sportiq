@@ -10,23 +10,19 @@ import DrawersNavigator from './DrawersNavigator';
 import OAuthView from './OAuthView';
 import FeedBack from './FeedBack';
 import Members from './Members';
-import QrCode from './QrCode';
 import store from './store';
 
 const stack = {
   Login: { screen: Login, navigationOptions: { header: null } },
   DrawersNavigator: { screen: DrawersNavigator, navigationOptions: { header: null } },
-  OAuthView: { screen: OAuthView },
-  FeedBack: { screen: FeedBack },
-  Members: { screen: Members },
-  QrCode: { screen: QrCode },
+  OAuthView: { screen: OAuthView, navigationOptions: { title: 'Авторизация' } },
+  FeedBack: { screen: FeedBack, navigationOptions: { title: 'Тренировка' } },
+  Members: { screen: Members, navigationOptions: { title: 'Тренировка' } },
 };
 
 const LoginStack = StackNavigator(
   stack,
-  {
-    // headerMode: 'none',
-  },
+  { headerMode: 'float' },
 );
 
 class Sportiq extends Component {

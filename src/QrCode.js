@@ -13,6 +13,10 @@ import GroupHeader from './components/GroupHeader';
 
 const { width } = Dimensions.get('window');
 const isIos = Platform.OS === 'ios';
+const qrtypes = [
+  '0', // letter
+  '1', // club
+];
 
 const CloseButton = ({ navigation }) => (
   <TouchableOpacity
@@ -102,23 +106,53 @@ class QrCode extends Component {
   }
 
   onBarCode = (barCode) => {
+    const { mode } = this.props.navigation.state.params;
+
     if (this.qr !== barCode.data) {
       console.log(barCode);
-      this.qr = barCode.data;
-      const arr = this.qr.split(':');
-      this.setState({
-        scanTransactionId: arr[0],
-        scanTimetableId: arr[1],
-      });
+      const arr = barCode.data.split(':');
+      if (arr[0] !== 'sportiq') {
+        return;
+      }
 
-      ApiRequest.closeTransaction(arr[0], arr[1]).then((data) => {
-        console.log('closeTransaction', data);
+      if (!qrtypes.includes(arr[1])) {
+        return;
+      }
+
+      if (!(arr[1] === mode)) {
+        return;
+      }
+
+      this.qr = barCode.data;
+
+      if (arr[1] === '0') {
         this.setState({
-          loading: false,
-          transactionId: data.id,
-          ...data,
+          scanTransactionId: arr[2],
+          scanTimetableId: arr[3],
         });
-      });
+
+        ApiRequest.closeTransaction(arr[2], arr[3]).then((data) => {
+          console.log('closeTransaction', data);
+          this.setState({
+            loading: false,
+            transactionId: data.id,
+            ...data,
+          });
+        });
+      }
+
+      if (arr[1] === '1') {
+        ApiRequest.getClub(arr[2]).then((data) => {
+          if (!data.id) {
+            this.resetQrScanning();
+            return;
+          }
+          this.setState({
+            club: data,
+          });
+          this.props.navigation.navigate('Club', { item: data });
+        });
+      }
     }
   };
 
@@ -137,7 +171,27 @@ class QrCode extends Component {
     });
   }
 
-  renderQrWasScanned = () => {
+  renderClubScanned = () => (
+    <View style={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+      <TouchableOpacity
+        style={{
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          margin: 20,
+          backgroundColor: '#2ecc71',
+          height: 60,
+          width: 200,
+          borderRadius: 30,
+        }}
+        onPress={() => this.resetQrScanning()}
+      >
+        <Text style={{ color: '#ffffff' }}>Сканировать еще</Text>
+      </TouchableOpacity>
+    </View>
+  );
+
+  renderTicketScanned = () => {
     const { timetable, group, club } = this.state;
     return (
       <View style={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
@@ -233,7 +287,7 @@ class QrCode extends Component {
 
   renderContent = () => {
     const { item } = this.props.navigation.state.params;
-    const { timetable, group, type } = this.state;
+    const { timetable, group, type, club } = this.state;
 
     if (this.state.loading) {
       return (
@@ -242,12 +296,15 @@ class QrCode extends Component {
     }
     if (type === 'scan') {
       if (timetable && group) {
-        return this.renderQrWasScanned();
+        return this.renderTicketScanned();
+      }
+      if (club) {
+        return this.renderClubScanned();
       }
       return this.renderQRScan();
     }
     if (type === 'gen') {
-      return this.renderQRgen(`${this.state.transactionId}:${item.id}`);
+      return this.renderQRgen(`sportiq:0:${this.state.transactionId}:${item.id}`);
     }
     return (<Text>Нет QR Билета!</Text>);
   }

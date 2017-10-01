@@ -2,11 +2,15 @@ import React from 'react';
 import { DrawerNavigator, StackNavigator } from 'react-navigation';
 import { Platform, View, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import _QrCode from './QrCode';
+import EIcon from 'react-native-vector-icons/Entypo';
 import _Calendar from './Calendar';
 import _Subscriptions from './Subscriptions';
+import _Clubs from './Clubs';
+import Club from './Club';
+import QrCode from './QrCode';
 
 const isIos = Platform.OS === 'ios';
+const headerMode = { headerMode: 'float' };
 
 // eslint-disable-next-line react/prop-types
 const MenuButton = ({ navigation }) => (
@@ -23,11 +27,12 @@ const Calendar = StackNavigator({
       title: 'Календарь',
       drawerLabel: 'Календарь',
       headerLeft: <MenuButton navigation={navigation} />,
-      // eslint-disable-next-line react/prop-types
-      drawerIcon: ({ tintColor }) => <Icon size={isIos ? 20 : 15} name="calendar" color={tintColor} />,
     }),
   },
-});
+  QrCode: { screen: QrCode },
+},
+headerMode,
+);
 
 const Subscriptions = StackNavigator({
   Subscriptions: { screen: _Subscriptions,
@@ -35,11 +40,25 @@ const Subscriptions = StackNavigator({
       title: 'Абонементы',
       drawerLabel: 'Абонементы',
       headerLeft: <MenuButton navigation={navigation} />,
-      // eslint-disable-next-line react/prop-types
-      drawerIcon: ({ tintColor }) => <Icon size={isIos ? 20 : 15} name="list" color={tintColor} />,
     }),
   },
-});
+},
+headerMode,
+);
+
+const Clubs = StackNavigator({
+  MyCalendar: { screen: _Clubs,
+    navigationOptions: ({ navigation }) => ({
+      title: 'Клубы',
+      drawerLabel: 'Клубы',
+      headerLeft: <MenuButton navigation={navigation} />,
+    }),
+  },
+  QrCode: { screen: QrCode },
+  Club: { screen: Club },
+},
+headerMode,
+);
 
 const routes = {
   calendar: {
@@ -56,6 +75,22 @@ const routes = {
       drawerIcon: ({ tintColor }) => <Icon size={isIos ? 20 : 15} name="list" color={tintColor} />,
     },
   },
+  clubs: {
+    screen: Clubs,
+    navigationOptions: {
+      // eslint-disable-next-line react/prop-types
+      drawerIcon: ({ tintColor }) => <EIcon size={isIos ? 20 : 15} name="sports-club" color={tintColor} />,
+    },
+  },
+  /*
+  clubs2: {
+    screen: Clubs,
+    navigationOptions: {
+      // eslint-disable-next-line react/prop-types
+      drawerIcon: ({ tintColor }) => <EIcon size={isIos ? 20 : 15} name="sports-club" color={tintColor} />,
+    },
+  },
+  */
 };
 
 const DrawersNavigator = DrawerNavigator(routes);

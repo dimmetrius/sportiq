@@ -302,7 +302,7 @@ class AgendaScreen extends Component {
                 borderWidth: 1,
                 backgroundColor: 'white',
               }}
-              onPress={() => this.props.navigation.navigate('QrCode', { type: 'scan' })}
+              onPress={() => this.props.navigation.navigate('QrCode', { type: 'scan', mode: '0' })}
             >
               <Icon name="qrcode" size={25} color="black" />
             </TouchableOpacity>

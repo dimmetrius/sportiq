@@ -31,6 +31,15 @@ const checkResponse = (data) => {
   return {};
 };
 
+const embeddedClub = (data) => {
+  if (data._embedded) {
+    if (data._embedded.club) {
+      return data._embedded.club;
+    }
+  }
+  return [];
+};
+
 const embeddedTimetable = (data) => {
   if (data._embedded) {
     if (data._embedded.timetable) {
@@ -120,5 +129,17 @@ export default {
   getUser: id => fetch(
     `${sportiqHost}/user/${id}`,
     fetchOptions(),
+  ).then(checkData),
+  getClubs: () => fetch(
+    `${sportiqHost}/club`,
+    fetchOptions(),
+  ).then(checkData).then(embeddedClub),
+  getClub: id => fetch(
+    `${sportiqHost}/club/${id}`,
+    fetchOptions(),
+  ).then(checkData),
+  beClubMember: id => fetch(
+    `${sportiqHost}/club/${id}/member`,
+    fetchOptions('PUT'),
   ).then(checkData),
 };

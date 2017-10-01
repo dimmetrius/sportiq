@@ -75,6 +75,9 @@ const WebViewAutoHeight = React.createClass({
     if (navState.title) {
       const realContentHeight = parseInt(navState.title, 10) || 0; // turn NaN to 0
       this.setState({ realContentHeight });
+      if (typeof this.props.onContentHeightChange === 'function') {
+        this.props.onContentHeightChange(realContentHeight);
+      }
     }
     if (typeof this.props.onNavigationStateChange === 'function') {
       this.props.onNavigationStateChange(navState);

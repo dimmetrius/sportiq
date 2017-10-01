@@ -100,7 +100,7 @@ class FeedBack extends Component {
         <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
           <ScrollView>
             <View style={{ flexDirection: 'column' }}>
-              <View style={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+              <View style={{ paddingTop: 10, flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
                 <GroupHeader item={item} />
                 <Text style={{
                   fontSize: 15,
@@ -120,13 +120,15 @@ class FeedBack extends Component {
                     >
                       <View style={{
                         height: 40,
-                        width: 80,
+                        width: 150,
+                        borderRadius: 20,
                         flexDirection: 'row',
                         alignItems: 'center',
                         justifyContent: 'center',
+                        backgroundColor: 'white',
                       }}
                       >
-                        <Text style={{ marginRight: 5 }}>Билет</Text>
+                        <Text style={{ fontWeight: 'bold', fontSize: 20, marginRight: 5 }}>Билет</Text>
                         <FontAwesome name="qrcode" size={25} color="black" />
                       </View>
                     </TouchableOpacity>
