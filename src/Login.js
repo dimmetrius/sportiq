@@ -76,7 +76,7 @@ class Login extends Component {
   loginWithVk = () => {
     const vkurl = [
       'https://oauth.vk.com/authorize?',
-      'client_id=6081473&',
+      'client_id=6200542&',
       'display=mobile&',
       `redirect_uri=${mobileSignUrl}&`,
       'scope=friends&response_type=code&v=5.68',
