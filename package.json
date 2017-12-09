@@ -8,8 +8,8 @@
   },
   "dependencies": {
     "prop-types": "^15.5.10",
-    "react": "16.0.0-alpha.12",
-    "react-native": "^0.47.2",
+    "react": "16.0.0",
+    "react-native": "^0.51.0",
     "react-native-calendars": "^1.5.8",
     "react-native-camera": "^0.10.0",
     "react-native-qrcode": "^0.2.6",
@@ -21,22 +21,20 @@
   },
   "devDependencies": {
     "babel-eslint": "^7.2.3",
-    "babel-jest": "20.0.3",
-    "babel-preset-react-native": "^2.0.1",
+    "babel-jest": "21.2.0",
+    "babel-preset-react-native": "4.0.0",
     "eslint": "^4.5.0",
     "eslint-config-airbnb": "^15.1.0",
     "eslint-plugin-import": "^2.7.0",
     "eslint-plugin-jsx-a11y": "^5.1.1",
     "eslint-plugin-react": "^7.3.0",
-    "jest": "20.0.4",
-    "react-test-renderer": "16.0.0-alpha.12"
+    "jest": "21.2.1",
+    "react-test-renderer": "16.0.0"
   },
   "jest": {
     "preset": "react-native"
   },
   "rnpm": {
-    "assets": [
-      "./assets/fonts/"
-    ]
+    "assets": ["./assets/fonts/"]
   }
 }

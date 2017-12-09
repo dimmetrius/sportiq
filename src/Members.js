@@ -84,7 +84,7 @@ class Members extends Component {
         <View
           style={{
             width: 80,
-            height: 30,
+            height: ROW_HEIGHT,
             alignItems: 'center',
             justifyContent: 'center',
             borderRadius: 15,
@@ -113,7 +113,7 @@ class Members extends Component {
       <View
         style={{
           width: 80,
-          height: 30,
+          height: ROW_HEIGHT,
           alignItems: 'center',
           justifyContent: 'center',
         }}
