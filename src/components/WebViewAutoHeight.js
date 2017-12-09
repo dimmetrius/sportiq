@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { WebView, View } from 'react-native';
+import PropTypes from 'prop-types';
 
 // eslint-disable-next-line
 const BODY_TAG_PATTERN = /\<\/ *body\>/;
@@ -59,17 +60,28 @@ const codeInject = html => html.replace(BODY_TAG_PATTERN, `${htmlstyle}</body>`)
  *
  * Inspired by this SO answer http://stackoverflow.com/a/33012545
  * */
-const WebViewAutoHeight = React.createClass({
 
-  getDefaultProps() {
-    return { minHeight: 10 };
-  },
+const defaultProps = {
+  minHeight: 10,
+  onContentHeightChange() {},
+  onNavigationStateChange() {},
+  source: {},
+  style: {},
+};
+class WebViewAutoHeight extends Component {
+  static propTypes = {
+    minHeight: PropTypes.integer,
+    onContentHeightChange: PropTypes.func,
+    onNavigationStateChange: PropTypes.func,
+    // eslint-disable-next-line
+    source: PropTypes.object,
+    // eslint-disable-next-line
+    style: PropTypes.object,
+  };
 
-  getInitialState() {
-    return {
-      realContentHeight: this.props.minHeight,
-    };
-  },
+  state = {
+    realContentHeight: this.props.minHeight,
+  };
 
   handleNavigationChange(navState) {
     if (navState.title) {
@@ -82,7 +94,7 @@ const WebViewAutoHeight = React.createClass({
     if (typeof this.props.onNavigationStateChange === 'function') {
       this.props.onNavigationStateChange(navState);
     }
-  },
+  }
 
   render() {
     const { source, style, minHeight, ...otherProps } = this.props;
@@ -108,7 +120,8 @@ const WebViewAutoHeight = React.createClass({
         />
       </View>
     );
-  },
-});
+  }
+}
 
+WebViewAutoHeight.defaultProps = defaultProps;
 export default WebViewAutoHeight;
