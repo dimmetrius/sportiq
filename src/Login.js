@@ -211,12 +211,12 @@ class Login extends Component {
     return (
       <View style={styles.container}>
         <LoginHeader height={headerHeight} />
-        <View style={[styles.section, { height: 150, justifyContent: 'space-between' }]}>
+        <View style={[styles.section, { height: headerHeight * 0.8, justifyContent: 'space-between' }]}>
           <View
             style={{
               flexDirection: 'row',
               justifyContent: 'space-between',
-              marginHorizontal: 10,
+              marginTop: 10,
             }}
           >
             <Text
@@ -237,7 +237,7 @@ class Login extends Component {
               Регистрация
             </Text>
           </View>
-          <View style={{ flexDirection: 'column', marginHorizontal: 10 }}>
+          <View style={{ flexDirection: 'column' }}>
             <Text
               style={{
                 fontFamily: 'Intro-Book',
@@ -260,7 +260,7 @@ class Login extends Component {
               value={'dimmetrius@gmail.com'}
             />
           </View>
-          <View style={{ flexDirection: 'column', marginHorizontal: 10 }}>
+          <View style={{ flexDirection: 'column' }}>
             <Text
               style={{
                 fontFamily: 'Intro-Book',
@@ -283,19 +283,18 @@ class Login extends Component {
               value={'***************'}
             />
           </View>
-        </View>
-        <View style={[styles.section, { alignItems: 'flex-end' }]}>
-          <Text
-            style={{
-              fontFamily: 'Intro-Book',
-              fontSize: 12,
-              marginRight: 10,
-              textAlign: 'center',
-              color: colors.warmGrey,
-            }}
-          >
-            Забыли пароль?
-          </Text>
+          <View style={[{ flexDirection: 'column', alignItems: 'flex-end' }]}>
+            <Text
+              style={{
+                fontFamily: 'Intro-Book',
+                fontSize: 12,
+                textAlign: 'center',
+                color: colors.warmGrey,
+              }}
+            >
+              Забыли пароль?
+            </Text>
+          </View>
         </View>
         <View style={[styles.section, { height: 45 }]}>
           <TouchableOpacity
@@ -305,8 +304,6 @@ class Login extends Component {
               backgroundColor: colors.grassyGreen,
               justifyContent: 'center',
               alignItems: 'center',
-              marginLeft: 10,
-              marginRight: 10,
             }}
           >
             <Text
@@ -321,7 +318,7 @@ class Login extends Component {
             </Text>
           </TouchableOpacity>
         </View>
-        <View style={[styles.section, { alignItems: 'center' }]}>
+        <View style={styles.section}>
           <Text
             style={{
               fontFamily: 'Intro-Book',
@@ -332,31 +329,26 @@ class Login extends Component {
           >
             или авторизоваться с помощью
           </Text>
-        </View>
-        <View style={styles.section}>
-          <View style={styles.buttonsRow}>
+          <View style={[styles.buttonsRow, { marginTop: 10 }]}>
             <View style={styles.button}>
               <Icon.Button name="facebook" backgroundColor="#ffffff" onPress={this.loginWithFacebook} {...iconStyles}>
                 Facebook
               </Icon.Button>
             </View>
+            <View style={{ width: 15 }} />
             <View style={styles.button}>
               <Icon.Button name="vk" backgroundColor="#ffffff" onPress={this.loginWithVk} {...iconStyles}>
                 Vkontakte
               </Icon.Button>
             </View>
           </View>
-          <View
-            style={{
-              flexDirection: 'row',
-              marginBottom: 30,
-            }}
-          >
+          <View style={[styles.buttonsRow, { marginTop: 10, marginBottom: 30 }]}>
             <View style={styles.button}>
               <Icon.Button name="instagram" backgroundColor="#ffffff" onPress={this.loginWithInstagram} {...iconStyles}>
                 Instagram
               </Icon.Button>
             </View>
+            <View style={{ width: 15 }} />
             <View style={styles.button}>
               <Icon.Button name="google" backgroundColor="#ffffff" onPress={this.loginWithGoogle} {...iconStyles}>
                 Google
@@ -382,7 +374,7 @@ const iconStyles = {
   borderWidth: 0.5,
   borderColor: '#d7d7d7',
   color: colors.warmGrey,
-  iconStyle: { padding: 5 },
+  iconStyle: { padding: 3 },
 };
 
 const styles = StyleSheet.create({
@@ -421,12 +413,12 @@ const styles = StyleSheet.create({
   },
   buttonsRow: {
     flexDirection: 'row',
+    marginVertical: 7.5,
   },
   button: {
     flex: 1,
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     flexDirection: 'column',
-    margin: 10,
   },
 });
 
