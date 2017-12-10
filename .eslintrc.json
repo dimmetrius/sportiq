@@ -1,8 +1,9 @@
 {
   "parser": "babel-eslint",
-  "extends": [
-    "airbnb"
-  ],
+  "extends": ["airbnb"],
+  "env": {
+    "jest": true
+  },
   "globals": {
     "__DEV__": true,
     "XMLHttpRequest": true,
@@ -29,9 +30,6 @@
         "ignoreTemplateLiterals": false
       }
     ],
-    "no-use-before-define": [
-      2,
-      {"functions": true, "classes": true, "variables": false}
-    ]
+    "no-use-before-define": [2, { "functions": true, "classes": true, "variables": false }]
   }
 }

@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { setToken } from './actions';
 import ApiRequest from './utils/ApiRequest';
 import { mobileSignUrl } from './utils/constants';
-import headerImage from './icons/headerGirl.png';
+import LoginHeader from './components/LoginHeader';
 
 const { width } = Dimensions.get('window');
 const IMG_HEIGHT = 435;
@@ -208,77 +208,9 @@ class Login extends Component {
 
   */
   render() {
-    const { user } = this.state;
     return (
       <View style={styles.container}>
-        <View
-          style={{
-            height: headerHeight,
-            width: '100%',
-            backgroundColor: 'green',
-          }}
-        >
-          <View
-            style={{
-              flex: 1,
-              height: '100%',
-              width: '100%',
-              backgroundColor: 'transparent',
-            }}
-          >
-            <View
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '100%',
-              }}
-            >
-              <Image
-                style={{
-                  flex: 1,
-                  width: '100%',
-                  resizeMode: 'contain',
-                }}
-                source={headerImage}
-              />
-            </View>
-            <View
-              style={{
-                flex: 1,
-                backgroundColor: 'transparent',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
-              <View
-                style={{
-                  width: 225,
-                  height: 70,
-                  backgroundColor: 'transparent',
-                  borderStyle: 'solid',
-                  borderWidth: 2,
-                  borderColor: '#ffffff',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-              >
-                <Text
-                  style={{
-                    fontFamily: 'Intro-Book',
-                    fontSize: 36,
-                    textAlign: 'center',
-                    color: '#ffffff',
-                  }}
-                >
-                  {'SportIQ'}
-                </Text>
-              </View>
-            </View>
-          </View>
-        </View>
-
+        <LoginHeader height={headerHeight} />
         <View style={styles.buttons}>
           <Icon.Button name="facebook" backgroundColor="#3b5998" onPress={this.loginWithFacebook} {...iconStyles}>
             Login with Facebook

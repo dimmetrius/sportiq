@@ -2,7 +2,7 @@ import React from 'react';
 import { TabNavigator /* , TabBarBottom */ } from 'react-navigation';
 import { Platform } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import MyCalendar from './MyCalendar';
+import MyCalendar from './Calendar';
 import Subscriptions from './Subscriptions';
 
 const isIos = Platform.OS === 'ios';

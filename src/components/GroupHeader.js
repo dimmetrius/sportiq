@@ -1,8 +1,5 @@
 import React from 'react';
-import {
-  View,
-  Text,
-} from 'react-native';
+import { View, Text } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import PropTypes from 'prop-types';
 import padStart from '../utils/padStart';
@@ -19,9 +16,13 @@ const GroupHeader = ({ item }) => {
     <View style={{ flexDirection: 'column' }}>
       <View style={{ marginLeft: 10, marginRight: 10, flexDirection: 'row' }}>
         <Icon name="calendar" size={12} color="black" />
-        <Text style={{ fontSize: 12, marginLeft: 5 }}>{item.start.split('T')[0]}  </Text>
+        <Text style={{ fontSize: 12, marginLeft: 5 }}>
+          {(item.start || '').split('T')[0]}{' '}
+        </Text>
         <Icon name="clock-o" size={12} color="black" />
-        <Text style={{ fontSize: 12, marginLeft: 5 }}>{startTime} - {endTime} / {len}</Text>
+        <Text style={{ fontSize: 12, marginLeft: 5 }}>
+          {startTime} - {endTime} / {len}
+        </Text>
       </View>
     </View>
   );

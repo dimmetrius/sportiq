@@ -8,34 +8,6 @@ import { View, TouchableWithoutFeedback, StyleSheet } from 'react-native';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-const styles = StyleSheet.create({
-  starsWrapper: {
-    width: 20,
-    height: 20,
-    flexDirection: 'row',
-    position: 'relative',
-  },
-  starLogicalPixel: {
-    left: -20,
-    width: 10,
-    height: 20,
-    position: 'relative',
-    backgroundColor: 'transparent',
-  },
-  starIcon: {
-    fontSize: 20,
-    position: 'relative',
-    color: '#EEB211',
-  },
-  starFullLogicalPixel: {
-    left: -20,
-    width: 20,
-    height: 20,
-    position: 'relative',
-    backgroundColor: 'transparent',
-  },
-});
-
 export default class Stars extends Component {
   constructor(props) {
     super(props);
@@ -190,3 +162,31 @@ export default class Stars extends Component {
     );
   }
 }
+
+const styles = StyleSheet.create({
+  starsWrapper: {
+    width: 20,
+    height: 20,
+    flexDirection: 'row',
+    position: 'relative',
+  },
+  starLogicalPixel: {
+    left: -20,
+    width: 10,
+    height: 20,
+    position: 'relative',
+    backgroundColor: 'transparent',
+  },
+  starIcon: {
+    fontSize: 20,
+    position: 'relative',
+    color: '#EEB211',
+  },
+  starFullLogicalPixel: {
+    left: -20,
+    width: 20,
+    height: 20,
+    position: 'relative',
+    backgroundColor: 'transparent',
+  },
+});
