@@ -5,13 +5,16 @@ import renderer from 'react-test-renderer';
 import BackButton from './BackButton';
 
 it('renders correctly', () => {
-  renderer.create(
-    <BackButton
-      navigation={{
-        dispatch() {},
-        navigate() {},
-        state: {},
-      }}
-    />,
-  );
+  const rendered = renderer
+    .create(
+      <BackButton
+        navigation={{
+          dispatch() {},
+          navigate() {},
+          state: {},
+        }}
+      />,
+    )
+    .toJSON();
+  expect(rendered).toBeTruthy();
 });

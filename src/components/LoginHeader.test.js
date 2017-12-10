@@ -5,5 +5,6 @@ import renderer from 'react-test-renderer';
 import LoginHeader from './LoginHeader';
 
 it('renders correctly', () => {
-  renderer.create(<LoginHeader height={100} />);
+  const rendered = renderer.create(<LoginHeader height={100} />).toJSON();
+  expect(rendered).toBeTruthy();
 });

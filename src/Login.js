@@ -1,12 +1,12 @@
 /* eslint-disable global-require */
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Image, Dimensions } from 'react-native';
+import { StyleSheet, Text, View, Image, Dimensions, TouchableOpacity, TextInput } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { setToken } from './actions';
 import ApiRequest from './utils/ApiRequest';
-import { mobileSignUrl } from './utils/constants';
+import { mobileSignUrl, colors } from './utils/constants';
 import LoginHeader from './components/LoginHeader';
 
 const { width } = Dimensions.get('window');
@@ -211,41 +211,186 @@ class Login extends Component {
     return (
       <View style={styles.container}>
         <LoginHeader height={headerHeight} />
-        <View style={styles.buttons}>
-          <Icon.Button name="facebook" backgroundColor="#3b5998" onPress={this.loginWithFacebook} {...iconStyles}>
-            Login with Facebook
-          </Icon.Button>
+        <View style={[styles.section, { height: 150, justifyContent: 'space-between' }]}>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              marginHorizontal: 10,
+            }}
+          >
+            <Text
+              style={{
+                fontFamily: 'Intro-Book',
+                fontSize: 15,
+              }}
+            >
+              Авторизация
+            </Text>
+            <Text
+              style={{
+                fontFamily: 'Intro-Book',
+                fontSize: 15,
+                color: colors.grassyGreen,
+              }}
+            >
+              Регистрация
+            </Text>
+          </View>
+          <View style={{ flexDirection: 'column', marginHorizontal: 10 }}>
+            <Text
+              style={{
+                fontFamily: 'Intro-Book',
+                fontSize: 12,
+                color: colors.warmGrey,
+              }}
+            >
+              E-mail
+            </Text>
+            <TextInput
+              style={{
+                height: 22,
+                borderBottomColor: colors.inputUnder,
+                borderBottomWidth: 1,
+                fontFamily: 'Intro-Book',
+                fontSize: 15,
+                color: '#000000',
+              }}
+              onChangeText={() => null}
+              value={'dimmetrius@gmail.com'}
+            />
+          </View>
+          <View style={{ flexDirection: 'column', marginHorizontal: 10 }}>
+            <Text
+              style={{
+                fontFamily: 'Intro-Book',
+                fontSize: 12,
+                color: colors.warmGrey,
+              }}
+            >
+              Пароль
+            </Text>
+            <TextInput
+              style={{
+                height: 22,
+                borderBottomColor: colors.inputUnder,
+                borderBottomWidth: 1,
+                fontFamily: 'Intro-Book',
+                fontSize: 15,
+                color: '#000000',
+              }}
+              onChangeText={() => null}
+              value={'***************'}
+            />
+          </View>
         </View>
-        <View style={styles.buttons}>
-          <Icon.Button name="vk" backgroundColor="#45688e" onPress={this.loginWithVk} {...iconStyles}>
-            Login with VK
-          </Icon.Button>
+        <View style={[styles.section, { alignItems: 'flex-end' }]}>
+          <Text
+            style={{
+              fontFamily: 'Intro-Book',
+              fontSize: 12,
+              marginRight: 10,
+              textAlign: 'center',
+              color: colors.warmGrey,
+            }}
+          >
+            Забыли пароль?
+          </Text>
         </View>
-        <View style={styles.buttons}>
-          <Icon.Button name="instagram" backgroundColor="#cc486a" onPress={this.loginWithInstagram} {...iconStyles}>
-            Login with Instagram
-          </Icon.Button>
+        <View style={[styles.section, { height: 45 }]}>
+          <TouchableOpacity
+            style={{
+              flex: 1,
+              borderRadius: 4,
+              backgroundColor: colors.grassyGreen,
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginLeft: 10,
+              marginRight: 10,
+            }}
+          >
+            <Text
+              style={{
+                fontFamily: 'Intro-Book',
+                fontSize: 15,
+                textAlign: 'center',
+                color: colors.white,
+              }}
+            >
+              Войти
+            </Text>
+          </TouchableOpacity>
         </View>
-        <View style={styles.buttons}>
-          <Icon.Button name="google" backgroundColor="#DD4B39" onPress={this.loginWithGoogle} {...iconStyles}>
-            Login with Google
-          </Icon.Button>
+        <View style={[styles.section, { alignItems: 'center' }]}>
+          <Text
+            style={{
+              fontFamily: 'Intro-Book',
+              fontSize: 12,
+              textAlign: 'center',
+              color: colors.warmGrey,
+            }}
+          >
+            или авторизоваться с помощью
+          </Text>
+        </View>
+        <View style={styles.section}>
+          <View style={styles.buttonsRow}>
+            <View style={styles.button}>
+              <Icon.Button name="facebook" backgroundColor="#ffffff" onPress={this.loginWithFacebook} {...iconStyles}>
+                Facebook
+              </Icon.Button>
+            </View>
+            <View style={styles.button}>
+              <Icon.Button name="vk" backgroundColor="#ffffff" onPress={this.loginWithVk} {...iconStyles}>
+                Vkontakte
+              </Icon.Button>
+            </View>
+          </View>
+          <View
+            style={{
+              flexDirection: 'row',
+              marginBottom: 30,
+            }}
+          >
+            <View style={styles.button}>
+              <Icon.Button name="instagram" backgroundColor="#ffffff" onPress={this.loginWithInstagram} {...iconStyles}>
+                Instagram
+              </Icon.Button>
+            </View>
+            <View style={styles.button}>
+              <Icon.Button name="google" backgroundColor="#ffffff" onPress={this.loginWithGoogle} {...iconStyles}>
+                Google
+              </Icon.Button>
+            </View>
+          </View>
         </View>
       </View>
     );
   }
 }
 const iconStyles = {
-  justifyContent: 'center',
-  borderRadius: 10,
-  iconStyle: { paddingVertical: 5 },
+  justifyContent: 'flex-start',
+  borderRadius: 4,
+  shadowColor: 'rgba(0, 0, 0, 0.1)',
+  shadowOffset: {
+    width: 0,
+    height: 0.5,
+  },
+  shadowRadius: 24.5,
+  shadowOpacity: 1,
+  borderStyle: 'solid',
+  borderWidth: 0.5,
+  borderColor: '#d7d7d7',
+  color: colors.warmGrey,
+  iconStyle: { padding: 5 },
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFF',
+    backgroundColor: '#f2f2f2',
     flexDirection: 'column',
+    justifyContent: 'space-between',
   },
   content: {
     flex: 1,
@@ -270,11 +415,18 @@ const styles = StyleSheet.create({
     color: '#333',
     marginBottom: 5,
   },
-  buttons: {
+  section: {
+    flexDirection: 'column',
+    marginHorizontal: 30,
+  },
+  buttonsRow: {
+    flexDirection: 'row',
+  },
+  button: {
+    flex: 1,
     justifyContent: 'space-between',
     flexDirection: 'column',
-    margin: 20,
-    marginBottom: 15,
+    margin: 10,
   },
 });
 

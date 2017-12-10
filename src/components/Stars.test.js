@@ -5,5 +5,6 @@ import renderer from 'react-test-renderer';
 import Stars from './Stars';
 
 it('renders correctly', () => {
-  renderer.create(<Stars />);
+  const rendered = renderer.create(<Stars />).toJSON();
+  expect(rendered).toBeTruthy();
 });

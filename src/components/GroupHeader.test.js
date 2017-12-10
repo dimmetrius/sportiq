@@ -5,5 +5,6 @@ import renderer from 'react-test-renderer';
 import GroupHeader from './GroupHeader';
 
 it('renders correctly', () => {
-  renderer.create(<GroupHeader item={{}} />);
+  const rendered = renderer.create(<GroupHeader item={{}} />).toJSON();
+  expect(rendered).toBeTruthy();
 });
