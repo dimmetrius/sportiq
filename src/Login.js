@@ -1,6 +1,6 @@
 /* eslint-disable global-require */
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Image, Dimensions, TouchableOpacity, TextInput } from 'react-native';
+import { StyleSheet, Text, View, Image, Dimensions, TouchableOpacity, TextInput, LayoutAnimation } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -213,7 +213,9 @@ class Login extends Component {
     const { kb } = this.state;
     return (
       <KeyBoardAware
-        keyboardWillShow={() => this.setState({ kb: true })}
+        keyboardWillShow={() => {
+          this.setState({ kb: true });
+        }}
         keyboardWillHide={() => this.setState({ kb: false })}
         style={styles.container}
       >

@@ -7,8 +7,8 @@ const propTypes = {
   height: PropTypes.number,
 };
 
-const LoginHeader = ({ height }) =>
-  (<View style={[styles.container, { height }]}>
+const LoginHeader = ({ height }) => (
+  <View style={[styles.container, { height }]}>
     <View style={styles.content}>
       <View style={styles.absolute}>
         <Image style={styles.image} source={headerImage} />
@@ -21,7 +21,8 @@ const LoginHeader = ({ height }) =>
         </View>
       </View>
     </View>
-  </View>);
+  </View>
+);
 
 LoginHeader.propTypes = propTypes;
 

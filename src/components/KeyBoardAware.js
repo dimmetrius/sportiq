@@ -1,11 +1,12 @@
 import React from 'react';
-import { Animated, Keyboard } from 'react-native';
+import PropTypes from 'prop-types';
+import { View, Keyboard, LayoutAnimation } from 'react-native';
 
 export default class KeyBoardAware extends React.Component {
   constructor() {
     super();
     this.state = {
-      keyboardOffset: new Animated.Value(0),
+      keyboardOffset: 0,
     };
   }
 
@@ -19,33 +20,41 @@ export default class KeyBoardAware extends React.Component {
     this.keyboardWillHideListener.remove();
   }
 
-  keyboardWillHide(e) {
+  keyboardWillHide() {
     const { keyboardWillHide } = this.props;
-    Animated.timing(this.state.keyboardOffset, {
-      toValue: 0,
-      duration: e.duration,
-    }).start();
+    this.setState({
+      keyboardOffset: 0,
+    });
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     keyboardWillHide();
   }
 
   keyboardWillShow(e) {
     const { keyboardWillShow } = this.props;
-    Animated.timing(this.state.keyboardOffset, {
-      toValue: e.endCoordinates.height - this.props.bottomOffset,
-      duration: e.duration,
-    }).start();
+    this.setState({
+      keyboardOffset: e.endCoordinates.height - this.props.bottomOffset,
+    });
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     keyboardWillShow();
   }
 
   render() {
     const { style, children } = this.props;
     return (
-      <Animated.View style={[style, { marginBottom: this.state.keyboardOffset }]}>
+      <View style={[style, { marginBottom: this.state.keyboardOffset }]}>
         {children}
-      </Animated.View>
+      </View>
     );
   }
 }
+
+KeyBoardAware.propTypes = {
+  bottomOffset: PropTypes.number,
+  children: PropTypes.array,
+  style: PropTypes.number,
+  keyboardWillShow: PropTypes.func,
+  keyboardWillHide: PropTypes.func,
+};
 
 KeyBoardAware.defaultProps = {
   bottomOffset: 0,
