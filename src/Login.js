@@ -8,6 +8,7 @@ import { setToken } from './actions';
 import ApiRequest from './utils/ApiRequest';
 import { mobileSignUrl, colors } from './utils/constants';
 import LoginHeader from './components/LoginHeader';
+import KeyBoardAware from './components/KeyBoardAware';
 
 const { width } = Dimensions.get('window');
 const IMG_HEIGHT = 435;
@@ -28,6 +29,7 @@ class Login extends Component {
 
   state = {
     user: undefined, // user has not logged in yet
+    kb: false,
   };
 
   // Set up Linking
@@ -208,9 +210,14 @@ class Login extends Component {
 
   */
   render() {
+    const { kb } = this.state;
     return (
-      <View style={styles.container}>
-        <LoginHeader height={headerHeight} />
+      <KeyBoardAware
+        keyboardWillShow={() => this.setState({ kb: true })}
+        keyboardWillHide={() => this.setState({ kb: false })}
+        style={styles.container}
+      >
+        <LoginHeader height={kb ? headerHeight * 0.5 : headerHeight} />
         <View style={[styles.section, { height: headerHeight * 0.8, justifyContent: 'space-between' }]}>
           <View
             style={{
@@ -318,45 +325,57 @@ class Login extends Component {
             </Text>
           </TouchableOpacity>
         </View>
-        <View style={styles.section}>
-          <Text
-            style={{
-              fontFamily: 'Intro-Book',
-              fontSize: 12,
-              textAlign: 'center',
-              color: colors.warmGrey,
-            }}
-          >
-            или авторизоваться с помощью
-          </Text>
-          <View style={[styles.buttonsRow, { marginTop: 10 }]}>
-            <View style={styles.button}>
-              <Icon.Button name="facebook" backgroundColor="#ffffff" onPress={this.loginWithFacebook} {...iconStyles}>
-                Facebook
-              </Icon.Button>
+        {kb
+          ? <View style={{ height: 10 }} />
+          : <View style={styles.section}>
+            <Text
+              style={{
+                fontFamily: 'Intro-Book',
+                fontSize: 12,
+                textAlign: 'center',
+                color: colors.warmGrey,
+              }}
+            >
+                или авторизоваться с помощью
+            </Text>
+            <View style={[styles.buttonsRow, { marginTop: 10 }]}>
+              <View style={styles.button}>
+                <Icon.Button
+                  name="facebook"
+                  backgroundColor="#ffffff"
+                  onPress={this.loginWithFacebook}
+                  {...iconStyles}
+                >
+                    Facebook
+                </Icon.Button>
+              </View>
+              <View style={{ width: 15 }} />
+              <View style={styles.button}>
+                <Icon.Button name="vk" backgroundColor="#ffffff" onPress={this.loginWithVk} {...iconStyles}>
+                    Vkontakte
+                </Icon.Button>
+              </View>
             </View>
-            <View style={{ width: 15 }} />
-            <View style={styles.button}>
-              <Icon.Button name="vk" backgroundColor="#ffffff" onPress={this.loginWithVk} {...iconStyles}>
-                Vkontakte
-              </Icon.Button>
+            <View style={[styles.buttonsRow, { marginTop: 10, marginBottom: 30 }]}>
+              <View style={styles.button}>
+                <Icon.Button
+                  name="instagram"
+                  backgroundColor="#ffffff"
+                  onPress={this.loginWithInstagram}
+                  {...iconStyles}
+                >
+                    Instagram
+                </Icon.Button>
+              </View>
+              <View style={{ width: 15 }} />
+              <View style={styles.button}>
+                <Icon.Button name="google" backgroundColor="#ffffff" onPress={this.loginWithGoogle} {...iconStyles}>
+                    Google
+                </Icon.Button>
+              </View>
             </View>
-          </View>
-          <View style={[styles.buttonsRow, { marginTop: 10, marginBottom: 30 }]}>
-            <View style={styles.button}>
-              <Icon.Button name="instagram" backgroundColor="#ffffff" onPress={this.loginWithInstagram} {...iconStyles}>
-                Instagram
-              </Icon.Button>
-            </View>
-            <View style={{ width: 15 }} />
-            <View style={styles.button}>
-              <Icon.Button name="google" backgroundColor="#ffffff" onPress={this.loginWithGoogle} {...iconStyles}>
-                Google
-              </Icon.Button>
-            </View>
-          </View>
-        </View>
-      </View>
+          </View>}
+      </KeyBoardAware>
     );
   }
 }
