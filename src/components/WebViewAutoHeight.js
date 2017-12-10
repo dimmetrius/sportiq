@@ -61,13 +61,6 @@ const codeInject = html => html.replace(BODY_TAG_PATTERN, `${htmlstyle}</body>`)
  * Inspired by this SO answer http://stackoverflow.com/a/33012545
  * */
 
-const defaultProps = {
-  minHeight: 10,
-  onContentHeightChange() {},
-  onNavigationStateChange() {},
-  source: {},
-  style: {},
-};
 class WebViewAutoHeight extends Component {
   static propTypes = {
     minHeight: PropTypes.integer,
@@ -77,6 +70,14 @@ class WebViewAutoHeight extends Component {
     source: PropTypes.object,
     // eslint-disable-next-line
     style: PropTypes.object,
+  };
+
+  static defaultProps = {
+    minHeight: 10,
+    onContentHeightChange() {},
+    onNavigationStateChange() {},
+    source: {},
+    style: {},
   };
 
   state = {
@@ -123,5 +124,4 @@ class WebViewAutoHeight extends Component {
   }
 }
 
-WebViewAutoHeight.defaultProps = defaultProps;
 export default WebViewAutoHeight;

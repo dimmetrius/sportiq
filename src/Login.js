@@ -1,12 +1,18 @@
 /* eslint-disable global-require */
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Image } from 'react-native';
+import { StyleSheet, Text, View, Image, Dimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { setToken } from './actions';
 import ApiRequest from './utils/ApiRequest';
 import { mobileSignUrl } from './utils/constants';
+import headerImage from './icons/headerGirl.png';
+
+const { width } = Dimensions.get('window');
+const IMG_HEIGHT = 435;
+const IMG_WIDTH = 750;
+const headerHeight = width / IMG_WIDTH * IMG_HEIGHT;
 
 class Login extends Component {
   static propTypes = {
@@ -25,11 +31,9 @@ class Login extends Component {
   };
 
   // Set up Linking
-  componentDidMount() {
-  }
+  componentDidMount() {}
 
-  componentDidUpdate() {
-  }
+  componentDidUpdate() {}
 
   componentWillUnmount() {}
 
@@ -194,8 +198,8 @@ class Login extends Component {
           <Image source={require('./icons/ic.png')} style={styles.avatarImage} />
         </View>
         <Text style={styles.text}>
-            Please log in to continue {'\n'}
-            to the awesomness
+          Please log in to continue {'\n'}
+          to the awesomness
         </Text>
       </View>
     );
@@ -207,7 +211,74 @@ class Login extends Component {
     const { user } = this.state;
     return (
       <View style={styles.container}>
-        {this.renderUser(user)}
+        <View
+          style={{
+            height: headerHeight,
+            width: '100%',
+            backgroundColor: 'green',
+          }}
+        >
+          <View
+            style={{
+              flex: 1,
+              height: '100%',
+              width: '100%',
+              backgroundColor: 'transparent',
+            }}
+          >
+            <View
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+              }}
+            >
+              <Image
+                style={{
+                  flex: 1,
+                  width: '100%',
+                  resizeMode: 'contain',
+                }}
+                source={headerImage}
+              />
+            </View>
+            <View
+              style={{
+                flex: 1,
+                backgroundColor: 'transparent',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <View
+                style={{
+                  width: 225,
+                  height: 70,
+                  backgroundColor: 'transparent',
+                  borderStyle: 'solid',
+                  borderWidth: 2,
+                  borderColor: '#ffffff',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              >
+                <Text
+                  style={{
+                    fontFamily: 'Intro-Book',
+                    fontSize: 36,
+                    textAlign: 'center',
+                    color: '#ffffff',
+                  }}
+                >
+                  {'SportIQ'}
+                </Text>
+              </View>
+            </View>
+          </View>
+        </View>
+
         <View style={styles.buttons}>
           <Icon.Button name="facebook" backgroundColor="#3b5998" onPress={this.loginWithFacebook} {...iconStyles}>
             Login with Facebook
@@ -242,6 +313,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFF',
+    flexDirection: 'column',
   },
   content: {
     flex: 1,

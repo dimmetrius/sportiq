@@ -5,7 +5,6 @@
 	};
 	objectVersion = 46;
 	objects = {
-
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -52,6 +51,8 @@
 		F2EA922C7F1945DCB7547333 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B5B71F58FB7E464FAC842156 /* SimpleLineIcons.ttf */; };
 		F365ECE9761647C6B2121D17 /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C6BC81CB6F7A4501ACE08021 /* Entypo.ttf */; };
 		F9E883AF362A4A7987432DD7 /* Feather.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 61F6318BFA444B91AA49A221 /* Feather.ttf */; };
+		D99286DBDD31426C935F7091 /* Intro-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 58F5A362A0154A16B2C6C8A7 /* Intro-Bold.otf */; };
+		ACAFAED905C3443783774EE2 /* Intro-Book.otf in Resources */ = {isa = PBXBuildFile; fileRef = E1B77B14FA284A3991BF0CF3 /* Intro-Book.otf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -331,6 +332,8 @@
 		BD918BC480D54E15A0868818 /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
 		C6BC81CB6F7A4501ACE08021 /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
 		C7E4C767D2794EDFB7B61BD3 /* libRCTCamera.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTCamera.a; sourceTree = "<group>"; };
+		58F5A362A0154A16B2C6C8A7 /* Intro-Bold.otf */ = {isa = PBXFileReference; name = "Intro-Bold.otf"; path = "../assets/fonts/Intro-Bold.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		E1B77B14FA284A3991BF0CF3 /* Intro-Book.otf */ = {isa = PBXFileReference; name = "Intro-Book.otf"; path = "../assets/fonts/Intro-Book.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -513,6 +516,8 @@
 				6EADB997563D4C9EACAECE9F /* Octicons.ttf */,
 				B5B71F58FB7E464FAC842156 /* SimpleLineIcons.ttf */,
 				904677BAD93047FF83684B9A /* Zocial.ttf */,
+				58F5A362A0154A16B2C6C8A7 /* Intro-Bold.otf */,
+				E1B77B14FA284A3991BF0CF3 /* Intro-Book.otf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -1053,6 +1058,8 @@
 				69D033D13734431CAFF7FAF2 /* Octicons.ttf in Resources */,
 				F2EA922C7F1945DCB7547333 /* SimpleLineIcons.ttf in Resources */,
 				5C0556FB324446A48EF11BAB /* Zocial.ttf in Resources */,
+				D99286DBDD31426C935F7091 /* Intro-Bold.otf in Resources */,
+				ACAFAED905C3443783774EE2 /* Intro-Book.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
