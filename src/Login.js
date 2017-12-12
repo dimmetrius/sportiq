@@ -1,12 +1,13 @@
 /* eslint-disable global-require */
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Image, Dimensions, TouchableOpacity, TextInput, LayoutAnimation } from 'react-native';
+import { StyleSheet, Text, View, Dimensions, TouchableOpacity, TextInput } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { setToken } from './actions';
+import { setToken, startOauthLogin } from './actions';
 import ApiRequest from './utils/ApiRequest';
 import { mobileSignUrl, colors } from './utils/constants';
+import { setNavigator } from './utils/NavigationService';
 import LoginHeader from './components/LoginHeader';
 import KeyBoardAware from './components/KeyBoardAware';
 
@@ -25,6 +26,7 @@ class Login extends Component {
       token: PropTypes.string,
     }),
     setToken: PropTypes.func.isRequired,
+    navigate: PropTypes.func.isRequired,
   };
 
   state = {
@@ -39,16 +41,7 @@ class Login extends Component {
 
   componentWillUnmount() {}
 
-  /*
-  goToCalendar = () => this.props.navigation.dispatch(NavigationActions.reset({
-    index: 0,
-    actions: [
-      NavigationActions.navigate({ routeName: 'MyCalendar' }),
-    ],
-  }));
-  */
-
-  goToCalendar = () => this.props.navigation.navigate('DrawersNavigator');
+  goToCalendar = () => this.props.navigate('DrawersNavigator');
 
   loginWithFacebook = () => {
     const fburl = [
@@ -58,7 +51,7 @@ class Login extends Component {
       `redirect_uri=${mobileSignUrl}`,
     ].join('');
 
-    this.props.navigation.navigate('OAuthView', {
+    this.props.navigate('OAuthView', {
       url: fburl,
       onNavigationStateChange: (state, stopLoading) => {
         if (state.url.indexOf(mobileSignUrl) >= 0) {
@@ -138,19 +131,6 @@ class Login extends Component {
 
   loginWithGoogle = () => {
     const googleurl = [
-      /*
-      'https://accounts.google.com/o/oauth2/auth?',
-      'client_id=425199437936-d7up002g8se91n4f74i4jlpa68fqvshr.apps.googleusercontent.com&',
-      'response_type=code&',
-      `redirect_uri=${mobileSignUrl}`,
-      '&scope=https://www.googleapis.com/auth/userinfo.profile+',
-      'https://www.googleapis.com/auth/userinfo#email+',
-      'https://www.googleapis.com/auth/plus.me+',
-      'https://www.googleapis.com/auth/tasks+',
-      'https://www-opensocial.googleusercontent.com/api/people+',
-      'https://www.googleapis.com/auth/plus.login',
-      '&state=950198d1-c7b2-4715-a28b-74f19308b80f',
-      */
       'https://accounts.google.com/o/oauth2/v2/auth?',
       'scope=email profile&',
       'response_type=code&',
@@ -180,37 +160,9 @@ class Login extends Component {
     });
   };
 
-  renderUser(user) {
-    if (user) {
-      return (
-        <View style={styles.content}>
-          <Text style={styles.header}>
-            Welcome {user.name}!
-          </Text>
-          <View style={styles.avatar}>
-            <Image source={{ uri: user.avatar }} style={styles.avatarImage} />
-          </View>
-        </View>
-      );
-    }
-    return (
-      <View style={styles.content}>
-        <Text style={styles.header}>Welcome Stranger!</Text>
-        <View style={styles.avatar}>
-          <Image source={require('./icons/ic.png')} style={styles.avatarImage} />
-        </View>
-        <Text style={styles.text}>
-          Please log in to continue {'\n'}
-          to the awesomness
-        </Text>
-      </View>
-    );
-  }
-  /*
-
-  */
   render() {
     const { kb } = this.state;
+    const { startOauthLogin } = this.props;
     return (
       <KeyBoardAware
         keyboardWillShow={() => {
@@ -249,6 +201,8 @@ class Login extends Component {
           <View style={{ flexDirection: 'column' }}>
             <Text
               style={{
+                top: -6,
+                position: 'absolute',
                 fontFamily: 'Intro-Book',
                 fontSize: 12,
                 color: colors.warmGrey,
@@ -258,7 +212,7 @@ class Login extends Component {
             </Text>
             <TextInput
               style={{
-                height: 22,
+                height: 32,
                 borderBottomColor: colors.inputUnder,
                 borderBottomWidth: 1,
                 fontFamily: 'Intro-Book',
@@ -272,6 +226,8 @@ class Login extends Component {
           <View style={{ flexDirection: 'column' }}>
             <Text
               style={{
+                top: -6,
+                position: 'absolute',
                 fontFamily: 'Intro-Book',
                 fontSize: 12,
                 color: colors.warmGrey,
@@ -281,7 +237,7 @@ class Login extends Component {
             </Text>
             <TextInput
               style={{
-                height: 22,
+                height: 32,
                 borderBottomColor: colors.inputUnder,
                 borderBottomWidth: 1,
                 fontFamily: 'Intro-Book',
@@ -345,7 +301,7 @@ class Login extends Component {
                 <Icon.Button
                   name="facebook"
                   backgroundColor="#ffffff"
-                  onPress={this.loginWithFacebook}
+                  onPress={() => startOauthLogin('facebook')}
                   {...iconStyles}
                 >
                     Facebook
@@ -447,6 +403,14 @@ const mapStateToProps = state => ({
   user: state.user,
 });
 
-export default connect(mapStateToProps, {
-  setToken,
-})(Login);
+const mapDispatchToProps = (dispatch, ownProps) => {
+  const { navigation: { navigate } } = ownProps;
+  setNavigator(navigate);
+  return {
+    setToken,
+    startOauthLogin,
+    navigate,
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

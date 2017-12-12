@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { AppRegistry, View, AsyncStorage, Text } from 'react-native';
-import {
-  StackNavigator,
-} from 'react-navigation';
+import { StackNavigator } from 'react-navigation';
 import { Provider } from 'react-redux';
 import { persistStore } from 'redux-persist';
 import Login from './Login';
@@ -14,16 +12,13 @@ import store from './store';
 
 const stack = {
   Login: { screen: Login, navigationOptions: { header: null } },
-  DrawersNavigator: { screen: DrawersNavigator, navigationOptions: { header: null } },
   OAuthView: { screen: OAuthView, navigationOptions: { title: 'Авторизация' } },
+  DrawersNavigator: { screen: DrawersNavigator, navigationOptions: { header: null } },
   FeedBack: { screen: FeedBack, navigationOptions: { title: 'Тренировка' } },
   Members: { screen: Members, navigationOptions: { title: 'Тренировка' } },
 };
 
-const LoginStack = StackNavigator(
-  stack,
-  { headerMode: 'float' },
-);
+const LoginStack = StackNavigator(stack, { headerMode: 'float' });
 
 class Sportiq extends Component {
   constructor() {
@@ -41,17 +36,15 @@ class Sportiq extends Component {
     });
   }
 
-  renderLoad = () => (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+  renderLoad = () =>
+    (<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <Text> Загрузка... </Text>
-    </View>
-  );
+    </View>);
 
-  renderContent = () => (
-    <Provider store={store}>
+  renderContent = () =>
+    (<Provider store={store}>
       <LoginStack />
-    </Provider>
-  )
+    </Provider>);
 
   render() {
     return this.state.persisted ? this.renderContent() : this.renderLoad();
