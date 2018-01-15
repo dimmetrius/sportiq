@@ -10,6 +10,7 @@ import { mobileSignUrl, colors } from './utils/constants';
 import { setNavigator } from './utils/NavigationService';
 import LoginHeader from './components/LoginHeader';
 import KeyBoardAware from './components/KeyBoardAware';
+import socialConfig from './utils/socialConfig';
 
 const { width } = Dimensions.get('window');
 const IMG_HEIGHT = 435;
@@ -32,6 +33,8 @@ class Login extends Component {
   state = {
     user: undefined, // user has not logged in yet
     kb: false,
+    login: '',
+    password: '',
   };
 
   // Set up Linking
@@ -43,10 +46,22 @@ class Login extends Component {
 
   goToCalendar = () => this.props.navigate('DrawersNavigator');
 
+  loginByPassword = () => {
+    const { login, password } = this.state;
+    ApiRequest.login(login, password, '', '').then((data) => {
+      if (data.token) {
+        this.props.setToken(data.tokenta);
+        this.goToCalendar();
+      } else {
+        alert('login error');
+      }
+    });
+  };
+
   loginWithFacebook = () => {
     const fburl = [
       'https://www.facebook.com/v2.5/dialog/oauth?',
-      'client_id=115411419065159&',
+      `client_id=${socialConfig.facebookAppId}&`,
       'response_type=token&',
       `redirect_uri=${mobileSignUrl}`,
     ].join('');
@@ -75,7 +90,7 @@ class Login extends Component {
   loginWithVk = () => {
     const vkurl = [
       'https://oauth.vk.com/authorize?',
-      'client_id=6200542&',
+      `client_id=${socialConfig.vkontakteAppId}&`,
       'display=mobile&',
       `redirect_uri=${mobileSignUrl}&`,
       'scope=friends&response_type=code&v=5.68',
@@ -104,7 +119,7 @@ class Login extends Component {
   loginWithInstagram = () => {
     const instaurl = [
       'https://api.instagram.com/oauth/authorize?',
-      'client_id=1e1aeecdb87e40dcbca8fb8f9dcf2870&',
+      `client_id=${socialConfig.instagramAppId}`,
       'response_type=code&',
       `redirect_uri=${mobileSignUrl}`,
     ].join('');
@@ -128,16 +143,15 @@ class Login extends Component {
       },
     });
   };
-
   loginWithGoogle = () => {
     const googleurl = [
       'https://accounts.google.com/o/oauth2/v2/auth?',
       'scope=email profile&',
       'response_type=code&',
-      'state=security_token=138r5719ru3e1&',
+      // 'state=security_token=138r5719ru3e1&',
       'url=https://oauth2.example.com/token&',
       `redirect_uri=${mobileSignUrl}`,
-      '&client_id=425199437936-d7up002g8se91n4f74i4jlpa68fqvshr.apps.googleusercontent.com',
+      `&client_id=${socialConfig.googleAppId}`,
     ].join('');
 
     this.props.navigation.navigate('OAuthView', {
@@ -161,8 +175,8 @@ class Login extends Component {
   };
 
   render() {
-    const { kb } = this.state;
-    const { startOauthLogin } = this.props;
+    const { kb, login, password } = this.state;
+    // const { startOauthLogin } = this.props;
     return (
       <KeyBoardAware
         keyboardWillShow={() => {
@@ -219,8 +233,10 @@ class Login extends Component {
                 fontSize: 15,
                 color: '#000000',
               }}
-              onChangeText={() => null}
-              value={'dimmetrius@gmail.com'}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              onChangeText={text => this.setState({ login: text })}
+              value={login}
             />
           </View>
           <View style={{ flexDirection: 'column' }}>
@@ -244,8 +260,9 @@ class Login extends Component {
                 fontSize: 15,
                 color: '#000000',
               }}
-              onChangeText={() => null}
-              value={'***************'}
+              secureTextEntry
+              onChangeText={text => this.setState({ password: text })}
+              value={password}
             />
           </View>
           <View style={[{ flexDirection: 'column', alignItems: 'flex-end' }]}>
@@ -263,6 +280,7 @@ class Login extends Component {
         </View>
         <View style={[styles.section, { height: 45 }]}>
           <TouchableOpacity
+            onPress={this.loginByPassword}
             style={{
               flex: 1,
               borderRadius: 4,
@@ -301,7 +319,7 @@ class Login extends Component {
                 <Icon.Button
                   name="facebook"
                   backgroundColor="#ffffff"
-                  onPress={() => startOauthLogin('facebook')}
+                  onPress={this.loginWithFacebook}
                   {...iconStyles}
                 >
                     Facebook

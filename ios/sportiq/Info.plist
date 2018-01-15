@@ -39,7 +39,7 @@
 				<key>NSExceptionAllowsInsecureHTTPLoads</key>
 				<true/>
 			</dict>
-			<key>sportiq.io</key>
+			<key>sportiq.by</key>
 			<dict>
 				<key>NSExceptionAllowsInsecureHTTPLoads</key>
 				<true/>
@@ -54,7 +54,7 @@
 	<key>NSCameraUsageDescription</key>
 	<string>Need camera for QR scan</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string/>
+	<string></string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>finance.ttf</string>

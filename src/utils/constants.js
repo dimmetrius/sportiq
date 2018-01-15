@@ -1,5 +1,5 @@
-export const sportiqHost = 'http://sportiq.io';
-export const sportiqHostSec = 'https://sportiq.io';
+export const sportiqHost = 'http://sportiq.by';
+export const sportiqHostSec = 'http://sportiq.by';
 export const mobileSignUrl = `${sportiqHostSec}/mobilesign`;
 
 export const colors = {
