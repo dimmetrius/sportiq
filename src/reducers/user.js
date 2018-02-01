@@ -1,26 +1,29 @@
 /* eslint-disable import/prefer-default-export */
-import { combineReducers } from 'redux';
 import * as ActionTypes from '../actions';
 
-function token(state = '', action) {
+const defaultState = { token: '', loggedUser: {}, processing: false };
+
+const user = (state = defaultState, action) => {
   switch (action.type) {
     case ActionTypes.SET_TOKEN:
-      return action.token;
-    default:
-      return state;
-  }
-}
-
-function loggedUser(state = {}, action) {
-  switch (action.type) {
+      return {
+        ...state,
+        token: action.token,
+      };
     case ActionTypes.SET_LOGGED_USER:
-      return action.loggedUser;
+      return {
+        ...state,
+        loggedUser: action.loggedUser,
+      };
+    case ActionTypes.LOGIN_WITH_PASS_PROCESSING: {
+      return {
+        ...state,
+        processing: action.processing,
+      };
+    }
     default:
       return state;
   }
-}
+};
 
-export const user = combineReducers({
-  token,
-  loggedUser,
-});
+export default user;

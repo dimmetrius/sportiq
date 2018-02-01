@@ -4,21 +4,17 @@ import { StackNavigator } from 'react-navigation';
 import { Provider } from 'react-redux';
 import { persistStore } from 'redux-persist';
 import Login from './Login';
-import DrawersNavigator from './DrawersNavigator';
+import TabsNavigator from './TabsNavigator';
 import OAuthView from './OAuthView';
-import FeedBack from './FeedBack';
-import Members from './Members';
 import store from './store';
 
 const stack = {
   Login: { screen: Login, navigationOptions: { header: null } },
-  OAuthView: { screen: OAuthView, navigationOptions: { title: 'Авторизация' } },
-  DrawersNavigator: { screen: DrawersNavigator, navigationOptions: { header: null } },
-  FeedBack: { screen: FeedBack, navigationOptions: { title: 'Тренировка' } },
-  Members: { screen: Members, navigationOptions: { title: 'Тренировка' } },
+  OAuthView: { screen: OAuthView, navigationOptions: { title: <Text> Авторизация </Text> } },
+  TabsNavigator: { screen: TabsNavigator, navigationOptions: { header: null } },
 };
 
-const LoginStack = StackNavigator(stack, { headerMode: 'float' });
+const RootStack = StackNavigator(stack, { headerMode: 'float' });
 
 class Sportiq extends Component {
   constructor() {
@@ -43,7 +39,7 @@ class Sportiq extends Component {
 
   renderContent = () =>
     (<Provider store={store}>
-      <LoginStack />
+      <RootStack />
     </Provider>);
 
   render() {

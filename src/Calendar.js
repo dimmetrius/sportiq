@@ -10,6 +10,8 @@ import ApiRequest from './utils/ApiRequest';
 import sport from './icons/sport';
 import padStart from './utils/padStart';
 import getStrTimer from './utils/getStrTimer';
+import { colors } from './utils/constants';
+import QrButton from './components/QrButton';
 
 LocaleConfig.locales.ru = {
   monthNames: [
@@ -33,7 +35,6 @@ LocaleConfig.locales.ru = {
 
 LocaleConfig.defaultLocale = 'ru';
 
-
 class AgendaScreen extends Component {
   static propTypes = {
     navigation: PropTypes.shape({
@@ -47,7 +48,7 @@ class AgendaScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      month: LocaleConfig.locales.ru.monthNames[(new Date()).getMonth()],
+      month: LocaleConfig.locales.ru.monthNames[new Date().getMonth()],
       items: {},
     };
   }
@@ -70,13 +71,16 @@ class AgendaScreen extends Component {
     this.setState({
       month,
     });
-  }
+  };
 
   getColorByType(type) {
     switch (type) {
-      case 'my': return '#ddecfb';
-      case 'coach': return '#ffe8e8';
-      default: return '#ffffff';
+      case 'my':
+        return '#ddecfb';
+      case 'coach':
+        return '#ffe8e8';
+      default:
+        return '#ffffff';
     }
   }
 
@@ -108,7 +112,7 @@ class AgendaScreen extends Component {
       curItem.icon = event.group.activities[0].className;
       */
     });
-  }
+  };
 
   rowHasChanged(r1, r2) {
     return r1.id !== r2.id;
@@ -117,35 +121,23 @@ class AgendaScreen extends Component {
   addEmptyDays = (year, month) => {
     const endDayNum = new Date(year, month, 0).getDate();
     for (let i = 1; i <= endDayNum; i++) {
-      const dt = [
-        padStart(year, 4, '0'),
-        padStart(month, 2, '0'),
-        padStart(i, 2, '0'),
-      ].join('-');
+      const dt = [padStart(year, 4, '0'), padStart(month, 2, '0'), padStart(i, 2, '0')].join('-');
 
       const items = this.state.items;
       if (!items[dt]) {
         items[dt] = [];
       }
     }
-  }
+  };
 
   loadItems(day) {
     console.log(JSON.stringify(day));
     this.setMonth(LocaleConfig.locales.ru.monthNames[day.month]);
-    const startDate = [
-      padStart(day.year, 4, '0'),
-      padStart(day.month, 2, '0'),
-      '01',
-    ].join('-');
+    const startDate = [padStart(day.year, 4, '0'), padStart(day.month, 2, '0'), '01'].join('-');
 
     const endDayNum = new Date(day.year, day.month, 0).getDate();
     const endDay = padStart(endDayNum, 2, '0');
-    const endDate = [
-      padStart(day.year, 4, '0'),
-      padStart(day.month, 2, '0'),
-      endDay,
-    ].join('-');
+    const endDate = [padStart(day.year, 4, '0'), padStart(day.month, 2, '0'), endDay].join('-');
 
     console.log('date', startDate, endDate);
 
@@ -193,7 +185,7 @@ class AgendaScreen extends Component {
     this.setState({
       items: newItems,
     });
-  }
+  };
 
   timeToString(time) {
     const date = new Date(time);
@@ -209,9 +201,9 @@ class AgendaScreen extends Component {
   renderEmptyDate() {
     return (
       <View style={[styles.item, { flexDirection: 'column' }]}>
-        <Text>{' '}</Text>
+        <Text />
         <Text>Нет занятий!</Text>
-        <Text>{' '}</Text>
+        <Text />
       </View>
     );
   }
@@ -222,36 +214,41 @@ class AgendaScreen extends Component {
 
     const len = getStrTimer(new Date(item.end) - new Date(item.start));
     return (
-      <TouchableOpacity
-        onPress={() => this.onClickItem(item)}
-      >
+      <TouchableOpacity onPress={() => this.onClickItem(item)}>
         <View style={[styles.item, { flexDirection: 'row', backgroundColor: this.getColorByType(item.type) }]}>
           <View style={{ flex: 1, flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center' }}>
             <View style={{ marginBottom: 5, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
               <Icon name="clock-o" size={12} color="black" />
-              <Text style={{ fontSize: 12, marginLeft: 2 }}>{startTime}</Text>
+              <Text style={{ fontSize: 12, marginLeft: 2 }}>
+                {startTime}
+              </Text>
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-              <Text style={{ fontSize: 10 }}>{len}</Text>
+              <Text style={{ fontSize: 10 }}>
+                {len}
+              </Text>
             </View>
           </View>
           <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-              <View style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginLeft: 5,
-                borderRadius: 5,
-                width: 40,
-                height: 40,
-                backgroundColor: item.group.color,
-              }}
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginLeft: 5,
+                  borderRadius: 5,
+                  width: 40,
+                  height: 40,
+                  backgroundColor: item.group.color,
+                }}
               >
                 <Text style={{ fontSize: 24, fontFamily: 'sports-48-x-48' }}>
                   {sport[item.group.activities[0].className] || ''}
                 </Text>
-                <Text style={{ fontSize: 11, position: 'absolute', top: 1, right: 1 }}>{item.billable ? '$' : ''}</Text>
+                <Text style={{ fontSize: 11, position: 'absolute', top: 1, right: 1 }}>
+                  {item.billable ? '$' : ''}
+                </Text>
               </View>
             </View>
           </View>
@@ -274,41 +271,30 @@ class AgendaScreen extends Component {
           // ref={(ref) => { if (ref) { this.AgRef = ref; console.log(ref); } }}
           items={this.state.items}
           loadItemsForMonth={day => this.loadItems(day)}
-          selected={(new Date()).toJSON().split('T')[0]}
+          selected={new Date().toJSON().split('T')[0]}
           renderItem={item => this.renderItem(item)}
           renderEmptyDate={() => this.renderEmptyDate()}
           rowHasChanged={(r1, r2) => this.rowHasChanged(r1, r2)}
           firstDay={1}
-          onDayChange={(day) => { this.setMonth(LocaleConfig.locales.ru.monthNames[day.month - 1]); }}
+          onDayChange={(day) => {
+            this.setMonth(LocaleConfig.locales.ru.monthNames[day.month - 1]);
+          }}
+          // agenda theme
+          theme={{
+            selectedDayBackgroundColor: colors.grassyGreen,
+            // agendaDayTextColor: 'yellow',
+            // agendaDayNumColor: 'green',
+            // agendaTodayColor: 'red',
+          }}
           // renderKnob={() => (<Text> {this.state.month} </Text>)}
           // hideKnob={false}
           // monthFormat={'yyyy'}
           // theme={{calendarBackground: 'red', agendaKnobColor: 'green'}}
           // renderDay={(day, item) => (<Text>{day ? day.day: ''}</Text>)}
         />
-        {
-          this.canQrScan() ?
-            <TouchableOpacity
-              style={{
-                position: 'absolute',
-                width: 50,
-                height: 50,
-                borderRadius: 25,
-                alignItems: 'center',
-                justifyContent: 'center',
-                right: 10,
-                bottom: 10,
-                borderColor: 'gray',
-                borderWidth: 1,
-                backgroundColor: 'white',
-              }}
-              onPress={() => this.props.navigation.navigate('QrCode', { type: 'scan', mode: '0' })}
-            >
-              <Icon name="qrcode" size={25} color="black" />
-            </TouchableOpacity>
-            :
-            null
-        }
+        {this.canQrScan()
+          ? <QrButton onPress={() => this.props.navigation.navigate('QrCode', { type: 'scan', mode: '0' })} />
+          : null}
       </View>
     );
   }

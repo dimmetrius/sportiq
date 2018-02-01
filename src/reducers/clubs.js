@@ -11,6 +11,8 @@ function all(state = '', action) {
   }
 }
 
-export const clubs = combineReducers({
+const clubs = combineReducers({
   all,
 });
+
+export default clubs;

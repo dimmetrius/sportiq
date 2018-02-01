@@ -1,6 +1,10 @@
 import { combineReducers } from 'redux';
-import * as user from './user';
-import * as calendar from './calendar';
-import * as clubs from './clubs';
+import user from './user';
+import calendar from './calendar';
+import clubs from './clubs';
 
-export default combineReducers(Object.assign(user, calendar, clubs));
+export default combineReducers({
+  user,
+  calendar,
+  clubs,
+});

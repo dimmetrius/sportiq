@@ -9,7 +9,7 @@ export function setNavigator(nav) {
 }
 
 export function navigate(routeName, params) {
-  if (config.navigator && routeName) {
+  if (config.navigator && config.navigator.state.routeName === 'Login' && routeName) {
     const action = NavigationActions.navigate({ routeName, params });
     config.navigator.dispatch(action);
   }

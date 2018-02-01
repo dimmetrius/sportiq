@@ -4,7 +4,7 @@ import { StyleSheet, Text, View, Dimensions, TouchableOpacity, TextInput } from 
 import Icon from 'react-native-vector-icons/FontAwesome';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { setToken, startOauthLogin } from './actions';
+import { setToken, startOauthLogin, startLoginWithPass } from './actions';
 import ApiRequest from './utils/ApiRequest';
 import { mobileSignUrl, colors } from './utils/constants';
 import { setNavigator } from './utils/NavigationService';
@@ -19,14 +19,12 @@ const headerHeight = width / IMG_WIDTH * IMG_HEIGHT;
 
 class Login extends Component {
   static propTypes = {
-    navigation: PropTypes.shape({
-      navigate: PropTypes.func.isRequired,
-      dispatch: PropTypes.func.isRequired,
-    }),
     user: PropTypes.shape({
       token: PropTypes.string,
+      processing: PropTypes.bool,
     }),
     setToken: PropTypes.func.isRequired,
+    startLoginWithPass: PropTypes.func.isRequired,
     navigate: PropTypes.func.isRequired,
   };
 
@@ -44,25 +42,16 @@ class Login extends Component {
 
   componentWillUnmount() {}
 
-  goToCalendar = () => this.props.navigate('DrawersNavigator');
-
   loginByPassword = () => {
     const { login, password } = this.state;
-    ApiRequest.login(login, password, '', '').then((data) => {
-      if (data.token) {
-        this.props.setToken(data.tokenta);
-        this.goToCalendar();
-      } else {
-        alert('login error');
-      }
-    });
+    this.props.startLoginWithPass(login, password);
   };
 
   loginWithFacebook = () => {
     const fburl = [
       'https://www.facebook.com/v2.5/dialog/oauth?',
       `client_id=${socialConfig.facebookAppId}&`,
-      'response_type=token&',
+      'response_type=code&',
       `redirect_uri=${mobileSignUrl}`,
     ].join('');
 
@@ -71,12 +60,11 @@ class Login extends Component {
       onNavigationStateChange: (state, stopLoading) => {
         if (state.url.indexOf(mobileSignUrl) >= 0) {
           const url = state.url;
-          const i1 = url.indexOf('access_token=');
-          const i2 = url.indexOf('&expires_in');
-          if (i1 > 0 && i2 > 0) {
-            const token = url.substring(i1 + 'access_token='.length, i2);
+          const i1 = url.indexOf('code=');
+          if (i1 > 0) {
+            const token = url.substring(i1 + 'code='.length, url.length);
             // this.props.navigation.dispatch(NavigationActions.back());
-            ApiRequest.getToken('facebook', 'access_token', token).then(data => data.text()).then((data) => {
+            ApiRequest.getToken('facebook', 'code', token).then(data => data.text()).then((data) => {
               stopLoading();
               this.props.setToken(data);
               this.goToCalendar();
@@ -96,7 +84,7 @@ class Login extends Component {
       'scope=friends&response_type=code&v=5.68',
     ].join('');
 
-    this.props.navigation.navigate('OAuthView', {
+    this.props.navigate('OAuthView', {
       url: vkurl,
       onNavigationStateChange: (state, stopLoading) => {
         if (state.url.indexOf(mobileSignUrl) >= 0) {
@@ -124,7 +112,7 @@ class Login extends Component {
       `redirect_uri=${mobileSignUrl}`,
     ].join('');
 
-    this.props.navigation.navigate('OAuthView', {
+    this.props.navigate('OAuthView', {
       url: instaurl,
       onNavigationStateChange: (state, stopLoading) => {
         if (state.url.indexOf(mobileSignUrl) >= 0) {
@@ -154,7 +142,7 @@ class Login extends Component {
       `&client_id=${socialConfig.googleAppId}`,
     ].join('');
 
-    this.props.navigation.navigate('OAuthView', {
+    this.props.navigate('OAuthView', {
       url: googleurl,
       onNavigationStateChange: (state, stopLoading) => {
         if (state.url.indexOf(mobileSignUrl) >= 0) {
@@ -176,7 +164,7 @@ class Login extends Component {
 
   render() {
     const { kb, login, password } = this.state;
-    // const { startOauthLogin } = this.props;
+    const { processing } = this.props.user;
     return (
       <KeyBoardAware
         keyboardWillShow={() => {
@@ -297,7 +285,7 @@ class Login extends Component {
                 color: colors.white,
               }}
             >
-              Войти
+              {processing ? '...' : 'Войти'}
             </Text>
           </TouchableOpacity>
         </View>
@@ -422,12 +410,13 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-  const { navigation: { navigate } } = ownProps;
-  setNavigator(navigate);
+  const { navigation } = ownProps;
+  setNavigator(navigation);
   return {
-    setToken,
-    startOauthLogin,
-    navigate,
+    setToken: token => dispatch(setToken(token)),
+    startOauthLogin: network => dispatch(startOauthLogin(network)),
+    startLoginWithPass: (username, password) => dispatch(startLoginWithPass(username, password)),
+    navigate: navigation.navigate,
   };
 };
 

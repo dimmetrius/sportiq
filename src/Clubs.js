@@ -3,18 +3,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {
-  View,
-  Text,
-  ActivityIndicator,
-  ScrollView,
-  Image,
-  Dimensions,
-  TouchableOpacity,
-} from 'react-native';
+import { View, Text, ActivityIndicator, ScrollView, Image, Dimensions, TouchableOpacity } from 'react-native';
 import ApiRequest from './utils/ApiRequest';
 import WebViewAutoHeight from './components/WebViewAutoHeight';
 import sport from './icons/sport';
+import QrButton from './components/QrButton';
 
 const { width } = Dimensions.get('window');
 const ROW_HEIGHT = width - 20;
@@ -49,7 +42,7 @@ class Clubs extends Component {
       };
       this.setState(newState);
     });
-  }
+  };
 
   renderClub = (club) => {
     const img = club.image.list.url;
@@ -62,21 +55,24 @@ class Clubs extends Component {
         <View style={{ flexDirection: 'column', alignItems: 'center', height: ROW_HEIGHT }}>
           <View style={{ flexDirection: 'row', justifyContent: 'center', width: ROW_HEIGHT, height: ROW_HEIGHT * 0.5 }}>
             <Image style={{ width: ROW_HEIGHT, height: ROW_HEIGHT * 0.5 }} source={{ uri: img }} />
-            <View style={{
-              position: 'absolute',
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'center',
-              backgroundColor: 'white',
-              right: 5,
-              bottom: 5,
-              height: 20,
-              width: 50,
-              borderRadius: 10,
-            }}
+            <View
+              style={{
+                position: 'absolute',
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: 'white',
+                right: 5,
+                bottom: 5,
+                height: 20,
+                width: 50,
+                borderRadius: 10,
+              }}
             >
               <Icon name="users" color="black" />
-              <Text style={{ marginLeft: 3 }}>{club.membersCount}</Text>
+              <Text style={{ marginLeft: 3 }}>
+                {club.membersCount}
+              </Text>
             </View>
           </View>
           <View style={{ flexDirection: 'column', width: ROW_HEIGHT, height: ROW_HEIGHT * 0.5 }}>
@@ -89,14 +85,19 @@ class Clubs extends Component {
                 justifyContent: 'flex-start',
               }}
             >
-              <Text style={{ marginLeft: 10, marginTop: 5, fontWeight: 'bold' }}>{club.name}</Text>
-              <Text style={{ marginLeft: 10, marginTop: 5 }}>{club.overview}</Text>
-              <View style={{
-                margin: 5,
-                width: ROW_HEIGHT,
-                flexDirection: 'row',
-                alignItems: 'flex-start',
-              }}
+              <Text style={{ marginLeft: 10, marginTop: 5, fontWeight: 'bold' }}>
+                {club.name}
+              </Text>
+              <Text style={{ marginLeft: 10, marginTop: 5 }}>
+                {club.overview}
+              </Text>
+              <View
+                style={{
+                  margin: 5,
+                  width: ROW_HEIGHT,
+                  flexDirection: 'row',
+                  alignItems: 'flex-start',
+                }}
               >
                 {club.activities.map(activity => this.renderActivity(activity))}
               </View>
@@ -105,10 +106,10 @@ class Clubs extends Component {
         </View>
       </TouchableOpacity>
     );
-  }
+  };
 
-  renderActivity = activity => (
-    <View
+  renderActivity = activity =>
+    (<View
       key={activity.className}
       style={{
         flexDirection: 'row',
@@ -126,21 +127,21 @@ class Clubs extends Component {
       <Text style={{ fontSize: 24, fontFamily: 'sports-48-x-48' }}>
         {sport[activity.className] || ''}
       </Text>
-    </View>
-  );
+    </View>);
 
   renderDescription = (club) => {
     const { description } = club;
     if (!description) return null;
     const html = description.replace(' class="MsoNormal"', '', 'g');
     return (
-      <View style={{
-        flex: 1,
-        backgroundColor: 'white',
-        borderRadius: 10,
-        marginLeft: 10,
-        marginRight: 10,
-      }}
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: 'white',
+          borderRadius: 10,
+          marginLeft: 10,
+          marginRight: 10,
+        }}
       >
         <WebViewAutoHeight
           automaticallyAdjustContentInsets={false}
@@ -153,7 +154,7 @@ class Clubs extends Component {
         />
       </View>
     );
-  }
+  };
 
   render() {
     const { loading, clubs } = this.state;
@@ -161,32 +162,13 @@ class Clubs extends Component {
     return (
       <View style={{ flex: 1, flexDirection: 'column' }}>
         <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-          {
-            loading ?
-              <ActivityIndicator animating color={'gray'} size={1} /> :
-              <ScrollView>
-                {clubs.map(club => this.renderClub(club))}
-              </ScrollView>
-          }
+          {loading
+            ? <ActivityIndicator animating color={'gray'} size={1} />
+            : <ScrollView>
+              {clubs.map(club => this.renderClub(club))}
+            </ScrollView>}
         </View>
-        <TouchableOpacity
-          style={{
-            position: 'absolute',
-            width: 50,
-            height: 50,
-            borderRadius: 25,
-            alignItems: 'center',
-            justifyContent: 'center',
-            right: 10,
-            bottom: 10,
-            borderColor: 'gray',
-            borderWidth: 1,
-            backgroundColor: 'white',
-          }}
-          onPress={() => this.props.navigation.navigate('QrCode', { type: 'scan', mode: '1' })}
-        >
-          <Icon name="qrcode" size={25} color="black" />
-        </TouchableOpacity>
+        <QrButton onPress={() => this.props.navigation.navigate('QrCode', { type: 'scan', mode: '1' })} />
       </View>
     );
   }
