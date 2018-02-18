@@ -3,15 +3,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {
-  View,
-  Text,
-  ActivityIndicator,
-  ScrollView,
-  Image,
-  Dimensions,
-  TouchableOpacity,
-} from 'react-native';
+import { View, Text, ActivityIndicator, ScrollView, Image, Dimensions, TouchableOpacity } from 'react-native';
 // import ApiRequest from './utils/ApiRequest';
 import WebViewAutoHeight from './components/WebViewAutoHeight';
 import sport from './icons/sport';
@@ -36,9 +28,7 @@ class Club extends Component {
     };
   }
 
-  componentDidMount() {
-
-  }
+  componentDidMount() {}
 
   renderClub = (club) => {
     const img = club.image.list.url;
@@ -50,21 +40,24 @@ class Club extends Component {
         <View style={{ flexDirection: 'column', alignItems: 'center' }}>
           <View style={{ flexDirection: 'row', justifyContent: 'center', width: ROW_HEIGHT, height: ROW_HEIGHT * 0.5 }}>
             <Image style={{ width: ROW_HEIGHT, height: ROW_HEIGHT * 0.5 }} source={{ uri: img }} />
-            <View style={{
-              position: 'absolute',
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'center',
-              backgroundColor: 'white',
-              right: 5,
-              bottom: 5,
-              height: 20,
-              width: 50,
-              borderRadius: 10,
-            }}
+            <View
+              style={{
+                position: 'absolute',
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: 'white',
+                right: 5,
+                bottom: 5,
+                height: 20,
+                width: 50,
+                borderRadius: 10,
+              }}
             >
               <Icon name="users" color="black" />
-              <Text style={{ marginLeft: 3 }}>{club.membersCount}</Text>
+              <Text style={{ marginLeft: 3 }}>
+                {club.membersCount}
+              </Text>
             </View>
           </View>
           <View style={{ flexDirection: 'column', width: ROW_HEIGHT }}>
@@ -76,30 +69,32 @@ class Club extends Component {
                 justifyContent: 'flex-start',
               }}
             >
-              <Text style={{ marginLeft: 10, marginTop: 5, fontWeight: 'bold' }}>{club.name}</Text>
-              <Text style={{ marginLeft: 10, marginTop: 5 }}>{club.overview}</Text>
-              <View style={{
-                margin: 5,
-                width: ROW_HEIGHT,
-                flexDirection: 'row',
-                alignItems: 'flex-start',
-              }}
+              <Text style={{ marginLeft: 10, marginTop: 5, fontWeight: 'bold' }}>
+                {club.name}
+              </Text>
+              <Text style={{ marginLeft: 10, marginTop: 5 }}>
+                {club.overview}
+              </Text>
+              <View
+                style={{
+                  margin: 5,
+                  width: ROW_HEIGHT,
+                  flexDirection: 'row',
+                  alignItems: 'flex-start',
+                }}
               >
                 {club.activities.map(activity => this.renderActivity(activity))}
               </View>
               {this.renderJoin(club)}
             </View>
-            <View style={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-              {this.renderDescription(club)}
-            </View>
           </View>
         </View>
       </View>
     );
-  }
+  };
 
-  renderActivity = activity => (
-    <View
+  renderActivity = activity =>
+    (<View
       key={activity.className}
       style={{
         flexDirection: 'row',
@@ -117,21 +112,21 @@ class Club extends Component {
       <Text style={{ fontSize: 24, fontFamily: 'sports-48-x-48' }}>
         {sport[activity.className] || ''}
       </Text>
-    </View>
-  );
+    </View>);
 
   renderDescription = (club) => {
     const { description } = club;
     if (!description) return null;
     const html = description.replace(' class="MsoNormal"', '', 'g');
     return (
-      <View style={{
-        flex: 1,
-        backgroundColor: 'white',
-        borderRadius: 10,
-        marginLeft: 10,
-        marginRight: 10,
-      }}
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: 'white',
+          borderRadius: 10,
+          marginLeft: 10,
+          marginRight: 10,
+        }}
       >
         <WebViewAutoHeight
           automaticallyAdjustContentInsets={false}
@@ -144,7 +139,7 @@ class Club extends Component {
         />
       </View>
     );
-  }
+  };
 
   renderJoin(club) {
     console.log(club._links);
@@ -178,13 +173,11 @@ class Club extends Component {
     return (
       <View style={{ flex: 1, flexDirection: 'column' }}>
         <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-          {
-            loading ?
-              <ActivityIndicator animating color={'gray'} size={1} /> :
-              <ScrollView>
-                {this.renderClub(item)}
-              </ScrollView>
-          }
+          {loading
+            ? <ActivityIndicator animating color={'gray'} size={1} />
+            : <ScrollView>
+              {this.renderClub(item)}
+            </ScrollView>}
         </View>
       </View>
     );

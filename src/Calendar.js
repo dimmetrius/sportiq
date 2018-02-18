@@ -5,6 +5,8 @@ import { connect } from 'react-redux';
 import { Agenda, LocaleConfig } from 'react-native-calendars';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import Ionicon from 'react-native-vector-icons/Ionicons';
+import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { setLoggedUser } from './actions';
 import ApiRequest from './utils/ApiRequest';
 import sport from './icons/sport';
@@ -211,25 +213,13 @@ class AgendaScreen extends Component {
   renderItem(item) {
     const startDate = new Date(item.start);
     const startTime = `${padStart(startDate.getHours(), 2, '0')}:${padStart(startDate.getMinutes(), 2, '0')}`;
+    // <Ionicon name="md-checkmark" size={12} color={colors.grassyGreen} style={{ marginLeft: 15 }} />
 
     const len = getStrTimer(new Date(item.end) - new Date(item.start));
     return (
       <TouchableOpacity onPress={() => this.onClickItem(item)}>
-        <View style={[styles.item, { flexDirection: 'row', backgroundColor: this.getColorByType(item.type) }]}>
-          <View style={{ flex: 1, flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center' }}>
-            <View style={{ marginBottom: 5, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-              <Icon name="clock-o" size={12} color="black" />
-              <Text style={{ fontSize: 12, marginLeft: 2 }}>
-                {startTime}
-              </Text>
-            </View>
-            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-              <Text style={{ fontSize: 10 }}>
-                {len}
-              </Text>
-            </View>
-          </View>
-          <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+        <View style={[styles.item, { flexDirection: 'row', backgroundColor: 'white' }]}>
+          <View style={{ width: 50, flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
               <View
                 style={{
@@ -240,23 +230,38 @@ class AgendaScreen extends Component {
                   borderRadius: 5,
                   width: 40,
                   height: 40,
-                  backgroundColor: item.group.color,
+                  borderColor: colors.warmGrey,
+                  borderWidth: 1,
+                  backgroundColor: 'transparent',
                 }}
               >
                 <Text style={{ fontSize: 24, fontFamily: 'sports-48-x-48' }}>
                   {sport[item.group.activities[0].className] || ''}
                 </Text>
-                <Text style={{ fontSize: 11, position: 'absolute', top: 1, right: 1 }}>
-                  {item.billable ? '$' : ''}
-                </Text>
               </View>
             </View>
           </View>
-          <View style={{ flex: 3, flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center' }}>
-            <View style={{ flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'center' }}>
-              <Text style={{ marginLeft: 5, fontSize: 15, textAlign: 'left' }}>
+          <View style={{ flex: 1, flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center' }}>
+            <View style={{ marginBottom: 5, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+              <Text style={{ marginLeft: 15, fontSize: 15, fontWeight: '800', color: '#000000', textAlign: 'left' }}>
                 {item.group.name}
               </Text>
+            </View>
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+              <Icon name="clock-o" size={12} color={colors.warmGrey} style={{ marginLeft: 15 }} />
+              <Text style={{ marginLeft: 3, fontSize: 12 }}>
+                {startTime}
+              </Text>
+              <MaterialCommunityIcon name="clock-start" size={12} color={colors.warmGrey} style={{ marginLeft: 15 }} />
+              <Text style={{ marginLeft: 3, fontSize: 12 }}>
+                {len}
+              </Text>
+              <View
+                style={{ width: 10, height: 10, marginLeft: 15, borderRadius: 5, backgroundColor: item.group.color }}
+              />
+              {item.billable
+                ? <Ionicon name="logo-usd" size={12} color={colors.grassyGreen} style={{ marginLeft: 15 }} />
+                : null}
             </View>
           </View>
         </View>
@@ -281,7 +286,12 @@ class AgendaScreen extends Component {
           }}
           // agenda theme
           theme={{
+            textLinkColor: colors.grassyGreen,
             selectedDayBackgroundColor: colors.grassyGreen,
+            todayTextColor: colors.grassyGreen,
+            dotColor: colors.grassyGreen,
+            arrowColor: colors.grassyGreen,
+            agendaTodayColor: colors.grassyGreen,
             // agendaDayTextColor: 'yellow',
             // agendaDayNumColor: 'green',
             // agendaTodayColor: 'red',
@@ -312,6 +322,7 @@ const styles = StyleSheet.create({
     padding: 10,
     marginRight: 10,
     marginTop: 17,
+    height: 70,
   },
   emptyDate: {
     height: 15,

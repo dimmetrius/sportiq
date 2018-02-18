@@ -1,6 +1,6 @@
 import React from 'react';
 import { TabNavigator, StackNavigator /* , TabBarBottom */ } from 'react-navigation';
-import { Platform, Text } from 'react-native';
+import { Platform } from 'react-native';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import MyCalendar from './Calendar';
 import Subscriptions from './Subscriptions';
@@ -16,8 +16,9 @@ const iconSize = isIos ? 30 : 15;
 
 const CalendarStack = StackNavigator({
   Calendar: { screen: MyCalendar, navigationOptions: { title: 'Тренировки' } },
-  QrCode: { screen: QrCode, navigationOptions: { headerLeft: <Text> 0 </Text> } },
-  FeedBack: { screen: FeedBack },
+  // QrCode: { screen: QrCode, navigationOptions: { headerLeft: <Text> 0 </Text> } },
+  QrCode: { screen: QrCode },
+  FeedBack: { screen: FeedBack, navigationOptions: { title: 'Отзыв на тренировку' } },
   Members: { screen: Members },
 });
 

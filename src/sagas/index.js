@@ -13,7 +13,7 @@ import * as Actions from '../actions';
 function* startLoginWithPass(action) {
   const { username, password } = action;
   yield put(Actions.loginWithPassProcessing(true));
-  const loginData = yield call(ApiRequest.login, username, password, 'id', '{event a kind of JSON}');
+  const loginData = yield call(ApiRequest.login, username, password, Math.random(1).toString(), '{}');
   if (loginData.token) {
     yield put(Actions.setToken(loginData.token));
     //

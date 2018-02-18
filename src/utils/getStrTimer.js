@@ -12,6 +12,6 @@ const getStrTimer = (ms) => {
 
   // const secPart = Math.floor(countTail / secInMs);
 
-  return `${hourPart} ч ${minPart} м`;
+  return `${hourPart}ч ${minPart}м`;
 };
 export default getStrTimer;

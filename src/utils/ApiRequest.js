@@ -92,6 +92,11 @@ export default {
       `${sportiqHost}/mobile/1.0/api/login/authenticate`,
       fetchOptions('POST', JSON.stringify({ username, password, deviceId, deviceInfo }), true),
     ).then(checkData),
+  socialLogin: (social, socialCode, deviceId, deviceInfo) =>
+    fetch(
+      `${sportiqHost}/mobile/1.0/api/login/authenticate`,
+      fetchOptions('POST', JSON.stringify({ social, socialCode, deviceId, deviceInfo }), true),
+    ).then(checkData),
   coach: (start, end) =>
     fetch(`${sportiqHost}/timetable/coach?end=${end}T00:00:00.000Z&start=${start}T00:00:00.000Z`, fetchOptions())
       .then(checkData)

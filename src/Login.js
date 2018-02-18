@@ -4,7 +4,7 @@ import { StyleSheet, Text, View, Dimensions, TouchableOpacity, TextInput } from 
 import Icon from 'react-native-vector-icons/FontAwesome';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { setToken, startOauthLogin, startLoginWithPass } from './actions';
+import { setToken, startOauthLogin, startLoginWithPass, rootNavigate } from './actions';
 import ApiRequest from './utils/ApiRequest';
 import { mobileSignUrl, colors } from './utils/constants';
 import { setNavigator } from './utils/NavigationService';
@@ -26,6 +26,7 @@ class Login extends Component {
     setToken: PropTypes.func.isRequired,
     startLoginWithPass: PropTypes.func.isRequired,
     navigate: PropTypes.func.isRequired,
+    goToCalendar: PropTypes.func.isRequired,
   };
 
   state = {
@@ -47,6 +48,28 @@ class Login extends Component {
     this.props.startLoginWithPass(login, password);
   };
 
+  goToCalendar = () => {
+    this.props.goToCalendar();
+  };
+
+  onOauthNavigation = socialCode => (state, stopLoading) => {
+    if (state.url.indexOf(mobileSignUrl) >= 0) {
+      const url = state.url;
+      const i1 = url.indexOf('code=');
+      if (i1 > 0) {
+        const code = url.substring(i1 + 'code='.length, url.length);
+        // this.props.navigation.dispatch(NavigationActions.back());
+        ApiRequest.socialLogin(socialCode, code, Math.random(1).toString(), '{}').then((data) => {
+          if (data.token) {
+            stopLoading();
+            this.props.setToken(data.token);
+            this.goToCalendar();
+          }
+        });
+      }
+    }
+  };
+
   loginWithFacebook = () => {
     const fburl = [
       'https://www.facebook.com/v2.5/dialog/oauth?',
@@ -57,21 +80,7 @@ class Login extends Component {
 
     this.props.navigate('OAuthView', {
       url: fburl,
-      onNavigationStateChange: (state, stopLoading) => {
-        if (state.url.indexOf(mobileSignUrl) >= 0) {
-          const url = state.url;
-          const i1 = url.indexOf('code=');
-          if (i1 > 0) {
-            const token = url.substring(i1 + 'code='.length, url.length);
-            // this.props.navigation.dispatch(NavigationActions.back());
-            ApiRequest.getToken('facebook', 'code', token).then(data => data.text()).then((data) => {
-              stopLoading();
-              this.props.setToken(data);
-              this.goToCalendar();
-            });
-          }
-        }
-      },
+      onNavigationStateChange: this.onOauthNavigation('FACEBOOK'),
     });
   };
 
@@ -86,21 +95,7 @@ class Login extends Component {
 
     this.props.navigate('OAuthView', {
       url: vkurl,
-      onNavigationStateChange: (state, stopLoading) => {
-        if (state.url.indexOf(mobileSignUrl) >= 0) {
-          const url = state.url;
-          const i1 = url.indexOf('code=');
-          if (i1 > 0) {
-            const code = url.substring(i1 + 'code='.length, url.length);
-
-            ApiRequest.getToken('vkontakte', 'code', code).then(data => data.text()).then((data) => {
-              stopLoading();
-              this.props.setToken(data);
-              this.goToCalendar();
-            });
-          }
-        }
-      },
+      onNavigationStateChange: this.onOauthNavigation('VKONTAKTE'),
     });
   };
 
@@ -114,21 +109,7 @@ class Login extends Component {
 
     this.props.navigate('OAuthView', {
       url: instaurl,
-      onNavigationStateChange: (state, stopLoading) => {
-        if (state.url.indexOf(mobileSignUrl) >= 0) {
-          const url = state.url;
-          const i1 = url.indexOf('code=');
-          if (i1 > 0) {
-            const code = url.substring(i1 + 'code='.length, url.length);
-            // this.props.navigation.dispatch(NavigationActions.back());
-            ApiRequest.getToken('instagram', 'code', code).then(data => data.text()).then((data) => {
-              stopLoading();
-              this.props.setToken(data);
-              this.goToCalendar();
-            });
-          }
-        }
-      },
+      onNavigationStateChange: this.onOauthNavigation('INSTAGRAM'),
     });
   };
   loginWithGoogle = () => {
@@ -144,21 +125,7 @@ class Login extends Component {
 
     this.props.navigate('OAuthView', {
       url: googleurl,
-      onNavigationStateChange: (state, stopLoading) => {
-        if (state.url.indexOf(mobileSignUrl) >= 0) {
-          const url = state.url;
-          const i1 = url.indexOf('code=');
-          if (i1 > 0) {
-            const code = url.substring(i1 + 'code='.length, url.length);
-            // this.props.navigation.dispatch(NavigationActions.back());
-            ApiRequest.getToken('google', 'code', code).then(data => data.text()).then((data) => {
-              stopLoading();
-              this.props.setToken(data);
-              this.goToCalendar();
-            });
-          }
-        }
-      },
+      onNavigationStateChange: this.onOauthNavigation('GOOGLE'),
     });
   };
 
@@ -416,6 +383,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     setToken: token => dispatch(setToken(token)),
     startOauthLogin: network => dispatch(startOauthLogin(network)),
     startLoginWithPass: (username, password) => dispatch(startLoginWithPass(username, password)),
+    goToCalendar: () => dispatch(rootNavigate('TabsNavigator')),
     navigate: navigation.navigate,
   };
 };
