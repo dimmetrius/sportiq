@@ -1,7 +1,7 @@
 // import { call, put, takeEvery, takeLatest } from 'redux-saga/effects';
 import { takeEvery, call, put } from 'redux-saga/effects';
 import ApiRequest from '../utils/ApiRequest';
-import { navigate } from '../utils/NavigationService';
+import { navigate, goBack } from '../utils/NavigationService';
 
 // import { fetchUserInfo, fetchUserNotes, fetchUserRepos, postNote } from './userData';
 /*
@@ -24,16 +24,42 @@ function* startLoginWithPass(action) {
 
 function* rootNavigate(action) {
   const { routeName, params } = action;
+  if (routeName === '<=') {
+    yield call(goBack);
+    return;
+  }
   yield call(navigate, routeName, params);
+}
+
+function* startRegister(action) {
+  const { name, username, password, password2 } = action;
+  const { registering: { processing, success, failed }, ui: { setAuth } } = Actions;
+  if (password !== password2) {
+    // eslint-disable-next-line
+    alert('не совпадают пароли');
+    return;
+  }
+  const p = processing();
+  yield put(p);
+  const regData = yield call(ApiRequest.register, name, username, password, password2);
+
+  if (regData.code === 200) {
+    yield put(success(regData));
+    // eslint-disable-next-line
+    alert(regData.message);
+    yield put(setAuth());
+  } else {
+    // eslint-disable-next-line
+    alert(regData.error);
+    yield put(failed(regData));
+  }
 }
 
 function* mySaga() {
   yield [
     takeEvery(Actions.START_LOGIN_WITH_PASS, startLoginWithPass),
     takeEvery(Actions.ROOT_NAVIGATE, rootNavigate),
-    // takeEvery('USER_NOTES_FETCH_REQUESTED', fetchUserNotes),
-    // takeEvery('USER_REPOS_FETCH_REQUESTED', fetchUserRepos),
-    // takeEvery('USER_NOTE_POST_REQUESTED', postNote),
+    takeEvery(Actions.registering.startCode, startRegister),
   ];
 }
 

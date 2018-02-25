@@ -7,5 +7,6 @@ export const colors = {
   grassyGreen: '#2bc100',
   warmGrey: '#929292',
   white: '#ffffff',
+  black: '#000000',
   inputUnder: '#d7d7d7',
 };

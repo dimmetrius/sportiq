@@ -11,7 +11,7 @@ import store from './store';
 const stack = {
   Login: { screen: Login, navigationOptions: { header: null } },
   OAuthView: { screen: OAuthView, navigationOptions: { title: <Text> Авторизация </Text> } },
-  TabsNavigator: { screen: TabsNavigator, navigationOptions: { header: null } },
+  TabsNavigator: { screen: TabsNavigator, navigationOptions: { header: null, gesturesEnabled: false } },
 };
 
 const RootStack = StackNavigator(stack, { headerMode: 'float' });
@@ -32,15 +32,17 @@ class Sportiq extends Component {
     });
   }
 
-  renderLoad = () =>
-    (<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+  renderLoad = () => (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <Text> Загрузка... </Text>
-    </View>);
+    </View>
+  );
 
-  renderContent = () =>
-    (<Provider store={store}>
+  renderContent = () => (
+    <Provider store={store}>
       <RootStack />
-    </Provider>);
+    </Provider>
+  );
 
   render() {
     return this.state.persisted ? this.renderContent() : this.renderLoad();

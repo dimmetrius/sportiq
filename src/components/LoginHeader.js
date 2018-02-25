@@ -9,18 +9,18 @@ const propTypes = {
 
 const LoginHeader = ({ height }) => (
   <View style={[styles.container, { height }]}>
-    <View style={styles.content}>
-      <View style={styles.absolute}>
-        <Image style={styles.image} source={headerImage} />
-      </View>
-      <View style={styles.textLayer}>
-        <View style={styles.textBox}>
-          <Text style={styles.text}>
-            {'SportIQ'}
-          </Text>
+    {height > 0 ? (
+      <View style={styles.content}>
+        <View style={styles.absolute}>
+          <Image style={styles.image} source={headerImage} />
+        </View>
+        <View style={styles.textLayer}>
+          <View style={styles.textBox}>
+            <Text style={styles.text}>{'SportIQ'}</Text>
+          </View>
         </View>
       </View>
-    </View>
+    ) : null}
   </View>
 );
 

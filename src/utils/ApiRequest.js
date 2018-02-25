@@ -7,6 +7,11 @@ const getToken = () => {
   return state.user.token;
 };
 
+const getData = (data) => {
+  console.log(`getData:${JSON.stringify(data)}`);
+  return data.json();
+};
+
 const checkData = (data) => {
   console.log(`checkData:${JSON.stringify(data)}`);
   if (data.status >= 200 && data.status < 300) {
@@ -92,6 +97,15 @@ export default {
       `${sportiqHost}/mobile/1.0/api/login/authenticate`,
       fetchOptions('POST', JSON.stringify({ username, password, deviceId, deviceInfo }), true),
     ).then(checkData),
+  register: (name, username, password, password2) =>
+    fetch(
+      `${sportiqHost}/mobile/1.0/api/user/registration`,
+      fetchOptions(
+        'POST',
+        JSON.stringify({ username: name, email: username, password, matchingPassword: password2 }),
+        true,
+      ),
+    ).then(getData),
   socialLogin: (social, socialCode, deviceId, deviceInfo) =>
     fetch(
       `${sportiqHost}/mobile/1.0/api/login/authenticate`,
@@ -106,16 +120,25 @@ export default {
       .then(checkData)
       .then(embeddedTimetable),
   getFeedback: id =>
-    fetch(`${sportiqHost}/timetable/${id}/feedback`, fetchOptions()).then(checkData).then(embeddedFeedBack),
+    fetch(`${sportiqHost}/timetable/${id}/feedback`, fetchOptions())
+      .then(checkData)
+      .then(embeddedFeedBack),
   sendFeedback: (id, data) =>
-    fetch(`${sportiqHost}/timetable/${id}/feedback`, fetchOptions('PUT', data)).then(checkData).then(embeddedFeedBack),
-  getMember: id => fetch(`${sportiqHost}/timetable/${id}/member`, fetchOptions()).then(checkData).then(embeddedMembers),
+    fetch(`${sportiqHost}/timetable/${id}/feedback`, fetchOptions('PUT', data))
+      .then(checkData)
+      .then(embeddedFeedBack),
+  getMember: id =>
+    fetch(`${sportiqHost}/timetable/${id}/member`, fetchOptions())
+      .then(checkData)
+      .then(embeddedMembers),
   checkMember: (id, memberId, was) =>
     fetch(`${sportiqHost}/timetable/${id}/member/${memberId}/checkin`, fetchOptions(was ? 'DELETE' : 'POST')).then(
       checkResponse,
     ),
   getSubscriptions: () =>
-    fetch(`${sportiqHost}/subscription/my`, fetchOptions()).then(checkData).then(embeddedSubscriptions),
+    fetch(`${sportiqHost}/subscription/my`, fetchOptions())
+      .then(checkData)
+      .then(embeddedSubscriptions),
   openTransaction: timetableId =>
     fetch(`${sportiqHost}/access_transaction/`, fetchOptions('POST', JSON.stringify({ timetableId }))).then(checkData),
   closeTransaction: (transactionId, timetableId) =>
@@ -125,7 +148,10 @@ export default {
     ).then(checkData),
   loggedUser: () => fetch(`${sportiqHost}/loggedUser`, fetchOptions()).then(checkData),
   getUser: id => fetch(`${sportiqHost}/user/${id}`, fetchOptions()).then(checkData),
-  getClubs: () => fetch(`${sportiqHost}/club`, fetchOptions()).then(checkData).then(embeddedClub),
+  getClubs: () =>
+    fetch(`${sportiqHost}/club`, fetchOptions())
+      .then(checkData)
+      .then(embeddedClub),
   getClub: id => fetch(`${sportiqHost}/club/${id}`, fetchOptions()).then(checkData),
   beClubMember: id => fetch(`${sportiqHost}/club/${id}/member`, fetchOptions('PUT')).then(checkData),
 };

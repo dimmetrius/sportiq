@@ -1,10 +1,10 @@
 /* eslint-disable global-require */
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Dimensions, TouchableOpacity, TextInput } from 'react-native';
+import { StyleSheet, Text, View, Dimensions, TouchableOpacity, TextInput, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { setToken, startOauthLogin, startLoginWithPass, rootNavigate } from './actions';
+import { setToken, startOauthLogin, startLoginWithPass, registering, ui, rootNavigate } from './actions';
 import ApiRequest from './utils/ApiRequest';
 import { mobileSignUrl, colors } from './utils/constants';
 import { setNavigator } from './utils/NavigationService';
@@ -23,10 +23,19 @@ class Login extends Component {
       token: PropTypes.string,
       processing: PropTypes.bool,
     }),
+    ui: PropTypes.shape({
+      auth: PropTypes.bool,
+    }),
+    registering: PropTypes.shape({
+      processing: PropTypes.bool,
+    }),
     setToken: PropTypes.func.isRequired,
     startLoginWithPass: PropTypes.func.isRequired,
     navigate: PropTypes.func.isRequired,
     goToCalendar: PropTypes.func.isRequired,
+    startRegister: PropTypes.func.isRequired,
+    setAuth: PropTypes.func.isRequired,
+    setReg: PropTypes.func.isRequired,
   };
 
   state = {
@@ -34,6 +43,10 @@ class Login extends Component {
     kb: false,
     login: '',
     password: '',
+    regName: '',
+    regLogin: '',
+    regPass: '',
+    regPass2: '',
   };
 
   // Set up Linking
@@ -42,15 +55,6 @@ class Login extends Component {
   componentDidUpdate() {}
 
   componentWillUnmount() {}
-
-  loginByPassword = () => {
-    const { login, password } = this.state;
-    this.props.startLoginWithPass(login, password);
-  };
-
-  goToCalendar = () => {
-    this.props.goToCalendar();
-  };
 
   onOauthNavigation = socialCode => (state, stopLoading) => {
     if (state.url.indexOf(mobileSignUrl) >= 0) {
@@ -68,6 +72,22 @@ class Login extends Component {
         });
       }
     }
+  };
+
+  setAuthState() {
+    this.props.setAuth();
+  }
+  setRegState() {
+    this.props.setReg();
+  }
+
+  goToCalendar = () => {
+    this.props.goToCalendar();
+  };
+
+  loginByPassword = () => {
+    const { login, password } = this.state;
+    this.props.startLoginWithPass(login, password);
   };
 
   loginWithFacebook = () => {
@@ -129,9 +149,20 @@ class Login extends Component {
     });
   };
 
+  startRegister = () => {
+    const { regName, regLogin, regPass, regPass2 } = this.state;
+    const { processing } = this.props.registering;
+    if (processing) {
+      return;
+    }
+    this.props.startRegister(regName, regLogin, regPass, regPass2);
+  };
+
   render() {
-    const { kb, login, password } = this.state;
+    const { kb, login, password, regName, regLogin, regPass, regPass2 } = this.state;
     const { processing } = this.props.user;
+    const regProcessing = this.props.registering.processing;
+    const { auth } = this.props.ui;
     return (
       <KeyBoardAware
         keyboardWillShow={() => {
@@ -140,8 +171,10 @@ class Login extends Component {
         keyboardWillHide={() => this.setState({ kb: false })}
         style={styles.container}
       >
-        <LoginHeader height={kb ? headerHeight * 0.5 : headerHeight} />
-        <View style={[styles.section, { height: headerHeight * 0.8, justifyContent: 'space-between' }]}>
+        <LoginHeader height={kb ? headerHeight * (auth ? 0.5 : 0) : headerHeight} />
+        <View
+          style={[styles.section, { height: headerHeight * 0.8 * (auth ? 1 : 1.6), justifyContent: 'space-between' }]}
+        >
           <View
             style={{
               flexDirection: 'row',
@@ -149,116 +182,276 @@ class Login extends Component {
               marginTop: 10,
             }}
           >
-            <Text
-              style={{
-                fontFamily: 'Intro-Book',
-                fontSize: 15,
-              }}
-            >
-              Авторизация
-            </Text>
-            <Text
-              style={{
-                fontFamily: 'Intro-Book',
-                fontSize: 15,
-                color: colors.grassyGreen,
-              }}
-            >
-              Регистрация
-            </Text>
+            <TouchableOpacity style={{ marginVertical: 5 }} onPress={() => this.setAuthState()}>
+              <Text
+                style={{
+                  fontFamily: 'Intro-Book',
+                  fontSize: 15,
+                  color: auth ? colors.black : colors.grassyGreen,
+                }}
+              >
+                Авторизация
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={{ marginVertical: 5 }} onPress={() => this.setRegState()}>
+              <Text
+                style={{
+                  fontFamily: 'Intro-Book',
+                  fontSize: 15,
+                  color: auth ? colors.grassyGreen : colors.black,
+                }}
+              >
+                Регистрация
+              </Text>
+            </TouchableOpacity>
           </View>
-          <View style={{ flexDirection: 'column' }}>
-            <Text
-              style={{
-                top: -6,
-                position: 'absolute',
-                fontFamily: 'Intro-Book',
-                fontSize: 12,
-                color: colors.warmGrey,
-              }}
-            >
-              E-mail
-            </Text>
-            <TextInput
-              style={{
-                height: 32,
-                borderBottomColor: colors.inputUnder,
-                borderBottomWidth: 1,
-                fontFamily: 'Intro-Book',
-                fontSize: 15,
-                color: '#000000',
-              }}
-              keyboardType="email-address"
-              autoCapitalize="none"
-              onChangeText={text => this.setState({ login: text })}
-              value={login}
-            />
-          </View>
-          <View style={{ flexDirection: 'column' }}>
-            <Text
-              style={{
-                top: -6,
-                position: 'absolute',
-                fontFamily: 'Intro-Book',
-                fontSize: 12,
-                color: colors.warmGrey,
-              }}
-            >
-              Пароль
-            </Text>
-            <TextInput
-              style={{
-                height: 32,
-                borderBottomColor: colors.inputUnder,
-                borderBottomWidth: 1,
-                fontFamily: 'Intro-Book',
-                fontSize: 15,
-                color: '#000000',
-              }}
-              secureTextEntry
-              onChangeText={text => this.setState({ password: text })}
-              value={password}
-            />
-          </View>
-          <View style={[{ flexDirection: 'column', alignItems: 'flex-end' }]}>
-            <Text
-              style={{
-                fontFamily: 'Intro-Book',
-                fontSize: 12,
-                textAlign: 'center',
-                color: colors.warmGrey,
-              }}
-            >
-              Забыли пароль?
-            </Text>
-          </View>
+          {auth ? (
+            <View style={{ flexDirection: 'column' }}>
+              <Text
+                style={{
+                  top: -6,
+                  position: 'absolute',
+                  fontFamily: 'Intro-Book',
+                  fontSize: 12,
+                  color: colors.warmGrey,
+                }}
+              >
+                E-mail
+              </Text>
+              <TextInput
+                style={{
+                  height: 32,
+                  borderBottomColor: colors.inputUnder,
+                  borderBottomWidth: 1,
+                  fontFamily: 'Intro-Book',
+                  fontSize: 15,
+                  color: '#000000',
+                }}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                onChangeText={text => this.setState({ login: text })}
+                value={login}
+              />
+            </View>
+          ) : (
+            <View style={{ flexDirection: 'column' }}>
+              <Text
+                style={{
+                  top: -6,
+                  position: 'absolute',
+                  fontFamily: 'Intro-Book',
+                  fontSize: 12,
+                  color: colors.warmGrey,
+                }}
+              >
+                Имя и Фамилия
+              </Text>
+              <TextInput
+                style={{
+                  height: 32,
+                  borderBottomColor: colors.inputUnder,
+                  borderBottomWidth: 1,
+                  fontFamily: 'Intro-Book',
+                  fontSize: 15,
+                  color: '#000000',
+                }}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                onChangeText={text => this.setState({ regName: text })}
+                value={regName}
+              />
+            </View>
+          )}
+
+          {auth ? (
+            <View style={{ flexDirection: 'column' }}>
+              <Text
+                style={{
+                  top: -6,
+                  position: 'absolute',
+                  fontFamily: 'Intro-Book',
+                  fontSize: 12,
+                  color: colors.warmGrey,
+                }}
+              >
+                Пароль
+              </Text>
+              <TextInput
+                style={{
+                  height: 32,
+                  borderBottomColor: colors.inputUnder,
+                  borderBottomWidth: 1,
+                  fontFamily: 'Intro-Book',
+                  fontSize: 15,
+                  color: '#000000',
+                }}
+                secureTextEntry
+                onChangeText={text => this.setState({ password: text })}
+                value={password}
+              />
+            </View>
+          ) : (
+            <View style={{ flexDirection: 'column' }}>
+              <Text
+                style={{
+                  top: -6,
+                  position: 'absolute',
+                  fontFamily: 'Intro-Book',
+                  fontSize: 12,
+                  color: colors.warmGrey,
+                }}
+              >
+                E-mail
+              </Text>
+              <TextInput
+                style={{
+                  height: 32,
+                  borderBottomColor: colors.inputUnder,
+                  borderBottomWidth: 1,
+                  fontFamily: 'Intro-Book',
+                  fontSize: 15,
+                  color: '#000000',
+                }}
+                onChangeText={text => this.setState({ regLogin: text })}
+                value={regLogin}
+              />
+            </View>
+          )}
+
+          {!auth ? (
+            <View style={{ flexDirection: 'column' }}>
+              <Text
+                style={{
+                  top: -6,
+                  position: 'absolute',
+                  fontFamily: 'Intro-Book',
+                  fontSize: 12,
+                  color: colors.warmGrey,
+                }}
+              >
+                Пароль
+              </Text>
+              <TextInput
+                style={{
+                  height: 32,
+                  borderBottomColor: colors.inputUnder,
+                  borderBottomWidth: 1,
+                  fontFamily: 'Intro-Book',
+                  fontSize: 15,
+                  color: '#000000',
+                }}
+                secureTextEntry
+                onChangeText={text => this.setState({ regPass: text })}
+                value={regPass}
+              />
+            </View>
+          ) : null}
+
+          {!auth ? (
+            <View style={{ flexDirection: 'column' }}>
+              <Text
+                style={{
+                  top: -6,
+                  position: 'absolute',
+                  fontFamily: 'Intro-Book',
+                  fontSize: 12,
+                  color: colors.warmGrey,
+                }}
+              >
+                Повторите пароль
+              </Text>
+              <TextInput
+                style={{
+                  height: 32,
+                  borderBottomColor: colors.inputUnder,
+                  borderBottomWidth: 1,
+                  fontFamily: 'Intro-Book',
+                  fontSize: 15,
+                  color: '#000000',
+                }}
+                secureTextEntry
+                onChangeText={text => this.setState({ regPass2: text })}
+                value={regPass2}
+              />
+            </View>
+          ) : null}
+
+          {auth ? (
+            <View style={[{ flexDirection: 'column', alignItems: 'flex-end' }]}>
+              <Text
+                style={{
+                  fontFamily: 'Intro-Book',
+                  fontSize: 12,
+                  textAlign: 'center',
+                  color: colors.warmGrey,
+                }}
+              >
+                Забыли пароль?
+              </Text>
+            </View>
+          ) : null}
         </View>
+
         <View style={[styles.section, { height: 45 }]}>
-          <TouchableOpacity
-            onPress={this.loginByPassword}
-            style={{
-              flex: 1,
-              borderRadius: 4,
-              backgroundColor: colors.grassyGreen,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            <Text
+          {auth ? (
+            <TouchableOpacity
+              onPress={this.loginByPassword}
               style={{
-                fontFamily: 'Intro-Book',
-                fontSize: 15,
-                textAlign: 'center',
-                color: colors.white,
+                flex: 1,
+                borderRadius: 4,
+                backgroundColor: colors.grassyGreen,
+                justifyContent: 'center',
+                alignItems: 'center',
               }}
             >
-              {processing ? '...' : 'Войти'}
-            </Text>
-          </TouchableOpacity>
+              {processing ? (
+                <ActivityIndicator size="small" color="#FFFFFF" />
+              ) : (
+                <Text
+                  style={{
+                    fontFamily: 'Intro-Book',
+                    fontSize: 15,
+                    textAlign: 'center',
+                    color: colors.white,
+                  }}
+                >
+                  {'Войти'}
+                </Text>
+              )}
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              onPress={this.startRegister}
+              style={{
+                flex: 1,
+                borderRadius: 4,
+                backgroundColor: colors.grassyGreen,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              {regProcessing ? (
+                <ActivityIndicator size="small" color="#FFFFFF" />
+              ) : (
+                <Text
+                  style={{
+                    fontFamily: 'Intro-Book',
+                    fontSize: 15,
+                    textAlign: 'center',
+                    color: colors.white,
+                  }}
+                >
+                  {'Зарегистрироваться'}
+                </Text>
+              )}
+            </TouchableOpacity>
+          )}
         </View>
-        {kb
-          ? <View style={{ height: 10 }} />
-          : <View style={styles.section}>
+
+        {kb || !auth ? (
+          <View style={{ height: 10 }} />
+        ) : (
+          <View style={styles.section}>
             <Text
               style={{
                 fontFamily: 'Intro-Book',
@@ -267,23 +460,18 @@ class Login extends Component {
                 color: colors.warmGrey,
               }}
             >
-                или авторизоваться с помощью
+              или авторизоваться с помощью
             </Text>
             <View style={[styles.buttonsRow, { marginTop: 10 }]}>
               <View style={styles.button}>
-                <Icon.Button
-                  name="facebook"
-                  backgroundColor="#ffffff"
-                  onPress={this.loginWithFacebook}
-                  {...iconStyles}
-                >
-                    Facebook
+                <Icon.Button name="facebook" backgroundColor="#ffffff" onPress={this.loginWithFacebook} {...iconStyles}>
+                  Facebook
                 </Icon.Button>
               </View>
               <View style={{ width: 15 }} />
               <View style={styles.button}>
                 <Icon.Button name="vk" backgroundColor="#ffffff" onPress={this.loginWithVk} {...iconStyles}>
-                    Vkontakte
+                  Vkontakte
                 </Icon.Button>
               </View>
             </View>
@@ -295,17 +483,18 @@ class Login extends Component {
                   onPress={this.loginWithInstagram}
                   {...iconStyles}
                 >
-                    Instagram
+                  Instagram
                 </Icon.Button>
               </View>
               <View style={{ width: 15 }} />
               <View style={styles.button}>
                 <Icon.Button name="google" backgroundColor="#ffffff" onPress={this.loginWithGoogle} {...iconStyles}>
-                    Google
+                  Google
                 </Icon.Button>
               </View>
             </View>
-          </View>}
+          </View>
+        )}
       </KeyBoardAware>
     );
   }
@@ -374,6 +563,8 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => ({
   user: state.user,
+  registering: state.registering,
+  ui: state.ui,
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => {
@@ -383,7 +574,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     setToken: token => dispatch(setToken(token)),
     startOauthLogin: network => dispatch(startOauthLogin(network)),
     startLoginWithPass: (username, password) => dispatch(startLoginWithPass(username, password)),
+    startRegister: (name, username, password, password2) =>
+      dispatch(registering.start({ name, username, password, password2 })),
     goToCalendar: () => dispatch(rootNavigate('TabsNavigator')),
+    setAuth: () => dispatch(ui.setAuth()),
+    setReg: () => dispatch(ui.setReg()),
     navigate: navigation.navigate,
   };
 };
