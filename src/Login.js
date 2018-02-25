@@ -312,6 +312,7 @@ class Login extends Component {
                   fontSize: 15,
                   color: '#000000',
                 }}
+                secureTextEntry={false}
                 onChangeText={text => this.setState({ regLogin: text })}
                 value={regLogin}
               />
