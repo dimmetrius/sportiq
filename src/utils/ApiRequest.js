@@ -21,7 +21,11 @@ const checkData = (data) => {
     console.log('unauthorized');
     return {};
   }
-  return {};
+  try {
+    return data.json();
+  } catch (e) {
+    return {};
+  }
 };
 
 const checkResponse = (data) => {

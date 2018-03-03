@@ -1,6 +1,7 @@
 import React from 'react';
-import { TabNavigator, StackNavigator /* , TabBarBottom */ } from 'react-navigation';
-import { Platform } from 'react-native';
+import PropTypes from 'prop-types';
+import { TabNavigator, StackNavigator, TabBarBottom } from 'react-navigation';
+import { Platform, Text, View } from 'react-native';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import MyCalendar from './Calendar';
 import Subscriptions from './Subscriptions';
@@ -10,6 +11,13 @@ import QrCode from './QrCode';
 import FeedBack from './FeedBack';
 import Members from './Members';
 import { colors } from './utils/constants';
+import { showAlert } from './utils/alerts';
+import {
+  calendarNavService,
+  tabsNavService,
+  subscriptionsNavService,
+  clubsNavService,
+} from './utils/NavigationService';
 
 const isIos = Platform.OS === 'ios';
 const iconSize = isIos ? 30 : 15;
@@ -19,7 +27,21 @@ const CalendarStack = StackNavigator({
   // QrCode: { screen: QrCode, navigationOptions: { headerLeft: <Text> 0 </Text> } },
   QrCode: { screen: QrCode },
   FeedBack: { screen: FeedBack, navigationOptions: { title: 'Отзыв на тренировку' } },
-  Members: { screen: Members },
+  Members: {
+    screen: Members,
+    navigationOptions: {
+      header: (
+        <View
+          style={{
+            height: 80,
+            backgroundColor: 'white',
+          }}
+        >
+          <Text>This is CustomHeader</Text>
+        </View>
+      ),
+    },
+  },
 });
 
 const ClubsStack = StackNavigator({
@@ -30,7 +52,7 @@ const ClubsStack = StackNavigator({
 
 const initroutes = {
   calendar: {
-    screen: CalendarStack,
+    screen: (...props) => <CalendarStack {...props} ref={calendarNavService.setNavigator} />,
     navigationOptions: {
       tabBarLabel: 'Календарь',
       // eslint-disable-next-line react/prop-types
@@ -38,7 +60,7 @@ const initroutes = {
     },
   },
   subscriptions: {
-    screen: Subscriptions,
+    screen: (...props) => <Subscriptions {...props} ref={subscriptionsNavService.setNavigator} />,
     navigationOptions: {
       tabBarLabel: 'Абонементы',
       // eslint-disable-next-line react/prop-types
@@ -46,7 +68,7 @@ const initroutes = {
     },
   },
   clubs: {
-    screen: ClubsStack,
+    screen: (...props) => <ClubsStack {...props} ref={clubsNavService.setNavigator} />,
     navigationOptions: {
       tabBarLabel: 'Клубы',
       // eslint-disable-next-line react/prop-types
@@ -74,9 +96,28 @@ const tabBarComponent = ({ navigation, ...rest }) =>
   />);
 */
 
+const tabC = ({ jumpToIndex, ...props /* , navigation */ }) => (
+  <TabBarBottom
+    {...props}
+    jumpToIndex={(index) => {
+      if (index === 3) {
+        showAlert(JSON.stringify(props, null, 2));
+        console.log('clubsNavService', clubsNavService.config);
+      } else {
+        jumpToIndex(index);
+      }
+    }}
+  />
+);
+
+tabC.propTypes = {
+  jumpToIndex: PropTypes.func.isRequired,
+};
+
 const config = {
   tabBarPosition: 'bottom',
   initialRouteName: 'calendar',
+  tabBarComponent: tabC,
   tabBarOptions: {
     showIcon: true,
     activeTintColor: colors.grassyGreen,
@@ -101,4 +142,4 @@ const config = {
 
 const TabsNavigator = TabNavigator(initroutes, config);
 
-export default TabsNavigator;
+export default (...props) => <TabsNavigator {...props} ref={tabsNavService.setNavigator} />;

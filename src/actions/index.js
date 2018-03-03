@@ -10,6 +10,10 @@ export const UI_SET_AUTH = 'UI_SET_AUTH';
 export const UI_SET_REG = 'UI_SET_REG';
 
 export const ROOT_NAVIGATE = 'ROOT_NAVIGATE';
+export const TABS_NAVIGATE = 'TABS_NAVIGATE';
+export const CALENDAR_NAVIGATE = 'CALENDAR_NAVIGATE';
+export const SUBSCRIPTIONS_NAVIGATE = 'SUBSCRIPTIONS_NAVIGATE';
+export const CLUBS_NAVIGATE = 'CLUBS_NAVIGATE';
 
 function action(type, payload = {}) {
   return { type, ...payload };
@@ -44,7 +48,14 @@ export const loginWithPassProcessing = processing => action(LOGIN_WITH_PASS_PROC
 export const setCalendarData = data => action(SET_CALENDAR_DATA, { data });
 export const setLoggedUser = loggedUser => action(SET_LOGGED_USER, { loggedUser });
 export const setClubs = clubs => action(SET_CLUBS, { clubs });
-export const rootNavigate = (routeName, params) => action(ROOT_NAVIGATE, { routeName, params });
+
+// Navigation
+const navAction = code => (routeName, params) => action(code, { routeName, params });
+export const rootNavigate = navAction(ROOT_NAVIGATE);
+export const tabsNavigate = navAction(TABS_NAVIGATE);
+export const calendarNavigate = navAction(CALENDAR_NAVIGATE);
+export const subscriptionsNavigate = navAction(SUBSCRIPTIONS_NAVIGATE);
+export const clubsNavigate = navAction(CLUBS_NAVIGATE);
 
 export const registering = requestActions('REGISTERING');
 export const ui = {

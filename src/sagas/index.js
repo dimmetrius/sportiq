@@ -1,17 +1,28 @@
 // import { call, put, takeEvery, takeLatest } from 'redux-saga/effects';
 import { takeEvery, call, put } from 'redux-saga/effects';
 import ApiRequest from '../utils/ApiRequest';
-import { navigate, goBack } from '../utils/NavigationService';
+import { rootNavService } from '../utils/NavigationService';
+import { showAlert } from '../utils/alerts';
+import { validateEmail } from '../utils/validations';
 
 // import { fetchUserInfo, fetchUserNotes, fetchUserRepos, postNote } from './userData';
 /*
   Starts fetchUser on each dispatched `USER_FETCH_REQUESTED` action.
   Allows concurrent fetches of user.
 */
+
 import * as Actions from '../actions';
 
 function* startLoginWithPass(action) {
   const { username, password } = action;
+  if (!validateEmail(username)) {
+    showAlert('невалидный email');
+    return;
+  }
+  if (!(password.length > 0)) {
+    showAlert('пароль не может быть пустым');
+    return;
+  }
   yield put(Actions.loginWithPassProcessing(true));
   const loginData = yield call(ApiRequest.login, username, password, Math.random(1).toString(), '{}');
   if (loginData.token) {
@@ -25,33 +36,42 @@ function* startLoginWithPass(action) {
 function* rootNavigate(action) {
   const { routeName, params } = action;
   if (routeName === '<=') {
-    yield call(goBack);
+    yield call(rootNavService.goBack);
     return;
   }
-  yield call(navigate, routeName, params);
+  yield call(rootNavService.navigate, routeName, params);
 }
 
 function* startRegister(action) {
   const { name, username, password, password2 } = action;
   const { registering: { processing, success, failed }, ui: { setAuth } } = Actions;
-  if (password !== password2) {
-    // eslint-disable-next-line
-    alert('не совпадают пароли');
+  if (!(name.length > 0)) {
+    showAlert('имя не может быть пустым');
     return;
   }
-  const p = processing();
-  yield put(p);
+  if (!validateEmail(username)) {
+    showAlert('невалидный email');
+    return;
+  }
+  if (!(password.length > 0)) {
+    showAlert('пароль не может быть пустым');
+    return;
+  }
+  if (password !== password2) {
+    showAlert('не совпадают пароли');
+    return;
+  }
+
+  yield put(processing());
   const regData = yield call(ApiRequest.register, name, username, password, password2);
 
   if (regData.code === 200) {
     yield put(success(regData));
-    // eslint-disable-next-line
-    alert(regData.message);
+    showAlert(regData.message);
     yield put(setAuth());
   } else {
-    // eslint-disable-next-line
-    alert(regData.error);
     yield put(failed(regData));
+    showAlert(regData.error);
   }
 }
 

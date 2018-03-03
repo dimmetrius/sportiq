@@ -9,7 +9,7 @@ import GroupHeader from './components/GroupHeader';
 const { width } = Dimensions.get('window');
 const ROW_HEIGHT = 60;
 
-class Members extends Component {
+class Training extends Component {
   static propTypes = {
     navigation: PropTypes.shape({
       navigate: PropTypes.func.isRequired,
@@ -167,7 +167,7 @@ class Members extends Component {
           marginRight: 10,
         }}
       >
-        {description.map((d, id) => <Text key={id}> {d} </Text>)}
+        {description.map(d => <Text key={d}> {d} </Text>)}
       </View>
     );
   };
@@ -206,4 +206,4 @@ class Members extends Component {
   }
 }
 
-export default Members;
+export default Training;

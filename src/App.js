@@ -7,10 +7,11 @@ import Login from './Login';
 import TabsNavigator from './TabsNavigator';
 import OAuthView from './OAuthView';
 import store from './store';
+import { rootNavService } from './utils/NavigationService';
 
 const stack = {
-  Login: { screen: Login, navigationOptions: { header: null } },
-  OAuthView: { screen: OAuthView, navigationOptions: { title: <Text> Авторизация </Text> } },
+  // Login: { screen: Login, navigationOptions: { header: null } },
+  // OAuthView: { screen: OAuthView, navigationOptions: { title: <Text> Авторизация </Text> } },
   TabsNavigator: { screen: TabsNavigator, navigationOptions: { header: null, gesturesEnabled: false } },
 };
 
@@ -40,7 +41,7 @@ class Sportiq extends Component {
 
   renderContent = () => (
     <Provider store={store}>
-      <RootStack />
+      <RootStack ref={rootNavService.setNavigator} />
     </Provider>
   );
 

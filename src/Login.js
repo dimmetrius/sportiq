@@ -7,10 +7,10 @@ import { connect } from 'react-redux';
 import { setToken, startOauthLogin, startLoginWithPass, registering, ui, rootNavigate } from './actions';
 import ApiRequest from './utils/ApiRequest';
 import { mobileSignUrl, colors } from './utils/constants';
-import { setNavigator } from './utils/NavigationService';
 import LoginHeader from './components/LoginHeader';
 import KeyBoardAware from './components/KeyBoardAware';
 import socialConfig from './utils/socialConfig';
+import { showAlert } from './utils/alerts';
 
 const { width } = Dimensions.get('window');
 const IMG_HEIGHT = 435;
@@ -33,6 +33,7 @@ class Login extends Component {
     startLoginWithPass: PropTypes.func.isRequired,
     navigate: PropTypes.func.isRequired,
     goToCalendar: PropTypes.func.isRequired,
+    goToOauth: PropTypes.func.isRequired,
     startRegister: PropTypes.func.isRequired,
     setAuth: PropTypes.func.isRequired,
     setReg: PropTypes.func.isRequired,
@@ -57,17 +58,20 @@ class Login extends Component {
   componentWillUnmount() {}
 
   onOauthNavigation = socialCode => (state, stopLoading) => {
-    if (state.url.indexOf(mobileSignUrl) >= 0) {
+    if (state.url.indexOf(mobileSignUrl) >= 0 && state.loading) {
       const url = state.url;
       const i1 = url.indexOf('code=');
       if (i1 > 0) {
         const code = url.substring(i1 + 'code='.length, url.length);
         // this.props.navigation.dispatch(NavigationActions.back());
         ApiRequest.socialLogin(socialCode, code, Math.random(1).toString(), '{}').then((data) => {
+          stopLoading();
+          console.log(data);
           if (data.token) {
-            stopLoading();
             this.props.setToken(data.token);
             this.goToCalendar();
+          } else {
+            showAlert(data.message);
           }
         });
       }
@@ -90,50 +94,27 @@ class Login extends Component {
     this.props.startLoginWithPass(login, password);
   };
 
-  loginWithFacebook = () => {
-    const fburl = [
+  socialUrls = {
+    FACEBOOK: [
       'https://www.facebook.com/v2.5/dialog/oauth?',
       `client_id=${socialConfig.facebookAppId}&`,
       'response_type=code&',
       `redirect_uri=${mobileSignUrl}`,
-    ].join('');
-
-    this.props.navigate('OAuthView', {
-      url: fburl,
-      onNavigationStateChange: this.onOauthNavigation('FACEBOOK'),
-    });
-  };
-
-  loginWithVk = () => {
-    const vkurl = [
+    ].join(''),
+    VKONTAKTE: [
       'https://oauth.vk.com/authorize?',
       `client_id=${socialConfig.vkontakteAppId}&`,
       'display=mobile&',
       `redirect_uri=${mobileSignUrl}&`,
       'scope=friends&response_type=code&v=5.68',
-    ].join('');
-
-    this.props.navigate('OAuthView', {
-      url: vkurl,
-      onNavigationStateChange: this.onOauthNavigation('VKONTAKTE'),
-    });
-  };
-
-  loginWithInstagram = () => {
-    const instaurl = [
+    ].join(''),
+    INSTAGRAM: [
       'https://api.instagram.com/oauth/authorize?',
       `client_id=${socialConfig.instagramAppId}`,
       'response_type=code&',
       `redirect_uri=${mobileSignUrl}`,
-    ].join('');
-
-    this.props.navigate('OAuthView', {
-      url: instaurl,
-      onNavigationStateChange: this.onOauthNavigation('INSTAGRAM'),
-    });
-  };
-  loginWithGoogle = () => {
-    const googleurl = [
+    ].join(''),
+    GOOGLE: [
       'https://accounts.google.com/o/oauth2/v2/auth?',
       'scope=email profile&',
       'response_type=code&',
@@ -141,13 +122,24 @@ class Login extends Component {
       'url=https://oauth2.example.com/token&',
       `redirect_uri=${mobileSignUrl}`,
       `&client_id=${socialConfig.googleAppId}`,
-    ].join('');
+    ].join(''),
+  };
 
-    this.props.navigate('OAuthView', {
-      url: googleurl,
-      onNavigationStateChange: this.onOauthNavigation('GOOGLE'),
+  loginWith = (social) => {
+    const url = this.socialUrls[social];
+    this.props.goToOauth({
+      url,
+      onNavigationStateChange: this.onOauthNavigation(social),
     });
   };
+
+  loginWithFacebook = () => this.loginWith('FACEBOOK');
+
+  loginWithVk = () => this.loginWith('VKONTAKTE');
+
+  loginWithInstagram = () => this.loginWith('INSTAGRAM');
+
+  loginWithGoogle = () => this.loginWith('GOOGLE');
 
   startRegister = () => {
     const { regName, regLogin, regPass, regPass2 } = this.state;
@@ -173,7 +165,13 @@ class Login extends Component {
       >
         <LoginHeader height={kb ? headerHeight * (auth ? 0.5 : 0) : headerHeight} />
         <View
-          style={[styles.section, { height: headerHeight * 0.8 * (auth ? 1 : 1.6), justifyContent: 'space-between' }]}
+          style={[
+            styles.section,
+            {
+              height: headerHeight * 0.8 * (auth ? 1 : 1.6),
+              justifyContent: 'space-between',
+            },
+          ]}
         >
           <View
             style={{
@@ -570,7 +568,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   const { navigation } = ownProps;
-  setNavigator(navigation);
+  // setNavigator(navigation);
   return {
     setToken: token => dispatch(setToken(token)),
     startOauthLogin: network => dispatch(startOauthLogin(network)),
@@ -578,6 +576,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     startRegister: (name, username, password, password2) =>
       dispatch(registering.start({ name, username, password, password2 })),
     goToCalendar: () => dispatch(rootNavigate('TabsNavigator')),
+    goToOauth: params => dispatch(rootNavigate('OAuthView', params)),
     setAuth: () => dispatch(ui.setAuth()),
     setReg: () => dispatch(ui.setReg()),
     navigate: navigation.navigate,
