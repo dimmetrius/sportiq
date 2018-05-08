@@ -4,7 +4,7 @@ import { StyleSheet, Text, View, Dimensions, TouchableOpacity, TextInput, Activi
 import Icon from 'react-native-vector-icons/FontAwesome';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { setToken, startOauthLogin, startLoginWithPass, registering, ui, rootNavigate } from './actions';
+import { setToken, startOauthLogin, startLoginWithPass, registerRequest, ui, rootNavigate } from './actions';
 import ApiRequest from './utils/ApiRequest';
 import { mobileSignUrl, colors } from './utils/constants';
 import LoginHeader from './components/LoginHeader';
@@ -26,7 +26,7 @@ class Login extends Component {
     ui: PropTypes.shape({
       auth: PropTypes.bool,
     }),
-    registering: PropTypes.shape({
+    registerRequest: PropTypes.shape({
       processing: PropTypes.bool,
     }),
     setToken: PropTypes.func.isRequired,
@@ -51,7 +51,12 @@ class Login extends Component {
   };
 
   // Set up Linking
-  componentDidMount() {}
+  componentDidMount() {
+    const { user: { token }, goToCalendar } = this.props;
+    if (token) {
+      setTimeout(() => goToCalendar(), 300);
+    }
+  }
 
   componentDidUpdate() {}
 
@@ -66,27 +71,16 @@ class Login extends Component {
         // this.props.navigation.dispatch(NavigationActions.back());
         ApiRequest.socialLogin(socialCode, code, Math.random(1).toString(), '{}').then((data) => {
           stopLoading();
-          console.log(data);
+          // console.log(data);
           if (data.token) {
             this.props.setToken(data.token);
-            this.goToCalendar();
+            this.props.goToCalendar();
           } else {
             showAlert(data.message);
           }
         });
       }
     }
-  };
-
-  setAuthState() {
-    this.props.setAuth();
-  }
-  setRegState() {
-    this.props.setReg();
-  }
-
-  goToCalendar = () => {
-    this.props.goToCalendar();
   };
 
   loginByPassword = () => {
@@ -143,18 +137,30 @@ class Login extends Component {
 
   startRegister = () => {
     const { regName, regLogin, regPass, regPass2 } = this.state;
-    const { processing } = this.props.registering;
+    const { processing } = this.props.registerRequest;
     if (processing) {
       return;
     }
     this.props.startRegister(regName, regLogin, regPass, regPass2);
   };
 
+  renderLoad = text => (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text> {text} </Text>
+    </View>
+  );
+
   render() {
     const { kb, login, password, regName, regLogin, regPass, regPass2 } = this.state;
     const { processing } = this.props.user;
-    const regProcessing = this.props.registering.processing;
+    const regProcessing = this.props.registerRequest.processing;
     const { auth } = this.props.ui;
+    const { setAuth, setReg, user } = this.props;
+
+    if (user.token) {
+      return this.renderLoad('Авторизация');
+    }
+
     return (
       <KeyBoardAware
         keyboardWillShow={() => {
@@ -180,7 +186,7 @@ class Login extends Component {
               marginTop: 10,
             }}
           >
-            <TouchableOpacity style={{ marginVertical: 5 }} onPress={() => this.setAuthState()}>
+            <TouchableOpacity style={{ marginVertical: 5 }} onPress={setAuth}>
               <Text
                 style={{
                   fontFamily: 'Intro-Book',
@@ -191,7 +197,7 @@ class Login extends Component {
                 Авторизация
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity style={{ marginVertical: 5 }} onPress={() => this.setRegState()}>
+            <TouchableOpacity style={{ marginVertical: 5 }} onPress={setReg}>
               <Text
                 style={{
                   fontFamily: 'Intro-Book',
@@ -562,7 +568,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => ({
   user: state.user,
-  registering: state.registering,
+  registerRequest: state.registerRequest,
   ui: state.ui,
 });
 
@@ -574,7 +580,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     startOauthLogin: network => dispatch(startOauthLogin(network)),
     startLoginWithPass: (username, password) => dispatch(startLoginWithPass(username, password)),
     startRegister: (name, username, password, password2) =>
-      dispatch(registering.start({ name, username, password, password2 })),
+      dispatch(registerRequest.start({ name, username, password, password2 })),
     goToCalendar: () => dispatch(rootNavigate('TabsNavigator')),
     goToOauth: params => dispatch(rootNavigate('OAuthView', params)),
     setAuth: () => dispatch(ui.setAuth()),

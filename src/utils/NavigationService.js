@@ -8,7 +8,7 @@ class NavService {
 
   setNavigator = (nav) => {
     if (nav) {
-      if (this.name) console.log(this.name, nav);
+      // if (this.name) console.log(this.name, nav);
       this.config.navigator = nav;
     }
   };

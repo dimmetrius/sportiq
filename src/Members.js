@@ -167,7 +167,7 @@ class Members extends Component {
           marginRight: 10,
         }}
       >
-        {description.map((d, id) => <Text key={id}> {d} </Text>)}
+        <Text> {description} </Text>
       </View>
     );
   };

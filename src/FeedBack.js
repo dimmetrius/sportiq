@@ -1,48 +1,61 @@
 import React, { Component } from 'react';
-import { NavigationActions } from 'react-navigation';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { View, Text, TouchableOpacity, ActivityIndicator, StyleSheet } from 'react-native';
 import Stars from './components/Stars';
-import ApiRequest from './utils/ApiRequest';
+import { calendarNavigate, getFeedBackRequest, setFeedBackRequest } from './actions';
 import { colors } from './utils/constants';
 
 const rateSize = 35;
 class FeedBack extends Component {
   static propTypes = {
-    navigation: PropTypes.shape({
-      navigate: PropTypes.func.isRequired,
-      dispatch: PropTypes.func.isRequired,
-      state: PropTypes.shape(),
-    }),
+    goBack: PropTypes.func.isRequired,
+    getFeedBack: PropTypes.func.isRequired,
+    setFeedBack: PropTypes.func.isRequired,
+    loading: PropTypes.bool,
+    feedback: PropTypes.shape(),
+    id: PropTypes.string,
+    // getRequest: PropTypes.shape(),
+    setRequest: PropTypes.shape(),
   };
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      loading: true,
+  static defaultProps = {
+    loading: false,
+    feedback: {
       result: 0,
       coach: 0,
       program: 0,
       equipment: 0,
       count: 0,
       rating: 0,
-    };
+    },
+    id: '',
+    getRequest: { processing: false },
+    setRequest: { processing: false },
+  };
+
+  constructor(props) {
+    super(props);
+    this.state = { ...props.feedback };
   }
 
   componentDidMount() {
-    ApiRequest.getFeedback(this.props.navigation.state.params.id).then((data) => {
-      const newState = {
-        ...this.state,
-        ...data,
-        loading: false,
-      };
-      console.log(newState);
-      this.setState(newState);
-    });
+    const { getFeedBack, id } = this.props;
+    getFeedBack(id);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({ ...nextProps.feedback });
+    if (
+      this.props.setRequest.processing === true &&
+      nextProps.setRequest.processing === false &&
+      nextProps.setRequest.ok === true
+    ) {
+      this.props.goBack();
+    }
   }
 
   saveResult = () => {
-    const id = this.props.navigation.state.params.id;
+    const { id, setFeedBack } = this.props;
     const state = this.state;
     const data = {
       result: state.result,
@@ -50,40 +63,12 @@ class FeedBack extends Component {
       program: state.program,
       equipment: state.equipment,
     };
-    this.setState({
-      loading: true,
-    });
-    ApiRequest.sendFeedback(id, JSON.stringify(data)).then(() => {
-      this.props.navigation.dispatch(NavigationActions.back());
-    });
-  };
-
-  renderDescription = () => {
-    const { description } = this.props.navigation.state.params;
-    if (!description) return null;
-    const html = description.join();
-    return (
-      <View
-        style={{
-          backgroundColor: 'white',
-          borderRadius: 10,
-          marginTop: 10,
-          marginLeft: 10,
-          marginRight: 10,
-        }}
-      >
-        <Text>
-          {html}
-        </Text>
-      </View>
-    );
+    setFeedBack(id, data);
   };
 
   render() {
-    const item = this.props.navigation.state.params;
-    // eslint-disable-next-line
-    const canQrGenerate = item.billable && item._links.get_access_code;
-    const { loading, result, coach, program, equipment } = this.state;
+    const { loading } = this.props;
+    const { result, coach, program, equipment } = this.state;
     return (
       <View
         style={{
@@ -183,9 +168,11 @@ class FeedBack extends Component {
           }}
           onPress={() => this.saveResult()}
         >
-          {loading
-            ? <ActivityIndicator animating color={'white'} size={1} />
-            : <Text style={{ color: '#ffffff' }}>Сохранить</Text>}
+          {loading ? (
+            <ActivityIndicator animating color={'white'} size={1} />
+          ) : (
+            <Text style={{ color: '#ffffff' }}>Сохранить</Text>
+          )}
         </TouchableOpacity>
       </View>
     );
@@ -196,4 +183,19 @@ const styles = StyleSheet.create({
   starGroupText: { marginTop: 15, marginBottom: 3 },
 });
 
-export default FeedBack;
+const mapStateToProps = (state, ownProps) => ({
+  user: state.user,
+  id: ownProps.navigation.state.params.id,
+  feedback: state.feedbacks[ownProps.navigation.state.params.id],
+  loading: state.getFeedBackRequest.processing || state.setFeedBackRequest.processing,
+  getRequest: state.getFeedBackRequest,
+  setRequest: state.setFeedBackRequest,
+});
+
+const mapDispatchToProps = dispatch => ({
+  goBack: () => dispatch(calendarNavigate('<=')),
+  getFeedBack: id => dispatch(getFeedBackRequest.start({ id })),
+  setFeedBack: (id, feedback) => dispatch(setFeedBackRequest.start({ id, feedback })),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(FeedBack);

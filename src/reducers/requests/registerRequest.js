@@ -1,17 +1,16 @@
-/* eslint-disable import/prefer-default-export */
-import * as ActionTypes from '../actions';
+import * as ActionTypes from './../../actions';
 
 const defaultState = { processing: false };
 
-const registering = (state = defaultState, action) => {
+const registerRequest = (state = defaultState, action) => {
   const { body, message, status, code, error, processing } = action;
   switch (action.type) {
-    case ActionTypes.registering.processingCode:
+    case ActionTypes.registerRequest.processingCode:
       return {
         ...state,
         processing,
       };
-    case ActionTypes.registering.successCode: {
+    case ActionTypes.registerRequest.successCode: {
       return {
         ...state,
         body,
@@ -22,7 +21,7 @@ const registering = (state = defaultState, action) => {
         processing,
       };
     }
-    case ActionTypes.registering.failedCode: {
+    case ActionTypes.registerRequest.failedCode: {
       return {
         ...state,
         body,
@@ -38,4 +37,4 @@ const registering = (state = defaultState, action) => {
   }
 };
 
-export default registering;
+export default registerRequest;

@@ -7,12 +7,11 @@ import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { setLoggedUser } from './actions';
-import ApiRequest from './utils/ApiRequest';
+import { findAsTraineeRequest, calendarNavigate, findAsCoachRequest } from './actions';
 import sport from './icons/sport';
 import padStart from './utils/padStart';
 import getStrTimer from './utils/getStrTimer';
-import { colors } from './utils/constants';
+import { colors, TRAINEE, COACH } from './utils/constants';
 import QrButton from './components/QrButton';
 
 LocaleConfig.locales.ru = {
@@ -39,33 +38,40 @@ LocaleConfig.defaultLocale = 'ru';
 
 class AgendaScreen extends Component {
   static propTypes = {
-    navigation: PropTypes.shape({
-      navigate: PropTypes.func.isRequired,
-      dispatch: PropTypes.func.isRequired,
-    }),
+    calendar: PropTypes.shape(),
     user: PropTypes.shape(),
-    setLoggedUser: PropTypes.func.isRequired,
+    findAsTrainee: PropTypes.func.isRequired,
+    findAsCoach: PropTypes.func.isRequired,
+    // goToFeedBack: PropTypes.func.isRequired,
+    // goToMembers: PropTypes.func.isRequired,
+    goToQrScan: PropTypes.func.isRequired,
+    goToTraining: PropTypes.func.isRequired,
   };
 
   constructor(props) {
     super(props);
     this.state = {
       month: LocaleConfig.locales.ru.monthNames[new Date().getMonth()],
-      items: {},
     };
   }
 
-  componentDidMount() {
-    ApiRequest.loggedUser().then((data) => {
-      this.props.setLoggedUser(data);
-    });
-  }
-
   onClickItem = (item) => {
-    if (item.type === 'my') {
-      this.props.navigation.navigate('FeedBack', item);
-    } else if (item.type === 'coach') {
-      this.props.navigation.navigate('Members', item);
+    const { /* goToFeedBack, goToMembers, */ goToTraining } = this.props;
+    const { trainingDetailsForTrainee, trainingDetailsForCoach } = item._links;
+    if (item.type === TRAINEE) {
+      if (trainingDetailsForTrainee) {
+        const arr = trainingDetailsForTrainee.href.split('/');
+        const id = arr[arr.length - 2];
+        // goToFeedBack({ id });
+        goToTraining(id);
+      }
+    } else if (item.type === COACH) {
+      if (trainingDetailsForCoach) {
+        const arr = trainingDetailsForCoach.href.split('/');
+        const id = arr[arr.length - 2];
+        // goToMembers({ id });
+        goToTraining(id);
+      }
     }
   };
 
@@ -77,117 +83,25 @@ class AgendaScreen extends Component {
 
   getColorByType(type) {
     switch (type) {
-      case 'my':
+      case TRAINEE:
         return '#ddecfb';
-      case 'coach':
+      case COACH:
         return '#ffe8e8';
       default:
         return '#ffffff';
     }
   }
 
-  addItems = (data, type) => {
-    data.forEach((event) => {
-      const dt = event.start.split('T')[0];
-      const items = this.state.items;
-      if (!items[dt]) {
-        items[dt] = [];
-      }
-
-      const itemId = items[dt].find(item => item.id === event.id);
-
-      const curItem = {
-        type,
-        ...event,
-      };
-      if (itemId) {
-        Object.assign(itemId, curItem);
-      } else {
-        items[dt].push(curItem);
-      }
-
-      items[dt].sort((a, b) => new Date(a.start) - new Date(b.start));
-
-      /*
-      curItem.name = event.group.name;
-      curItem.color = event.group.color;
-      curItem.icon = event.group.activities[0].className;
-      */
-    });
-  };
-
   rowHasChanged(r1, r2) {
     return r1.id !== r2.id;
   }
 
-  addEmptyDays = (year, month) => {
-    const endDayNum = new Date(year, month, 0).getDate();
-    for (let i = 1; i <= endDayNum; i++) {
-      const dt = [padStart(year, 4, '0'), padStart(month, 2, '0'), padStart(i, 2, '0')].join('-');
-
-      const items = this.state.items;
-      if (!items[dt]) {
-        items[dt] = [];
-      }
-    }
-  };
-
   loadItems(day) {
-    console.log(JSON.stringify(day));
+    const { findAsTrainee, findAsCoach } = this.props;
     this.setMonth(LocaleConfig.locales.ru.monthNames[day.month]);
-    const startDate = [padStart(day.year, 4, '0'), padStart(day.month, 2, '0'), '01'].join('-');
-
-    const endDayNum = new Date(day.year, day.month, 0).getDate();
-    const endDay = padStart(endDayNum, 2, '0');
-    const endDate = [padStart(day.year, 4, '0'), padStart(day.month, 2, '0'), endDay].join('-');
-
-    console.log('date', startDate, endDate);
-
-    ApiRequest.coach(startDate, endDate).then((data) => {
-      this.addItems(data, 'coach');
-      this.addEmptyDays(day.year, day.month);
-      this.refreshState();
-    });
-
-    ApiRequest.my(startDate, endDate).then((data) => {
-      this.addItems(data, 'my');
-      this.addEmptyDays(day.year, day.month);
-      this.refreshState();
-    });
-
-    /*
-    setTimeout(() => {
-      for (let i = -15; i < 85; i++) {
-        const time = day.timestamp + i * 24 * 60 * 60 * 1000;
-        const strTime = this.timeToString(time);
-
-        if (!this.state.items[strTime]) {
-          this.state.items[strTime] = [];
-          const numItems = Math.floor(Math.random() * 5);
-          for (let j = 0; j < numItems; j++) {
-            this.state.items[strTime].push({
-              name: `Item for ${strTime}`,
-              height: Math.max(50, Math.floor(Math.random() * 150)),
-            });
-          }
-        }
-      }
-      // console.log(this.state.items);
-    }, 1000);
-    */
-    // console.log(`Load Items for ${day.year}-${day.month}`);
+    findAsCoach(day);
+    findAsTrainee(day);
   }
-
-  refreshState = () => {
-    const newItems = {};
-    Object.keys(this.state.items).forEach((key) => {
-      newItems[key] = this.state.items[key];
-    });
-
-    this.setState({
-      items: newItems,
-    });
-  };
 
   timeToString(time) {
     const date = new Date(time);
@@ -249,19 +163,15 @@ class AgendaScreen extends Component {
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
               <Icon name="clock-o" size={12} color={colors.warmGrey} style={{ marginLeft: 15 }} />
-              <Text style={{ marginLeft: 3, fontSize: 12 }}>
-                {startTime}
-              </Text>
+              <Text style={{ marginLeft: 3, fontSize: 12 }}>{startTime}</Text>
               <MaterialCommunityIcon name="clock-start" size={12} color={colors.warmGrey} style={{ marginLeft: 15 }} />
-              <Text style={{ marginLeft: 3, fontSize: 12 }}>
-                {len}
-              </Text>
+              <Text style={{ marginLeft: 3, fontSize: 12 }}>{len}</Text>
               <View
                 style={{ width: 10, height: 10, marginLeft: 15, borderRadius: 5, backgroundColor: item.group.color }}
               />
-              {item.billable
-                ? <Ionicon name="logo-usd" size={12} color={colors.grassyGreen} style={{ marginLeft: 15 }} />
-                : null}
+              {item.billable ? (
+                <Ionicon name="logo-usd" size={12} color={colors.grassyGreen} style={{ marginLeft: 15 }} />
+              ) : null}
             </View>
           </View>
         </View>
@@ -274,7 +184,7 @@ class AgendaScreen extends Component {
       <View style={styles.container}>
         <Agenda
           // ref={(ref) => { if (ref) { this.AgRef = ref; console.log(ref); } }}
-          items={this.state.items}
+          items={this.props.calendar}
           loadItemsForMonth={day => this.loadItems(day)}
           selected={new Date().toJSON().split('T')[0]}
           renderItem={item => this.renderItem(item)}
@@ -302,9 +212,7 @@ class AgendaScreen extends Component {
           // theme={{calendarBackground: 'red', agendaKnobColor: 'green'}}
           // renderDay={(day, item) => (<Text>{day ? day.day: ''}</Text>)}
         />
-        {this.canQrScan()
-          ? <QrButton onPress={() => this.props.navigation.navigate('QrCode', { type: 'scan', mode: '0' })} />
-          : null}
+        {this.canQrScan() ? <QrButton onPress={() => this.props.goToQrScan({ type: 'scan', mode: '0' })} /> : null}
       </View>
     );
   }
@@ -336,6 +244,13 @@ const mapStateToProps = state => ({
   calendar: state.calendar,
 });
 
-export default connect(mapStateToProps, {
-  setLoggedUser,
-})(AgendaScreen);
+const mapDispatchToProps = dispatch => ({
+  findAsTrainee: day => dispatch(findAsTraineeRequest.start({ day })),
+  findAsCoach: day => dispatch(findAsCoachRequest.start({ day })),
+  goToFeedBack: params => dispatch(calendarNavigate('FeedBack', params)),
+  goToMembers: params => dispatch(calendarNavigate('Members', params)),
+  goToQrScan: params => dispatch(calendarNavigate('QrScan', params)),
+  goToTraining: params => dispatch(calendarNavigate('Training', params)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(AgendaScreen);

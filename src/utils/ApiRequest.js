@@ -7,13 +7,10 @@ const getToken = () => {
   return state.user.token;
 };
 
-const getData = (data) => {
-  console.log(`getData:${JSON.stringify(data)}`);
-  return data.json();
-};
+const getData = data => data.json();
 
 const checkData = (data) => {
-  console.log(`checkData:${JSON.stringify(data)}`);
+  // console.log(`checkData:${JSON.stringify(data)}`);
   if (data.status >= 200 && data.status < 300) {
     return data.json();
   }
@@ -76,8 +73,6 @@ const embeddedMembers = (data) => {
   return [];
 };
 
-const embeddedFeedBack = data => data.feedback || {};
-
 const fetchOptions = (method, data, noauth) => {
   const options = {};
   options.method = method || 'GET';
@@ -123,14 +118,6 @@ export default {
     fetch(`${sportiqHost}/timetable/my?end=${end}T00:00:00.000Z&start=${start}T00:00:00.000Z`, fetchOptions())
       .then(checkData)
       .then(embeddedTimetable),
-  getFeedback: id =>
-    fetch(`${sportiqHost}/timetable/${id}/feedback`, fetchOptions())
-      .then(checkData)
-      .then(embeddedFeedBack),
-  sendFeedback: (id, data) =>
-    fetch(`${sportiqHost}/timetable/${id}/feedback`, fetchOptions('PUT', data))
-      .then(checkData)
-      .then(embeddedFeedBack),
   getMember: id =>
     fetch(`${sportiqHost}/timetable/${id}/member`, fetchOptions())
       .then(checkData)
@@ -158,4 +145,21 @@ export default {
       .then(embeddedClub),
   getClub: id => fetch(`${sportiqHost}/club/${id}`, fetchOptions()).then(checkData),
   beClubMember: id => fetch(`${sportiqHost}/club/${id}/member`, fetchOptions('PUT')).then(checkData),
+  // >>
+  findAsTrainee: (start, end) =>
+    fetch(
+      `${sportiqHost}/mobile/1.0/api/timetable/trainee?start=${start}T00:00:00.000Z&end=${end}T00:00:00.000Z`,
+      fetchOptions(),
+    ),
+  findAsCoach: (start, end) =>
+    fetch(
+      `${sportiqHost}/mobile/1.0/api/timetable/coach?start=${start}T00:00:00.000Z&end=${end}T00:00:00.000Z`,
+      fetchOptions(),
+    ),
+  getFeedback: id => fetch(`${sportiqHost}/mobile/1.0/api/timetable/training/${id}/feedback`, fetchOptions()),
+  setFeedback: (id, data) =>
+    fetch(
+      `${sportiqHost}/mobile/1.0/api/timetable/training/${id}/feedback`,
+      fetchOptions('POST', JSON.stringify(data)),
+    ),
 };

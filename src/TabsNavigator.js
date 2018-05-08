@@ -10,8 +10,8 @@ import Club from './Club';
 import QrCode from './QrCode';
 import FeedBack from './FeedBack';
 import Members from './Members';
+import Training from './Training';
 import { colors } from './utils/constants';
-import { showAlert } from './utils/alerts';
 import {
   calendarNavService,
   tabsNavService,
@@ -26,6 +26,7 @@ const CalendarStack = StackNavigator({
   Calendar: { screen: MyCalendar, navigationOptions: { title: 'Тренировки' } },
   // QrCode: { screen: QrCode, navigationOptions: { headerLeft: <Text> 0 </Text> } },
   QrCode: { screen: QrCode },
+  Training: { screen: Training },
   FeedBack: { screen: FeedBack, navigationOptions: { title: 'Отзыв на тренировку' } },
   Members: {
     screen: Members,
@@ -85,24 +86,13 @@ const initroutes = {
   },
 };
 
-/*
-const tabBarComponent = ({ navigation, ...rest }) =>
-  (<TabBarBottom
-    {...rest}
-    navigation={{
-      ...navigation,
-      state: { ...navigation.state, routes: navigation.state.routes.filter(r => true) },
-    }}
-  />);
-*/
-
 const tabC = ({ jumpToIndex, ...props /* , navigation */ }) => (
   <TabBarBottom
     {...props}
     jumpToIndex={(index) => {
       if (index === 3) {
-        showAlert(JSON.stringify(props, null, 2));
-        console.log('clubsNavService', clubsNavService.config);
+        // showAlert(JSON.stringify(props, null, 2));
+        // console.log('clubsNavService', clubsNavService.config);
       } else {
         jumpToIndex(index);
       }

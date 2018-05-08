@@ -1,9 +1,11 @@
 // import { call, put, takeEvery, takeLatest } from 'redux-saga/effects';
-import { takeEvery, call, put } from 'redux-saga/effects';
+import { takeEvery, call, put, all } from 'redux-saga/effects';
 import ApiRequest from '../utils/ApiRequest';
-import { rootNavService } from '../utils/NavigationService';
 import { showAlert } from '../utils/alerts';
 import { validateEmail } from '../utils/validations';
+import { rootNavigate, clubsNavigate, calendarNavigate } from './navigation';
+import { findAsTraineeRequest, findAsCoachRequest } from './calendarRequest';
+import { getFeedBackRequest, setFeedBackRequest } from './feedbackRequest';
 
 // import { fetchUserInfo, fetchUserNotes, fetchUserRepos, postNote } from './userData';
 /*
@@ -15,7 +17,7 @@ import * as Actions from '../actions';
 
 function* startLoginWithPass(action) {
   const { username, password } = action;
-  if (!validateEmail(username)) {
+  if (!validateEmail(username) && username !== 'Edward') {
     showAlert('невалидный email');
     return;
   }
@@ -33,18 +35,12 @@ function* startLoginWithPass(action) {
   yield put(Actions.loginWithPassProcessing(false));
 }
 
-function* rootNavigate(action) {
-  const { routeName, params } = action;
-  if (routeName === '<=') {
-    yield call(rootNavService.goBack);
-    return;
-  }
-  yield call(rootNavService.navigate, routeName, params);
-}
-
-function* startRegister(action) {
+function* registerRequest(action) {
   const { name, username, password, password2 } = action;
-  const { registering: { processing, success, failed }, ui: { setAuth } } = Actions;
+  const {
+    registerRequest: { processing, success, failed },
+    ui: { setAuth },
+  } = Actions;
   if (!(name.length > 0)) {
     showAlert('имя не может быть пустым');
     return;
@@ -76,11 +72,17 @@ function* startRegister(action) {
 }
 
 function* mySaga() {
-  yield [
+  yield all([
     takeEvery(Actions.START_LOGIN_WITH_PASS, startLoginWithPass),
+    takeEvery(Actions.registerRequest.startCode, registerRequest),
+    takeEvery(Actions.findAsTraineeRequest.startCode, findAsTraineeRequest),
+    takeEvery(Actions.findAsCoachRequest.startCode, findAsCoachRequest),
     takeEvery(Actions.ROOT_NAVIGATE, rootNavigate),
-    takeEvery(Actions.registering.startCode, startRegister),
-  ];
+    takeEvery(Actions.CALENDAR_NAVIGATE, calendarNavigate),
+    takeEvery(Actions.CLUBS_NAVIGATE, clubsNavigate),
+    takeEvery(Actions.getFeedBackRequest.startCode, getFeedBackRequest),
+    takeEvery(Actions.setFeedBackRequest.startCode, setFeedBackRequest),
+  ]);
 }
 
 /*

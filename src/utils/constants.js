@@ -10,3 +10,6 @@ export const colors = {
   black: '#000000',
   inputUnder: '#d7d7d7',
 };
+
+export const TRAINEE = 'TRAINEE';
+export const COACH = 'COACH';

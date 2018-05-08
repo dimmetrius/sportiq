@@ -16,20 +16,25 @@ export default class Stars extends Component {
       activeIndex:
         this.props.rate === 0
           ? 0
-          : rounding === 'up' ? Math.round(this.props.rate * 2) / 2 : Math.floor(this.props.rate * 2) / 2,
+          : rounding === 'up'
+            ? Math.round(this.props.rate * 2) / 2
+            : Math.floor(this.props.rate * 2) / 2,
     };
   }
+
   componentWillReceiveProps(nextProps) {
     const { rounding } = nextProps;
     this.setState({
       activeIndex:
         nextProps.rate === 0
           ? 0
-          : rounding === 'up' ? Math.round(nextProps.rate * 2) / 2 : Math.floor(nextProps.rate * 2) / 2,
+          : rounding === 'up'
+            ? Math.round(nextProps.rate * 2) / 2
+            : Math.floor(nextProps.rate * 2) / 2,
     });
   }
 
-  changeActiveIndex(i: number) {
+  changeActiveIndex(i) {
     const { onStarPress, isHalfStarEnabled } = this.props;
     if (onStarPress) {
       onStarPress(isHalfStarEnabled ? i / 2 : i);

@@ -2,205 +2,152 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, ActivityIndicator, ScrollView, Image, Dimensions, Switch } from 'react-native';
-import ApiRequest from './utils/ApiRequest';
-import GroupHeader from './components/GroupHeader';
+import { View, Text, TouchableOpacity, ActivityIndicator, ScrollView, Image, Dimensions, Switch } from 'react-native';
+import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { colors } from './utils/constants';
 
-const { width } = Dimensions.get('window');
-const ROW_HEIGHT = 60;
+import ViewMoreText from './components/ViewMoreText';
 
 class Training extends Component {
-  static propTypes = {
-    navigation: PropTypes.shape({
-      navigate: PropTypes.func.isRequired,
-      dispatch: PropTypes.func.isRequired,
-      state: PropTypes.shape(),
-    }),
-  };
+  static propTypes = {};
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      loading: true,
-      switches: {},
-      members: [],
-    };
-  }
+  componentDidMount() {}
 
-  componentDidMount() {
-    this.refreshMembers();
-  }
+  getText = () => {
+    const a = [];
 
-  refreshMembers = () => {
-    ApiRequest.getMember(this.props.navigation.state.params.id).then((data) => {
-      const newState = {
-        ...this.state,
-        members: data,
-        switches: {},
-        loading: false,
-      };
-      console.log(newState);
-      this.setState(newState);
-    });
-  };
-
-  checkMember = (member) => {
-    const { id } = this.props.navigation.state.params;
-    const was = member._links.uncheck !== undefined;
-    const switches = this.state.switches;
-    const s = {};
-    s[member.id] = !was;
-    this.setState({
-      switches: {
-        ...switches,
-        ...s,
-      },
-    });
-    ApiRequest.checkMember(id, member.user.id, was).then(() => {
-      this.refreshMembers();
-    });
-  };
-
-  renderCheck = (member) => {
-    const { billable } = this.props.navigation.state.params;
-    let was = member._links.uncheck !== undefined;
-    let disabled = false;
-    const switches = this.state.switches;
-    if (switches[member.id] !== undefined) {
-      was = switches[member.id];
-      disabled = true;
+    for (let i = 0; i < 6; i++) {
+      a.push('999999999999999999999999999999999999999999999999999999999999999999999999999');
     }
-    if (!billable) return null;
-    if (member._links.check || member._links.uncheck) {
-      return (
-        <View
-          style={{
-            width: 80,
-            height: ROW_HEIGHT,
-            alignItems: 'center',
-            justifyContent: 'center',
-            borderRadius: 15,
-            flexDirection: 'column',
-            // backgroundColor: '#2ecc71',
-          }}
-        >
-          <Text style={{ fontSize: 10, color: was ? 'black' : 'red' }}>{was ? 'Присутствовал' : 'Отсутствовал'}</Text>
-          <View style={{ alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }}>
-            <Switch
-              style={{ margin: 5 }}
-              disabled={disabled}
-              value={was}
-              onValueChange={() => {
-                console.log('onValueChange');
-                this.checkMember(member);
-              }}
-            />
-          </View>
-        </View>
-      );
-    }
-    return (
-      <View
-        style={{
-          width: 80,
-          height: ROW_HEIGHT,
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        <View style={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-          <Text style={{ fontSize: 11, color: 'red' }}>Нет</Text>
-          <Text style={{ fontSize: 11, color: 'red' }}>абонемента</Text>
-        </View>
-      </View>
-    );
-  };
 
-  renderMember = (member) => {
-    const img = member.user.image.list.url;
-    return (
-      <View
-        key={member.id}
-        style={{ flex: 1, marginLeft: 10, marginRight: 10, marginTop: 5, marginBottom: 5, backgroundColor: '#ffffff' }}
-      >
-        <View style={{ flexDirection: 'row', alignItems: 'center', height: ROW_HEIGHT }}>
-          <View style={{ flexDirection: 'row', justifyContent: 'center', width: ROW_HEIGHT, height: ROW_HEIGHT }}>
-            <Image style={{ width: ROW_HEIGHT, height: ROW_HEIGHT }} source={{ uri: img }} />
-          </View>
-          <View style={{ flexDirection: 'row', width: width - (ROW_HEIGHT + 20), height: ROW_HEIGHT }}>
-            <View
-              style={{
-                flex: 1,
-                flexDirection: 'row',
-                height: ROW_HEIGHT,
-                alignItems: 'center',
-                justifyContent: 'flex-start',
-              }}
-            >
-              <Text style={{ marginLeft: 10 }}>{member.user.name}</Text>
-            </View>
-            <View
-              style={{
-                width: 100,
-                height: ROW_HEIGHT,
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              {this.renderCheck(member)}
-            </View>
-          </View>
-        </View>
-      </View>
-    );
-  };
-
-  renderDescription = () => {
-    const { description } = this.props.navigation.state.params;
-    if (!description) return null;
-    return (
-      <View
-        style={{
-          backgroundColor: 'white',
-          borderRadius: 10,
-          marginLeft: 10,
-          marginRight: 10,
-        }}
-      >
-        {description.map(d => <Text key={d}> {d} </Text>)}
-      </View>
-    );
+    return a.join('');
   };
 
   render() {
-    const { loading, members } = this.state;
-    const item = this.props.navigation.state.params;
-
     return (
       <View style={{ flex: 1, flexDirection: 'column' }}>
-        <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-          {loading ? (
-            <ActivityIndicator animating color={'white'} size={1} />
-          ) : (
-            <ScrollView>
-              <View style={{ flexDirection: 'column', paddingTop: 10 }}>
-                <GroupHeader item={item} />
+        <ScrollView>
+          <View style={{ flex: 1, flexDirection: 'column' }}>
+            <View
+              style={{
+                flex: 1,
+                height: 92,
+                marginHorizontal: 30,
+                // backgroundColor: 'red',
+                borderBottomWidth: 1,
+                borderBottomColor: colors.inputUnder,
+              }}
+            >
+              <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
+                <View style={{ flexDirection: 'column', justifyContent: 'center' }}>
+                  <Text> Клуб: </Text>
+                  <Text> Группа: </Text>
+                </View>
+                <View
+                  style={{
+                    flexDirection: 'column',
+                    alignItems: 'flex-start',
+                    justifyContent: 'center',
+                    maxWidth: '50%',
+                  }}
+                >
+                  <Text numberOfLines={1}> Berunner </Text>
+                  <Text numberOfLines={1}> Вечерняя группа Вечерняя группа</Text>
+                </View>
+                <View style={{ flexDirection: 'column', justifyContent: 'center' }}>
+                  <TouchableOpacity
+                    style={{
+                      width: 45,
+                      height: 45,
+                      borderRadius: 4,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      backgroundColor: 'white',
+                      shadowColor: 'rgba(0, 0, 0, 0.1)',
+                      shadowOffset: {
+                        width: 0,
+                        height: 0.5,
+                      },
+                      shadowRadius: 24.5,
+                      shadowOpacity: 1,
+                      borderStyle: 'solid',
+                      borderWidth: 0.5,
+                      borderColor: colors.inputUnder,
+                    }}
+                    onPress={() => null}
+                  >
+                    <MaterialIcon name="qrcode-scan" size={25} color="black" />
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+            <View
+              style={{
+                margin: 30,
+              }}
+            >
+              <ViewMoreText
+                numberOfLines={4}
+                renderViewMore={onPress => <Text onPress={onPress}>Показать больше</Text>}
+                renderViewLess={onPress => <Text onPress={onPress}>Показать меньше</Text>}
+              >
                 <Text
                   style={{
                     fontSize: 15,
                     fontWeight: 'bold',
-                    margin: 10,
-                    marginVertical: 5,
                   }}
                 >
-                  {item.group.name}
+                  ПЛАН ЗАНЯТИЯ
                 </Text>
-                {this.renderDescription()}
+                <Text> {this.getText()} </Text>
+              </ViewMoreText>
+            </View>
+            <View style={{ flex: 1, flexDirection: 'column', marginHorizontal: 30 }}>
+              <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
+                <View
+                  style={{
+                    flex: 1,
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    maxWidth: '70%',
+                  }}
+                >
+                  <Text
+                    numberOfLines={2}
+                    style={{
+                      fontSize: 15,
+                      fontWeight: 'bold',
+                      textAlign: 'left',
+                    }}
+                  >
+                    Вы пока не оценили тренировку
+                  </Text>
+                </View>
+                <TouchableOpacity
+                  style={{
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: colors.grassyGreen,
+                    height: 50,
+                    width: 125,
+                    borderRadius: 4,
+                    shadowColor: 'rgba(43, 193, 0, 0.6)',
+                    shadowOffset: {
+                      width: 0,
+                      height: 7.5,
+                    },
+                    shadowRadius: 17.5,
+                    shadowOpacity: 1,
+                  }}
+                  onPress={() => alert('Оценить')}
+                >
+                  <Text style={{ color: '#ffffff' }}>Оценить</Text>
+                </TouchableOpacity>
               </View>
-              {members.map(member => this.renderMember(member))}
-            </ScrollView>
-          )}
-        </View>
+            </View>
+          </View>
+        </ScrollView>
       </View>
     );
   }
