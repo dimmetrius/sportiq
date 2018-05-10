@@ -7,6 +7,8 @@ import { findAsTraineeRequest, findAsCoachRequest } from './requests/calendarReq
 import { getFeedBackRequest, setFeedBackRequest } from './requests/feedbackRequest';
 import ui from './ui';
 import feedbacks from './feedbacks';
+import { coachTrainings, traineeTrainings } from './trainings';
+import { getTrainingAsCoach, getTrainingAsTrainee } from './requests/trainingRequest';
 
 export default combineReducers({
   user,
@@ -14,10 +16,14 @@ export default combineReducers({
   feedbacks,
   clubs,
   ui,
+  coachTrainings,
+  traineeTrainings,
   // requests
   registerRequest,
   findAsTraineeRequest,
   findAsCoachRequest,
   getFeedBackRequest,
   setFeedBackRequest,
+  getTrainingAsCoach,
+  getTrainingAsTrainee,
 });

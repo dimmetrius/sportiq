@@ -26,7 +26,13 @@ export function* findAsTraineeRequest(action) {
 
   yield put(processing());
 
-  const timetable = yield call(ApiRequest.findAsTrainee, startDate, endDate);
+  let timetable;
+  try {
+    timetable = yield call(ApiRequest.findAsTrainee, startDate, endDate);
+  } catch (e) {
+    yield put(failed({}));
+    return;
+  }
 
   if (timetable.status === 200) {
     const json = yield timetable.json();
@@ -50,7 +56,13 @@ export function* findAsCoachRequest(action) {
 
   yield put(processing());
 
-  const timetable = yield call(ApiRequest.findAsCoach, startDate, endDate);
+  let timetable;
+  try {
+    timetable = yield call(ApiRequest.findAsCoach, startDate, endDate);
+  } catch (e) {
+    yield put(failed({ error: e }));
+    return;
+  }
 
   if (timetable.status === 200) {
     const json = yield timetable.json();

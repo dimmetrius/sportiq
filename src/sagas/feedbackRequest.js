@@ -1,8 +1,8 @@
-import { call, put } from 'redux-saga/effects';
+import { call, put, takeEvery, all } from 'redux-saga/effects';
 import ApiRequest from '../utils/ApiRequest';
 import * as Actions from '../actions';
 
-export function* getFeedBackRequest(action) {
+function* getFeedBackRequest(action) {
   const { id } = action;
   const {
     getFeedBackRequest: { processing, success, failed },
@@ -10,7 +10,13 @@ export function* getFeedBackRequest(action) {
 
   yield put(processing());
 
-  const feedback = yield call(ApiRequest.getFeedback, id);
+  let feedback;
+  try {
+    feedback = yield call(ApiRequest.getFeedback, id);
+  } catch (e) {
+    yield put(failed());
+    return;
+  }
 
   if (feedback.status === 200) {
     const json = yield feedback.json();
@@ -21,7 +27,7 @@ export function* getFeedBackRequest(action) {
   }
 }
 
-export function* setFeedBackRequest(action) {
+function* setFeedBackRequest(action) {
   const { id, feedback } = action;
   const {
     setFeedBackRequest: { processing, success, failed },
@@ -29,7 +35,13 @@ export function* setFeedBackRequest(action) {
 
   yield put(processing());
 
-  const res = yield call(ApiRequest.setFeedback, id, feedback);
+  let res;
+  try {
+    res = yield call(ApiRequest.setFeedback, id, feedback);
+  } catch (e) {
+    yield put(failed({ error: e }));
+    return;
+  }
 
   if (res.status === 200) {
     yield put(success());
@@ -37,4 +49,11 @@ export function* setFeedBackRequest(action) {
   } else {
     yield put(failed({}));
   }
+}
+
+export function sagas() {
+  return all([
+    takeEvery(Actions.getFeedBackRequest.startCode, getFeedBackRequest),
+    takeEvery(Actions.setFeedBackRequest.startCode, setFeedBackRequest),
+  ]);
 }

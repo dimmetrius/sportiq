@@ -2,28 +2,44 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { View, Text, TouchableOpacity, ActivityIndicator, ScrollView, Image, Dimensions, Switch } from 'react-native';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { colors } from './utils/constants';
+import { colors, TRAINEE, COACH } from './utils/constants';
+import { getTrainingAsCoach, getTrainingAsTrainee, calendarNavigate } from './actions';
 
 import ViewMoreText from './components/ViewMoreText';
 
 class Training extends Component {
-  static propTypes = {};
+  static propTypes = {
+    id: PropTypes.string,
+    type: PropTypes.string,
+    trainings: PropTypes.shape(),
+    training: PropTypes.shape(),
+    startRequest: PropTypes.func,
+  };
 
-  componentDidMount() {}
+  static defaultProps = {
+    id: '',
+    training: {
+      club: {},
+      group: {},
+    },
+  };
+
+  componentDidMount() {
+    const { id, startRequest } = this.props;
+    startRequest(id);
+  }
 
   getText = () => {
-    const a = [];
-
-    for (let i = 0; i < 6; i++) {
-      a.push('999999999999999999999999999999999999999999999999999999999999999999999999999');
-    }
-
-    return a.join('');
+    const { training } = this.props;
+    return training.description;
   };
 
   render() {
+    const { training, goToFeedBack, id } = this.props;
+    const { club, group } = training;
     return (
       <View style={{ flex: 1, flexDirection: 'column' }}>
         <ScrollView>
@@ -51,8 +67,8 @@ class Training extends Component {
                     maxWidth: '50%',
                   }}
                 >
-                  <Text numberOfLines={1}> Berunner </Text>
-                  <Text numberOfLines={1}> Вечерняя группа Вечерняя группа</Text>
+                  <Text numberOfLines={1}> {club.name} </Text>
+                  <Text numberOfLines={1}> {group.name}</Text>
                 </View>
                 <View style={{ flexDirection: 'column', justifyContent: 'center' }}>
                   <TouchableOpacity
@@ -140,7 +156,7 @@ class Training extends Component {
                     shadowRadius: 17.5,
                     shadowOpacity: 1,
                   }}
-                  onPress={() => alert('Оценить')}
+                  onPress={() => goToFeedBack(id)}
                 >
                   <Text style={{ color: '#ffffff' }}>Оценить</Text>
                 </TouchableOpacity>
@@ -153,4 +169,28 @@ class Training extends Component {
   }
 }
 
-export default Training;
+const mapStateToProps = (state, ownProps) => {
+  const { id, type } = ownProps.navigation.state.params;
+  const trainings = type === COACH ? state.coachTrainings : state.traineeTrainings;
+  const training = trainings[id];
+  return {
+    id,
+    type,
+    trainings,
+    training,
+  };
+};
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+  const { type } = ownProps.navigation.state.params;
+  const startRequestAsCoach = id => dispatch(getTrainingAsCoach.start({ id }));
+  const startRequestAsTrainee = id => dispatch(getTrainingAsTrainee.start({ id }));
+  const startRequest = type === COACH ? startRequestAsCoach : startRequestAsTrainee;
+  return {
+    startRequest,
+    goToFeedBack: id => dispatch(calendarNavigate('FeedBack', { id })),
+    // goToFeedBack: params => dispatch(rootNavigate('FeedBack', params)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Training);

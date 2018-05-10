@@ -162,4 +162,6 @@ export default {
       `${sportiqHost}/mobile/1.0/api/timetable/training/${id}/feedback`,
       fetchOptions('POST', JSON.stringify(data)),
     ),
+  getTrainingAsCoach: id => fetch(`${sportiqHost}/mobile/1.0/api/timetable/training/${id}/coach`, fetchOptions()),
+  getTrainingAsTrainee: id => fetch(`${sportiqHost}/mobile/1.0/api/timetable/training/${id}/trainee`, fetchOptions()),
 };

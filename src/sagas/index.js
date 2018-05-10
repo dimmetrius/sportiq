@@ -3,9 +3,10 @@ import { takeEvery, call, put, all } from 'redux-saga/effects';
 import ApiRequest from '../utils/ApiRequest';
 import { showAlert } from '../utils/alerts';
 import { validateEmail } from '../utils/validations';
-import { rootNavigate, clubsNavigate, calendarNavigate } from './navigation';
+import * as navigation from './navigation';
 import { findAsTraineeRequest, findAsCoachRequest } from './calendarRequest';
-import { getFeedBackRequest, setFeedBackRequest } from './feedbackRequest';
+import * as feedbackRequest from './feedbackRequest';
+import * as trainingRequest from './trainingRequest';
 
 // import { fetchUserInfo, fetchUserNotes, fetchUserRepos, postNote } from './userData';
 /*
@@ -73,15 +74,13 @@ function* registerRequest(action) {
 
 function* mySaga() {
   yield all([
+    navigation.sagas(),
     takeEvery(Actions.START_LOGIN_WITH_PASS, startLoginWithPass),
     takeEvery(Actions.registerRequest.startCode, registerRequest),
     takeEvery(Actions.findAsTraineeRequest.startCode, findAsTraineeRequest),
     takeEvery(Actions.findAsCoachRequest.startCode, findAsCoachRequest),
-    takeEvery(Actions.ROOT_NAVIGATE, rootNavigate),
-    takeEvery(Actions.CALENDAR_NAVIGATE, calendarNavigate),
-    takeEvery(Actions.CLUBS_NAVIGATE, clubsNavigate),
-    takeEvery(Actions.getFeedBackRequest.startCode, getFeedBackRequest),
-    takeEvery(Actions.setFeedBackRequest.startCode, setFeedBackRequest),
+    feedbackRequest.sagas(),
+    trainingRequest.sagas(),
   ]);
 }
 

@@ -4,24 +4,21 @@ import padStart from './../utils/padStart';
 const addItems = (state, day, data, type) => {
   const items = { ...state };
 
+  const newItems = {};
+  // группируем по дате
   data.forEach((event) => {
     const dt = event.start.split('T')[0];
+    if (!newItems[dt]) {
+      newItems[dt] = [];
+    }
+    newItems[dt].push({ ...event, type });
+  });
+
+  Object.keys(newItems).forEach((dt) => {
     if (!items[dt]) {
       items[dt] = [];
     }
-
-    const itemId = items[dt].find(item => item.id === event.id);
-
-    const curItem = {
-      type,
-      ...event,
-    };
-    if (itemId) {
-      Object.assign(itemId, curItem);
-    } else {
-      items[dt].push(curItem);
-    }
-
+    items[dt] = [...items[dt].filter(item => item.type !== type), ...newItems[dt]];
     items[dt].sort((a, b) => new Date(a.start) - new Date(b.start));
   });
 

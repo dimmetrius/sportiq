@@ -11,7 +11,7 @@ import { rootNavService } from './utils/NavigationService';
 import Training from './Training';
 
 const stack = {
-  Training: { screen: Training },
+  // Training: { screen: Training },
   Login: { screen: Login, navigationOptions: { header: null } },
   OAuthView: { screen: OAuthView, navigationOptions: { title: <Text> Авторизация </Text> } },
   TabsNavigator: { screen: TabsNavigator, navigationOptions: { header: null, gesturesEnabled: false } },

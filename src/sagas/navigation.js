@@ -1,4 +1,5 @@
-import { call } from 'redux-saga/effects';
+import { call, takeEvery, all } from 'redux-saga/effects';
+import * as Actions from '../actions';
 import { rootNavService, clubsNavService, calendarNavService } from '../utils/NavigationService';
 
 function* navigateWithService(service, action) {
@@ -10,14 +11,22 @@ function* navigateWithService(service, action) {
   yield call(service.navigate, routeName, params);
 }
 
-export function* rootNavigate(action) {
+function* rootNavigate(action) {
   yield call(navigateWithService, rootNavService, action);
 }
 
-export function* clubsNavigate(action) {
+function* clubsNavigate(action) {
   yield call(navigateWithService, clubsNavService, action);
 }
 
-export function* calendarNavigate(action) {
+function* calendarNavigate(action) {
   yield call(navigateWithService, calendarNavService, action);
+}
+
+export function sagas() {
+  return all([
+    takeEvery(Actions.ROOT_NAVIGATE, rootNavigate),
+    takeEvery(Actions.CALENDAR_NAVIGATE, calendarNavigate),
+    takeEvery(Actions.CLUBS_NAVIGATE, clubsNavigate),
+  ]);
 }

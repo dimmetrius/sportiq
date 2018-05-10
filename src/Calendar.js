@@ -42,7 +42,7 @@ class AgendaScreen extends Component {
     user: PropTypes.shape(),
     findAsTrainee: PropTypes.func.isRequired,
     findAsCoach: PropTypes.func.isRequired,
-    // goToFeedBack: PropTypes.func.isRequired,
+    goToFeedBack: PropTypes.func.isRequired,
     // goToMembers: PropTypes.func.isRequired,
     goToQrScan: PropTypes.func.isRequired,
     goToTraining: PropTypes.func.isRequired,
@@ -62,15 +62,15 @@ class AgendaScreen extends Component {
       if (trainingDetailsForTrainee) {
         const arr = trainingDetailsForTrainee.href.split('/');
         const id = arr[arr.length - 2];
-        // goToFeedBack({ id });
-        goToTraining(id);
+        // goToFeedBack(id);
+        goToTraining(id, TRAINEE);
       }
     } else if (item.type === COACH) {
       if (trainingDetailsForCoach) {
         const arr = trainingDetailsForCoach.href.split('/');
         const id = arr[arr.length - 2];
-        // goToMembers({ id });
-        goToTraining(id);
+        // goToMembers(id);
+        goToTraining(id, COACH);
       }
     }
   };
@@ -247,10 +247,10 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   findAsTrainee: day => dispatch(findAsTraineeRequest.start({ day })),
   findAsCoach: day => dispatch(findAsCoachRequest.start({ day })),
-  goToFeedBack: params => dispatch(calendarNavigate('FeedBack', params)),
-  goToMembers: params => dispatch(calendarNavigate('Members', params)),
-  goToQrScan: params => dispatch(calendarNavigate('QrScan', params)),
-  goToTraining: params => dispatch(calendarNavigate('Training', params)),
+  goToFeedBack: id => dispatch(calendarNavigate('FeedBack', { id })),
+  goToMembers: id => dispatch(calendarNavigate('Members', { id })),
+  goToQrScan: id => dispatch(calendarNavigate('QrScan', { id })),
+  goToTraining: (id, type) => dispatch(calendarNavigate('Training', { id, type })),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(AgendaScreen);
