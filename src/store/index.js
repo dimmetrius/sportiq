@@ -10,7 +10,7 @@ const sagaMiddleware = createSagaMiddleware();
 
 const store = compose(autoRehydrate())(createStore)(
   rootReducer,
-  // applyMiddleware(logger),
+  applyMiddleware(logger),
   applyMiddleware(sagaMiddleware),
 );
 

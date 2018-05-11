@@ -34,7 +34,6 @@ class Subscriptions extends Component {
         subscriptions: data,
         loading: false,
       };
-      console.log(newState);
       this.setState(newState);
     });
   }

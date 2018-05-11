@@ -3,20 +3,22 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { View, Text, TouchableOpacity, ActivityIndicator, ScrollView, Image, Dimensions, Switch } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { colors, TRAINEE, COACH } from './utils/constants';
-import { getTrainingAsCoach, getTrainingAsTrainee, calendarNavigate } from './actions';
+import { colors, COACH, TRAINEE } from './utils/constants';
+import { getTrainingAsCoach, getTrainingAsTrainee, getFeedBackRequest, calendarNavigate } from './actions';
 
-import ViewMoreText from './components/ViewMoreText';
+import ViewMore from './components/ViewMore';
 
 class Training extends Component {
   static propTypes = {
     id: PropTypes.string,
     type: PropTypes.string,
-    trainings: PropTypes.shape(),
     training: PropTypes.shape(),
-    startRequest: PropTypes.func,
+    feedback: PropTypes.shape(),
+    startTrainingRequest: PropTypes.func,
+    startFeedBackRequest: PropTypes.func,
+    goToFeedBack: PropTypes.func,
   };
 
   static defaultProps = {
@@ -25,25 +27,40 @@ class Training extends Component {
       club: {},
       group: {},
     },
+    feedback: {
+      result: 0,
+      coach: 0,
+      program: 0,
+      equipment: 0,
+      count: 0,
+      rating: 0,
+    },
   };
 
   componentDidMount() {
-    const { id, startRequest } = this.props;
-    startRequest(id);
+    const { id, startTrainingRequest, startFeedBackRequest } = this.props;
+    startTrainingRequest(id);
+    startFeedBackRequest(id);
   }
 
   getText = () => {
     const { training } = this.props;
+    const a = [];
+    for (let i = 0; i < 16; i++) {
+      a.push('999999999999999999999999999999999999999999999999999999999999999999999999999');
+    }
     return training.description;
   };
 
   render() {
-    const { training, goToFeedBack, id } = this.props;
+    const { training, feedback, type, goToFeedBack, id } = this.props;
+    const { result, coach, program, equipment } = feedback;
+    const rating = Math.round((result + coach + program + equipment) * 10 / 4) / 10;
     const { club, group } = training;
     return (
       <View style={{ flex: 1, flexDirection: 'column' }}>
         <ScrollView>
-          <View style={{ flex: 1, flexDirection: 'column' }}>
+          <View style={{ flex: 1, flexDirection: 'column', marginBottom: 50 }}>
             <View
               style={{
                 flex: 1,
@@ -56,19 +73,35 @@ class Training extends Component {
             >
               <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
                 <View style={{ flexDirection: 'column', justifyContent: 'center' }}>
-                  <Text> Клуб: </Text>
-                  <Text> Группа: </Text>
+                  <Text style={[styles.clubGroup, { marginBottom: 12 }]}> Клуб: </Text>
+                  <Text style={styles.clubGroup}> Группа: </Text>
                 </View>
                 <View
                   style={{
+                    flex: 1,
                     flexDirection: 'column',
                     alignItems: 'flex-start',
                     justifyContent: 'center',
-                    maxWidth: '50%',
+                    marginLeft: 20,
                   }}
                 >
-                  <Text numberOfLines={1}> {club.name} </Text>
-                  <Text numberOfLines={1}> {group.name}</Text>
+                  <Text style={[styles.clubGroupValue, { marginBottom: 12 }]} numberOfLines={1}>
+                    {club.name}
+                  </Text>
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <View
+                      style={{
+                        height: 10,
+                        width: 10,
+                        borderRadius: 5,
+                        marginRight: 10,
+                        backgroundColor: group.color,
+                      }}
+                    />
+                    <Text style={styles.clubGroupValue} numberOfLines={1}>
+                      {group.name}
+                    </Text>
+                  </View>
                 </View>
                 <View style={{ flexDirection: 'column', justifyContent: 'center' }}>
                   <TouchableOpacity
@@ -102,66 +135,91 @@ class Training extends Component {
                 margin: 30,
               }}
             >
-              <ViewMoreText
-                numberOfLines={4}
-                renderViewMore={onPress => <Text onPress={onPress}>Показать больше</Text>}
-                renderViewLess={onPress => <Text onPress={onPress}>Показать меньше</Text>}
+              <Text
+                style={{
+                  fontSize: 15,
+                  fontWeight: 'bold',
+                  marginBottom: 11,
+                }}
               >
-                <Text
-                  style={{
-                    fontSize: 15,
-                    fontWeight: 'bold',
-                  }}
-                >
-                  ПЛАН ЗАНЯТИЯ
-                </Text>
-                <Text> {this.getText()} </Text>
-              </ViewMoreText>
+                ПЛАН ЗАНЯТИЯ
+              </Text>
+              <ViewMore
+                renderViewMore={onPress => (
+                  <Text style={styles.moreLess} onPress={onPress}>
+                    Показать больше
+                  </Text>
+                )}
+                renderViewLess={onPress => (
+                  <Text style={styles.moreLess} onPress={onPress}>
+                    Показать меньше
+                  </Text>
+                )}
+              >
+                <Text style={{ fontSize: 15 }}> {this.getText()} </Text>
+              </ViewMore>
             </View>
-            <View style={{ flex: 1, flexDirection: 'column', marginHorizontal: 30 }}>
-              <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
+            {type === TRAINEE ? (
+              <View style={{ flex: 1, flexDirection: 'column', marginHorizontal: 30 }}>
                 <View
                   style={{
-                    flex: 1,
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                    maxWidth: '70%',
+                    marginBottom: 10,
                   }}
                 >
                   <Text
-                    numberOfLines={2}
                     style={{
                       fontSize: 15,
                       fontWeight: 'bold',
-                      textAlign: 'left',
+                      marginBottom: 18,
                     }}
                   >
-                    Вы пока не оценили тренировку
+                    ОЦЕНКА ТРЕНИРОВКИ
                   </Text>
                 </View>
-                <TouchableOpacity
-                  style={{
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    backgroundColor: colors.grassyGreen,
-                    height: 50,
-                    width: 125,
-                    borderRadius: 4,
-                    shadowColor: 'rgba(43, 193, 0, 0.6)',
-                    shadowOffset: {
-                      width: 0,
-                      height: 7.5,
-                    },
-                    shadowRadius: 17.5,
-                    shadowOpacity: 1,
-                  }}
-                  onPress={() => goToFeedBack(id)}
-                >
-                  <Text style={{ color: '#ffffff' }}>Оценить</Text>
-                </TouchableOpacity>
+                <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
+                  <View
+                    style={{
+                      flex: 1,
+                      flexDirection: 'column',
+                      justifyContent: 'center',
+                      maxWidth: '70%',
+                    }}
+                  >
+                    <Text
+                      numberOfLines={2}
+                      style={{
+                        fontSize: 15,
+                        fontWeight: 'bold',
+                        textAlign: 'left',
+                      }}
+                    >
+                      {rating ? `${rating}` : 'Вы пока не оценили тренировку'}
+                    </Text>
+                  </View>
+                  <TouchableOpacity
+                    style={{
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      backgroundColor: colors.grassyGreen,
+                      height: 50,
+                      width: 125,
+                      borderRadius: 4,
+                      shadowColor: 'rgba(43, 193, 0, 0.6)',
+                      shadowOffset: {
+                        width: 0,
+                        height: 7.5,
+                      },
+                      shadowRadius: 17.5,
+                      shadowOpacity: 1,
+                    }}
+                    onPress={() => goToFeedBack(id)}
+                  >
+                    <Text style={{ color: '#ffffff' }}>Оценить</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
-            </View>
+            ) : null}
           </View>
         </ScrollView>
       </View>
@@ -169,15 +227,32 @@ class Training extends Component {
   }
 }
 
+const styles = StyleSheet.create({
+  moreLess: {
+    fontSize: 15,
+    color: colors.grassyGreen,
+  },
+  clubGroup: {
+    textAlign: 'left',
+    fontWeight: 'bold',
+    fontSize: 15,
+  },
+  clubGroupValue: {
+    textAlign: 'left',
+    fontSize: 15,
+  },
+});
+
 const mapStateToProps = (state, ownProps) => {
   const { id, type } = ownProps.navigation.state.params;
   const trainings = type === COACH ? state.coachTrainings : state.traineeTrainings;
   const training = trainings[id];
+  const feedback = state.feedbacks[id];
   return {
     id,
     type,
-    trainings,
     training,
+    feedback,
   };
 };
 
@@ -185,9 +260,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   const { type } = ownProps.navigation.state.params;
   const startRequestAsCoach = id => dispatch(getTrainingAsCoach.start({ id }));
   const startRequestAsTrainee = id => dispatch(getTrainingAsTrainee.start({ id }));
-  const startRequest = type === COACH ? startRequestAsCoach : startRequestAsTrainee;
+  const startTrainingRequest = type === COACH ? startRequestAsCoach : startRequestAsTrainee;
+  const startFeedBackRequest = id => dispatch(getFeedBackRequest.start({ id }));
   return {
-    startRequest,
+    startTrainingRequest,
+    startFeedBackRequest,
     goToFeedBack: id => dispatch(calendarNavigate('FeedBack', { id })),
     // goToFeedBack: params => dispatch(rootNavigate('FeedBack', params)),
   };

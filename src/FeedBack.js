@@ -44,7 +44,9 @@ class FeedBack extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({ ...nextProps.feedback });
+    if (JSON.stringify(nextProps.feedback) !== JSON.stringify(this.props.feedback)) {
+      this.setState({ ...nextProps.feedback });
+    }
     if (
       this.props.setRequest.processing === true &&
       nextProps.setRequest.processing === false &&

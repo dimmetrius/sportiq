@@ -42,7 +42,7 @@ class AgendaScreen extends Component {
     user: PropTypes.shape(),
     findAsTrainee: PropTypes.func.isRequired,
     findAsCoach: PropTypes.func.isRequired,
-    goToFeedBack: PropTypes.func.isRequired,
+    // goToFeedBack: PropTypes.func.isRequired,
     // goToMembers: PropTypes.func.isRequired,
     goToQrScan: PropTypes.func.isRequired,
     goToTraining: PropTypes.func.isRequired,
