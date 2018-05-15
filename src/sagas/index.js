@@ -1,4 +1,5 @@
 // import { call, put, takeEvery, takeLatest } from 'redux-saga/effects';
+import { ActionSheetIOS, Platform } from 'react-native';
 import { takeEvery, call, put, all } from 'redux-saga/effects';
 import ApiRequest from '../utils/ApiRequest';
 import { showAlert } from '../utils/alerts';
@@ -72,6 +73,53 @@ function* registerRequest(action) {
   }
 }
 
+function showActionSheet(options) {
+  return new Promise((resolve, reject) => {
+    try {
+      if (Platform.OS === 'ios') {
+        ActionSheetIOS.showActionSheetWithOptions(
+          {
+            options,
+            cancelButtonIndex: options.length,
+          },
+          (action, buttonIndex) => resolve({ action, buttonIndex }),
+        );
+      } else {
+        // UIManager.showPopupMenu(findNodeHandle(this.refs.menu), options, () => {}, onSelect);
+        reject();
+      }
+    } catch (e) {
+      reject(e);
+    }
+  });
+}
+
+function* otherPress() {
+  const { logOut } = Actions;
+  const options = ['Выйти из приложения', 'Отмена'];
+
+  let sheet;
+  try {
+    sheet = yield call(showActionSheet, options);
+    if (
+      (Platform.OS === 'ios' && sheet.action === 0) ||
+      (Platform.OS === 'android' && sheet.action === 'itemSelected' && sheet.buttonIndex === 0)
+    ) {
+      yield put(logOut());
+    }
+  } catch (e) {
+    return 0;
+  }
+  return 0;
+}
+
+function* onlogOut() {
+  const { setLoggedUser, setToken, rootNavigate } = Actions;
+  yield put(setLoggedUser({}));
+  yield put(setToken(''));
+  yield put(rootNavigate('__reset__'));
+}
+
 function* mySaga() {
   yield all([
     navigation.sagas(),
@@ -79,6 +127,8 @@ function* mySaga() {
     takeEvery(Actions.registerRequest.startCode, registerRequest),
     takeEvery(Actions.findAsTraineeRequest.startCode, findAsTraineeRequest),
     takeEvery(Actions.findAsCoachRequest.startCode, findAsCoachRequest),
+    takeEvery(Actions.OTHER_PRESS, otherPress),
+    takeEvery(Actions.LOG_OUT, onlogOut),
     feedbackRequest.sagas(),
     trainingRequest.sagas(),
   ]);

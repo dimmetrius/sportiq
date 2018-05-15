@@ -20,6 +20,16 @@ class NavService {
     }
   };
 
+  reset = (routeName) => {
+    if (this.config.navigator) {
+      this.config.navigator.dispatch({
+        type: NavigationActions.RESET,
+        index: 0,
+        actions: [{ type: NavigationActions.NAVIGATE, routeName }],
+      });
+    }
+  };
+
   goBack = () => {
     if (this.config.navigator) {
       const action = NavigationActions.back({});

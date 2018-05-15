@@ -18,6 +18,8 @@ import {
   subscriptionsNavService,
   clubsNavService,
 } from './utils/NavigationService';
+import store from './store';
+import { otherPress } from './actions';
 
 const isIos = Platform.OS === 'ios';
 const iconSize = isIos ? 30 : 15;
@@ -27,7 +29,7 @@ const CalendarStack = StackNavigator({
   // QrCode: { screen: QrCode, navigationOptions: { headerLeft: <Text> 0 </Text> } },
   QrCode: { screen: QrCode },
   Training: { screen: Training },
-  FeedBack: { screen: FeedBack, navigationOptions: { title: 'Отзыв на тренировку' } },
+  FeedBack: { screen: FeedBack },
   Members: {
     screen: Members,
     navigationOptions: {
@@ -93,6 +95,7 @@ const tabC = ({ jumpToIndex, ...props /* , navigation */ }) => (
       if (index === 3) {
         // showAlert(JSON.stringify(props, null, 2));
         // console.log('clubsNavService', clubsNavService.config);
+        store.dispatch(otherPress);
       } else {
         jumpToIndex(index);
       }

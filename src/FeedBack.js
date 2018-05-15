@@ -33,6 +33,24 @@ class FeedBack extends Component {
     setRequest: { processing: false },
   };
 
+  /*
+  static navigationOptions = {
+    header: (
+      <View style={{ height: 50, backgroundColor: 'white' }}>
+        <Text> Отзыв на тренировку </Text>
+      </View>
+    ),
+  };
+  */
+
+  static navigationOptions = {
+    title: 'Отзыв на тренировку',
+    headerBackTitle: '',
+    headerTruncatedBackTitle: '',
+    headerTitleStyle: { color: 'black' },
+    headerTintColor: colors.grassyGreen,
+  };
+
   constructor(props) {
     super(props);
     this.state = { ...props.feedback };

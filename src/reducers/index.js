@@ -8,7 +8,7 @@ import { getFeedBackRequest, setFeedBackRequest } from './requests/feedbackReque
 import ui from './ui';
 import feedbacks from './feedbacks';
 import { coachTrainings, traineeTrainings } from './trainings';
-import { getTrainingAsCoach, getTrainingAsTrainee } from './requests/trainingRequest';
+import { getTrainingAsCoach, getTrainingAsTrainee, setTrainingDescription } from './requests/trainingRequest';
 
 export default combineReducers({
   user,
@@ -26,4 +26,5 @@ export default combineReducers({
   setFeedBackRequest,
   getTrainingAsCoach,
   getTrainingAsTrainee,
+  setTrainingDescription,
 });

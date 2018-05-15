@@ -8,10 +8,8 @@ import TabsNavigator from './TabsNavigator';
 import OAuthView from './OAuthView';
 import store from './store';
 import { rootNavService } from './utils/NavigationService';
-import Training from './Training';
 
 const stack = {
-  // Training: { screen: Training },
   Login: { screen: Login, navigationOptions: { header: null } },
   OAuthView: { screen: OAuthView, navigationOptions: { title: <Text> Авторизация </Text> } },
   TabsNavigator: { screen: TabsNavigator, navigationOptions: { header: null, gesturesEnabled: false } },

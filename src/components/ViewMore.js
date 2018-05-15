@@ -2,7 +2,7 @@ import React from 'react';
 import { Text, View, ScrollView } from 'react-native';
 import PropTypes from 'prop-types';
 
-const defHeight = 40;
+const defHeight = 70;
 
 class ViewMore extends React.Component {
   constructor(props) {
@@ -23,7 +23,7 @@ class ViewMore extends React.Component {
   onContentLayout = (event) => {
     const { height } = event.nativeEvent.layout;
     const { expanded } = this.state;
-    const contentHeight = height;
+    const contentHeight = height + 15;
     let componentHeight;
     let _expanded;
     let needExpand;

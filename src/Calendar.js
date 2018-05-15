@@ -48,6 +48,11 @@ class AgendaScreen extends Component {
     goToTraining: PropTypes.func.isRequired,
   };
 
+  static navigationOptions = {
+    headerBackTitle: '',
+    headerTruncatedBackTitle: '',
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -63,14 +68,14 @@ class AgendaScreen extends Component {
         const arr = trainingDetailsForTrainee.href.split('/');
         const id = arr[arr.length - 2];
         // goToFeedBack(id);
-        goToTraining(id, TRAINEE);
+        goToTraining(id, TRAINEE, item.start);
       }
     } else if (item.type === COACH) {
       if (trainingDetailsForCoach) {
         const arr = trainingDetailsForCoach.href.split('/');
         const id = arr[arr.length - 2];
         // goToMembers(id);
-        goToTraining(id, COACH);
+        goToTraining(id, COACH, item.start);
       }
     }
   };
@@ -83,8 +88,8 @@ class AgendaScreen extends Component {
 
   getColorByType(type) {
     switch (type) {
-      case TRAINEE:
-        return '#ddecfb';
+      // case TRAINEE:
+      //   return '#ddecfb';
       case COACH:
         return '#ffe8e8';
       default:
@@ -118,7 +123,7 @@ class AgendaScreen extends Component {
     return (
       <View style={[styles.item, { flexDirection: 'column' }]}>
         <Text />
-        <Text>Нет занятий!</Text>
+        <Text style={{ marginLeft: 5, fontWeight: 'bold', fontSize: 15 }}>Нет занятий!</Text>
         <Text />
       </View>
     );
@@ -132,7 +137,7 @@ class AgendaScreen extends Component {
     const len = getStrTimer(new Date(item.end) - new Date(item.start));
     return (
       <TouchableOpacity onPress={() => this.onClickItem(item)}>
-        <View style={[styles.item, { flexDirection: 'row', backgroundColor: 'white' }]}>
+        <View style={[styles.item, { flexDirection: 'row', backgroundColor: this.getColorByType(item.type) }]}>
           <View style={{ width: 50, flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
               <View
@@ -250,7 +255,7 @@ const mapDispatchToProps = dispatch => ({
   goToFeedBack: id => dispatch(calendarNavigate('FeedBack', { id })),
   goToMembers: id => dispatch(calendarNavigate('Members', { id })),
   goToQrScan: id => dispatch(calendarNavigate('QrScan', { id })),
-  goToTraining: (id, type) => dispatch(calendarNavigate('Training', { id, type })),
+  goToTraining: (id, type, date) => dispatch(calendarNavigate('Training', { id, type, date })),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(AgendaScreen);

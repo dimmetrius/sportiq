@@ -8,6 +8,10 @@ function* navigateWithService(service, action) {
     yield call(service.goBack);
     return;
   }
+  if (routeName === '__reset__') {
+    yield call(service.reset, 'Login');
+    return;
+  }
   yield call(service.navigate, routeName, params);
 }
 
