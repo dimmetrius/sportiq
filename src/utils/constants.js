@@ -13,3 +13,8 @@ export const colors = {
 
 export const TRAINEE = 'TRAINEE';
 export const COACH = 'COACH';
+
+export const GEN_TRAINING_QR = 'GEN_TRAINING_QR';
+export const qrGenCodes = {
+  [GEN_TRAINING_QR]: '0',
+};

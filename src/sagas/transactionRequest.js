@@ -1,0 +1,48 @@
+import { call, put, all, takeEvery } from 'redux-saga/effects';
+import ApiRequest from '../utils/ApiRequest';
+import * as Actions from '../actions';
+
+function* openTransaction(action) {
+  const { id } = action;
+  const {
+    openTransaction: { processing, success, failed },
+  } = Actions;
+
+  yield put(processing());
+
+  const training = yield call(ApiRequest.openTransaction, id);
+
+  if (training.status === 200) {
+    const json = yield training.json();
+    yield put(success());
+    yield put(Actions.addTransactionItem(id, json));
+  } else {
+    yield put(failed());
+  }
+}
+
+function* closeTransaction(action) {
+  const { id } = action;
+  const {
+    closeTransaction: { processing, success, failed },
+  } = Actions;
+
+  yield put(processing());
+
+  const training = yield call(ApiRequest.closeTransaction, id);
+
+  if (training.status === 200) {
+    const json = yield training.json();
+    yield put(success());
+    yield put(Actions.addTransactionItem(id, json));
+  } else {
+    yield put(failed());
+  }
+}
+
+export function sagas() {
+  return all([
+    takeEvery(Actions.openTransaction.startCode, openTransaction),
+    takeEvery(Actions.closeTransaction.startCode, closeTransaction),
+  ]);
+}

@@ -1,4 +1,4 @@
-import { call, put } from 'redux-saga/effects';
+import { call, put, all, takeEvery } from 'redux-saga/effects';
 import ApiRequest from '../utils/ApiRequest';
 import * as Actions from '../actions';
 import padStart from './../utils/padStart';
@@ -71,4 +71,11 @@ export function* findAsCoachRequest(action) {
   } else {
     yield put(failed({}));
   }
+}
+
+export function sagas() {
+  return all([
+    takeEvery(Actions.findAsTraineeRequest.startCode, findAsTraineeRequest),
+    takeEvery(Actions.findAsCoachRequest.startCode, findAsCoachRequest),
+  ]);
 }

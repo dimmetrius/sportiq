@@ -7,7 +7,7 @@ import MyCalendar from './Calendar';
 import Subscriptions from './Subscriptions';
 import Clubs from './Clubs';
 import Club from './Club';
-import QrCode from './QrCode';
+import QrGen from './QrGen';
 import FeedBack from './FeedBack';
 import Members from './Members';
 import Training from './Training';
@@ -27,7 +27,7 @@ const iconSize = isIos ? 30 : 15;
 const CalendarStack = StackNavigator({
   Calendar: { screen: MyCalendar, navigationOptions: { title: 'Тренировки' } },
   // QrCode: { screen: QrCode, navigationOptions: { headerLeft: <Text> 0 </Text> } },
-  QrCode: { screen: QrCode },
+  QrGen: { screen: QrGen },
   Training: { screen: Training },
   FeedBack: { screen: FeedBack },
   Members: {
@@ -49,7 +49,7 @@ const CalendarStack = StackNavigator({
 
 const ClubsStack = StackNavigator({
   Clubs: { screen: Clubs },
-  QrCode: { screen: QrCode },
+  // QrCode: { screen: QrCode },
   Club: { screen: Club },
 });
 

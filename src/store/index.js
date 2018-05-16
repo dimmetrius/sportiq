@@ -1,5 +1,5 @@
 import { compose, createStore, applyMiddleware } from 'redux';
-// import logger from 'redux-logger';
+import logger from 'redux-logger';
 import { autoRehydrate } from 'redux-persist';
 import createSagaMiddleware from 'redux-saga';
 import rootReducer from '../reducers';
@@ -10,7 +10,7 @@ const sagaMiddleware = createSagaMiddleware();
 
 const store = compose(autoRehydrate())(createStore)(
   rootReducer,
-  // applyMiddleware(logger),
+  applyMiddleware(logger),
   applyMiddleware(sagaMiddleware),
 );
 

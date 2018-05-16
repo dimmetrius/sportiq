@@ -5,9 +5,10 @@ import ApiRequest from '../utils/ApiRequest';
 import { showAlert } from '../utils/alerts';
 import { validateEmail } from '../utils/validations';
 import * as navigation from './navigation';
-import { findAsTraineeRequest, findAsCoachRequest } from './calendarRequest';
-import * as feedbackRequest from './feedbackRequest';
-import * as trainingRequest from './trainingRequest';
+import * as calendar from './calendarRequest';
+import * as feedback from './feedbackRequest';
+import * as training from './trainingRequest';
+import * as transaction from './transactionRequest';
 
 // import { fetchUserInfo, fetchUserNotes, fetchUserRepos, postNote } from './userData';
 /*
@@ -125,25 +126,13 @@ function* mySaga() {
     navigation.sagas(),
     takeEvery(Actions.START_LOGIN_WITH_PASS, startLoginWithPass),
     takeEvery(Actions.registerRequest.startCode, registerRequest),
-    takeEvery(Actions.findAsTraineeRequest.startCode, findAsTraineeRequest),
-    takeEvery(Actions.findAsCoachRequest.startCode, findAsCoachRequest),
-    takeEvery(Actions.OTHER_PRESS, otherPress),
     takeEvery(Actions.LOG_OUT, onlogOut),
-    feedbackRequest.sagas(),
-    trainingRequest.sagas(),
+    calendar.sagas(),
+    takeEvery(Actions.OTHER_PRESS, otherPress),
+    feedback.sagas(),
+    training.sagas(),
+    transaction.sagas(),
   ]);
 }
-
-/*
-  Alternatively you may use takeLatest.
-
-  Does not allow concurrent fetches of user. If "USER_FETCH_REQUESTED" gets
-  dispatched while a fetch is already pending, that pending fetch is cancelled
-  and only the latest one will be run.
-*/
-
-// function* mySaga() {
-//   yield takeLatest("USER_FETCH_REQUESTED", fetchUser);
-// }
 
 export default mySaga;

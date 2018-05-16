@@ -130,13 +130,6 @@ export default {
     fetch(`${sportiqHost}/subscription/my`, fetchOptions())
       .then(checkData)
       .then(embeddedSubscriptions),
-  openTransaction: timetableId =>
-    fetch(`${sportiqHost}/access_transaction/`, fetchOptions('POST', JSON.stringify({ timetableId }))).then(checkData),
-  closeTransaction: (transactionId, timetableId) =>
-    fetch(
-      `${sportiqHost}/access_transaction/`,
-      fetchOptions('PUT', JSON.stringify({ id: transactionId, timetableId })),
-    ).then(checkData),
   loggedUser: () => fetch(`${sportiqHost}/loggedUser`, fetchOptions()).then(checkData),
   getUser: id => fetch(`${sportiqHost}/user/${id}`, fetchOptions()).then(checkData),
   getClubs: () =>
@@ -168,5 +161,15 @@ export default {
     fetch(
       `${sportiqHost}/mobile/1.0/api/timetable/training/${id}/plan`,
       fetchOptions('POST', JSON.stringify({ description })),
+    ),
+  openTransaction: timetableId =>
+    fetch(
+      `${sportiqHost}/mobile/1.0/api/access_transaction/${timetableId}`,
+      fetchOptions('POST', JSON.stringify({ timetableId })),
+    ),
+  closeTransaction: (transactionId, timetableId) =>
+    fetch(
+      `${sportiqHost}/access_transaction/`,
+      fetchOptions('PUT', JSON.stringify({ id: transactionId, timetableId })),
     ),
 };

@@ -20,6 +20,8 @@ export const CALENDAR_NAVIGATE = 'CALENDAR_NAVIGATE';
 export const SUBSCRIPTIONS_NAVIGATE = 'SUBSCRIPTIONS_NAVIGATE';
 export const CLUBS_NAVIGATE = 'CLUBS_NAVIGATE';
 
+export const TRANSACTION_ADD_ITEM = 'TRANSACTION_ADD_ITEM';
+
 export const EVENT_401 = 'EVENT_401';
 export const EVENT_403 = 'EVENT_403';
 export const EVENT_50X = 'EVENT_50X';
@@ -87,6 +89,11 @@ export const getTrainingAsCoach = generateRequestActions('GET_TRAINING_AS_COACH_
 export const setTrainingDescription = generateRequestActions('SET_TRAINING_DESCRIPTION');
 export const addCoachTraining = (id, training) => action(ADD_COACH_TRAINING, { id, training });
 export const addTraineeTraining = (id, training) => action(ADD_TRAINEE_TRAINING, { id, training });
+
+/* transactions */
+export const openTransaction = generateRequestActions('OPEN_TRANSACTION');
+export const closeTransaction = generateRequestActions('CLOSE_TRANSACTION');
+export const addTransactionItem = (id, transaction) => action(TRANSACTION_ADD_ITEM, { id, transaction });
 
 export const otherPress = action(OTHER_PRESS);
 

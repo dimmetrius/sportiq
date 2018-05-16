@@ -9,6 +9,8 @@ import ui from './ui';
 import feedbacks from './feedbacks';
 import { coachTrainings, traineeTrainings } from './trainings';
 import { getTrainingAsCoach, getTrainingAsTrainee, setTrainingDescription } from './requests/trainingRequest';
+import { openTransaction, closeTransaction } from './requests/transactionRequest';
+import { transactions } from './transactions';
 
 export default combineReducers({
   user,
@@ -18,13 +20,20 @@ export default combineReducers({
   ui,
   coachTrainings,
   traineeTrainings,
+  transactions,
   // requests
   registerRequest,
+  // calendar
   findAsTraineeRequest,
   findAsCoachRequest,
+  // feedback
   getFeedBackRequest,
   setFeedBackRequest,
+  // training
   getTrainingAsCoach,
   getTrainingAsTrainee,
   setTrainingDescription,
+  // transactions
+  openTransaction,
+  closeTransaction,
 });
