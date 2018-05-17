@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { View, Text, Image, TouchableOpacity, StyleSheet, ScrollView, TextInput } from 'react-native';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { colors, COACH, TRAINEE, GEN_TRAINING_QR } from './utils/constants';
+import { colors, COACH, TRAINEE, TRAINING_QR } from './utils/constants';
 import padStart from './utils/padStart';
 import {
   getTrainingAsCoach,
@@ -34,6 +34,7 @@ class Training extends Component {
     setTraining: PropTypes.func,
     goToFeedBack: PropTypes.func,
     goToQrGen: PropTypes.func,
+    goToQrScan: PropTypes.func,
   };
 
   static defaultProps = {
@@ -131,15 +132,17 @@ class Training extends Component {
   }
 
   openQR = () => {
-    const { type, id, goToQrGen, training } = this.props;
+    const { type, id, goToQrGen, goToQrScan, training } = this.props;
     if (type === TRAINEE) {
-      goToQrGen(GEN_TRAINING_QR, {
+      goToQrGen(TRAINING_QR, {
         trainingId: id,
         date: training.start,
         club: training.club.name,
         group: training.group.name,
       });
     }
+
+    goToQrScan(TRAINING_QR);
   }
 
   renderMember = (member) => {
@@ -501,6 +504,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     startUpdateTrainingDescription,
     goToFeedBack: id => dispatch(calendarNavigate('FeedBack', { id })),
     goToQrGen: (tp, data) => dispatch(calendarNavigate('QrGen', { type: tp, data })),
+    goToQrScan: tp => dispatch(calendarNavigate('QrScan', { type: tp })),
     setTraining,
     // goToFeedBack: params => dispatch(rootNavigate('FeedBack', params)),
   };

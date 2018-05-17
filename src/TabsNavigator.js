@@ -8,6 +8,7 @@ import Subscriptions from './Subscriptions';
 import Clubs from './Clubs';
 import Club from './Club';
 import QrGen from './QrGen';
+import QrScan from './QrScan';
 import FeedBack from './FeedBack';
 import Members from './Members';
 import Training from './Training';
@@ -28,6 +29,7 @@ const CalendarStack = StackNavigator({
   Calendar: { screen: MyCalendar, navigationOptions: { title: 'Тренировки' } },
   // QrCode: { screen: QrCode, navigationOptions: { headerLeft: <Text> 0 </Text> } },
   QrGen: { screen: QrGen },
+  QrScan: { screen: QrScan },
   Training: { screen: Training },
   FeedBack: { screen: FeedBack },
   Members: {

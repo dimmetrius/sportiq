@@ -22,19 +22,19 @@ function* openTransaction(action) {
 }
 
 function* closeTransaction(action) {
-  const { id } = action;
+  const { transactionId, timetableId } = action;
   const {
     closeTransaction: { processing, success, failed },
   } = Actions;
 
   yield put(processing());
 
-  const training = yield call(ApiRequest.closeTransaction, id);
+  const training = yield call(ApiRequest.closeTransaction, transactionId, timetableId);
 
   if (training.status === 200) {
     const json = yield training.json();
     yield put(success());
-    yield put(Actions.addTransactionItem(id, json));
+    yield put(Actions.addTransactionItem(timetableId, json));
   } else {
     yield put(failed());
   }

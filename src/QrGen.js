@@ -5,7 +5,7 @@ import QRCode from 'react-native-qrcode';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { openTransaction } from './actions';
-import { GEN_TRAINING_QR, qrGenCodes, colors } from './utils/constants';
+import { TRAINING_QR, qrGenCodes, colors } from './utils/constants';
 import padStart from './utils/padStart';
 
 class QrCode extends Component {
@@ -26,14 +26,14 @@ class QrCode extends Component {
 
   componentDidMount() {
     const { type, data, startOpenTransaction } = this.props;
-    if (type === GEN_TRAINING_QR) {
+    if (type === TRAINING_QR) {
       startOpenTransaction(data.trainingId);
     }
   }
 
   render() {
     const { type, transactions = {}, data } = this.props;
-    if (type === GEN_TRAINING_QR) {
+    if (type === TRAINING_QR) {
       const trainingId = data.trainingId;
       const _date = new Date(data.date);
       const day = padStart(_date.getDate(), 2, '0');
