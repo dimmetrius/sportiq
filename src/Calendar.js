@@ -4,9 +4,7 @@ import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 import { Agenda, LocaleConfig } from 'react-native-calendars';
 import PropTypes from 'prop-types';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import Ionicon from 'react-native-vector-icons/Ionicons';
-import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { findAsTraineeRequest, calendarNavigate, findAsCoachRequest } from './actions';
 import sport from './icons/sport';
 import padStart from './utils/padStart';
@@ -167,10 +165,10 @@ class AgendaScreen extends Component {
               </Text>
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-              <Icon name="clock-o" size={12} color={colors.warmGrey} style={{ marginLeft: 15 }} />
-              <Text style={{ marginLeft: 3, fontSize: 12 }}>{startTime}</Text>
-              <MaterialCommunityIcon name="clock-start" size={12} color={colors.warmGrey} style={{ marginLeft: 15 }} />
-              <Text style={{ marginLeft: 3, fontSize: 12 }}>{len}</Text>
+              <Ionicon name="ios-time-outline" size={12} color={colors.warmGrey} style={{ marginLeft: 15 }} />
+              <Text style={{ marginLeft: 3, fontSize: 12, color: colors.warmGrey }}>{startTime}</Text>
+              <Ionicon name="ios-timer-outline" size={12} color={colors.warmGrey} style={{ marginLeft: 15 }} />
+              <Text style={{ marginLeft: 3, fontSize: 12, color: colors.warmGrey }}>{len}</Text>
               <View
                 style={{ width: 10, height: 10, marginLeft: 15, borderRadius: 5, backgroundColor: item.group.color }}
               />
