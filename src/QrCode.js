@@ -10,7 +10,6 @@ import { NavigationActions } from 'react-navigation';
 import { setToken } from './actions';
 import ApiRequest from './utils/ApiRequest';
 import GroupHeader from './components/GroupHeader';
-import { TRAINING_QR, qrGenCodes, colors } from './utils/constants';
 
 const { width } = Dimensions.get('window');
 const isIos = Platform.OS === 'ios';

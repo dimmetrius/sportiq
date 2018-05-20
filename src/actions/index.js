@@ -7,6 +7,7 @@ export const START_OAUTH_LOGIN = 'START_OAUTH_LOGIN';
 export const START_LOGIN_WITH_PASS = 'START_LOGIN_WITH_PASS';
 export const LOGIN_WITH_PASS_PROCESSING = 'LOGIN_WITH_PASS_PROCESSING';
 export const LOG_OUT = 'LOG_OUT';
+export const RESET_STORE = 'RESET_STORE';
 
 export const ADD_TRAINEE_TRAINING = 'ADD_TRAINEE_TRAINING';
 export const ADD_COACH_TRAINING = 'ADD_COACH_TRAINING';
@@ -55,6 +56,7 @@ function generateRequestActions(code) {
 
 const navAction = code => (routeName, params) => action(code, { routeName, params });
 
+export const resetStore = () => action(RESET_STORE);
 export const setClubs = clubs => action(SET_CLUBS, { clubs });
 
 /* *** Navigation *** */

@@ -35,7 +35,7 @@ class QrScan extends Component {
     super(props);
 
     this.state = {
-      qrScanned: true,
+      qrScanned: false,
       timetableId: '',
       transactionId: '',
     };

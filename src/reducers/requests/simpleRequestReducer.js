@@ -3,6 +3,8 @@ const defaultState = { processing: false };
 const simpleRequestReducer = requestType => (state = defaultState, action) => {
   const { processing, error } = action;
   switch (action.type) {
+    case 'RESET_STORE':
+      return defaultState;
     case requestType.processingCode:
       return {
         ...state,

@@ -1,8 +1,11 @@
 import * as ActionTypes from '../actions';
 
-export const coachTrainings = (state = {}, action) => {
+const defaultState = {};
+export const coachTrainings = (state = defaultState, action) => {
   const item = { [action.id]: action.training };
   switch (action.type) {
+    case 'RESET_STORE':
+      return defaultState;
     case ActionTypes.ADD_COACH_TRAINING:
       return { ...state, ...item };
     default:
@@ -10,9 +13,11 @@ export const coachTrainings = (state = {}, action) => {
   }
 };
 
-export const traineeTrainings = (state = {}, action) => {
+export const traineeTrainings = (state = defaultState, action) => {
   const item = { [action.id]: action.training };
   switch (action.type) {
+    case 'RESET_STORE':
+      return defaultState;
     case ActionTypes.ADD_TRAINEE_TRAINING:
       return { ...state, ...item };
     default:

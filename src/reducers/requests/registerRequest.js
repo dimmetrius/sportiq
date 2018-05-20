@@ -5,6 +5,8 @@ const defaultState = { processing: false };
 const registerRequest = (state = defaultState, action) => {
   const { body, message, status, code, error, processing } = action;
   switch (action.type) {
+    case 'RESET_STORE':
+      return defaultState;
     case ActionTypes.registerRequest.processingCode:
       return {
         ...state,

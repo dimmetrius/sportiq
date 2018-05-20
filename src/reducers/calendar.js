@@ -34,9 +34,11 @@ const addItems = (state, day, data, type) => {
 
   return items;
 };
-
-const calendar = (state = {}, action) => {
+const defaultState = {};
+const calendar = (state = defaultState, action) => {
   switch (action.type) {
+    case 'RESET_STORE':
+      return defaultState;
     case ActionTypes.CALENDAR_ADD_ITEMS:
       return addItems(state, action.day, action.data, action.eventType);
     default:

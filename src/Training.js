@@ -140,9 +140,9 @@ class Training extends Component {
         club: training.club.name,
         group: training.group.name,
       });
+    } else if (type === COACH) {
+      goToQrScan(TRAINING_QR);
     }
-
-    goToQrScan(TRAINING_QR);
   }
 
   renderMember = (member) => {

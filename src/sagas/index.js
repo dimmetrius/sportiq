@@ -20,7 +20,13 @@ import * as Actions from '../actions';
 
 function* startLoginWithPass(action) {
   const { username, password } = action;
-  if (!validateEmail(username) && username !== 'Edward') {
+  if (
+    !validateEmail(username) &&
+    username !== 'Edward' &&
+    username !== 'trainee' &&
+    username !== 'coach1' &&
+    username !== 'coach2'
+  ) {
     showAlert('невалидный email');
     return;
   }
@@ -115,9 +121,10 @@ function* otherPress() {
 }
 
 function* onlogOut() {
-  const { setLoggedUser, setToken, rootNavigate } = Actions;
-  yield put(setLoggedUser({}));
-  yield put(setToken(''));
+  const { /* setLoggedUser, setToken, */ rootNavigate, resetStore } = Actions;
+  // yield put(setLoggedUser({}));
+  // yield put(setToken(''));
+  yield put(resetStore());
   yield put(rootNavigate('__reset__'));
 }
 

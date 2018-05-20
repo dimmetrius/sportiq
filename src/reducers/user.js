@@ -5,6 +5,8 @@ const defaultState = { token: '', loggedUser: {}, processing: false };
 
 const user = (state = defaultState, action) => {
   switch (action.type) {
+    case 'RESET_STORE':
+      return defaultState;
     case ActionTypes.SET_TOKEN:
       return {
         ...state,
