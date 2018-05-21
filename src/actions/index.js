@@ -68,6 +68,7 @@ export const clubsNavigate = navAction(CLUBS_NAVIGATE);
 
 /* register & logOut & user */
 export const registerRequest = generateRequestActions('REGISTER_REQUEST');
+export const loggedUserRequest = generateRequestActions('LOGGED_USER_REQUEST');
 export const setLoggedUser = loggedUser => action(SET_LOGGED_USER, { loggedUser });
 export const setToken = token => action(SET_TOKEN, { token });
 export const startOauthLogin = network => action(START_OAUTH_LOGIN, { network });

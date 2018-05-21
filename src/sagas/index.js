@@ -18,6 +18,30 @@ import * as transaction from './transactionRequest';
 
 import * as Actions from '../actions';
 
+function* loggedUserRequest() {
+  const {
+    loggedUserRequest: { processing, success, failed },
+  } = Actions;
+
+  yield put(processing());
+
+  let user;
+  try {
+    user = yield call(ApiRequest.loggedUser);
+  } catch (e) {
+    yield put(failed({ error: e }));
+    return;
+  }
+
+  if (user.status === 200) {
+    yield put(success());
+    const json = yield user.json();
+    yield put(Actions.setLoggedUser(json));
+  } else {
+    yield put(failed());
+  }
+}
+
 function* startLoginWithPass(action) {
   const { username, password } = action;
   if (
@@ -129,6 +153,7 @@ function* onlogOut() {
 function* mySaga() {
   yield all([
     navigation.sagas(),
+    takeEvery(Actions.loggedUserRequest.startCode, loggedUserRequest),
     takeEvery(Actions.START_LOGIN_WITH_PASS, startLoginWithPass),
     takeEvery(Actions.registerRequest.startCode, registerRequest),
     takeEvery(Actions.LOG_OUT, onlogOut),

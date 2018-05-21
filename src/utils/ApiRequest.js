@@ -130,7 +130,6 @@ export default {
     fetch(`${sportiqHost}/subscription/my`, fetchOptions())
       .then(checkData)
       .then(embeddedSubscriptions),
-  loggedUser: () => fetch(`${sportiqHost}/loggedUser`, fetchOptions()).then(checkData),
   getUser: id => fetch(`${sportiqHost}/user/${id}`, fetchOptions()).then(checkData),
   getClubs: () =>
     fetch(`${sportiqHost}/club`, fetchOptions())
@@ -139,6 +138,7 @@ export default {
   getClub: id => fetch(`${sportiqHost}/club/${id}`, fetchOptions()).then(checkData),
   beClubMember: id => fetch(`${sportiqHost}/club/${id}/member`, fetchOptions('PUT')).then(checkData),
   // >>
+  loggedUser: () => fetch(`${sportiqHost}/loggedUser`, fetchOptions()),
   findAsTrainee: (start, end) =>
     fetch(
       `${sportiqHost}/mobile/1.0/api/timetable/trainee?start=${start}T00:00:00.000Z&end=${end}T00:00:00.000Z`,

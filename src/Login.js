@@ -4,7 +4,15 @@ import { StyleSheet, Text, View, Dimensions, TouchableOpacity, TextInput, Activi
 import Icon from 'react-native-vector-icons/FontAwesome';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { setToken, startOauthLogin, startLoginWithPass, registerRequest, ui, rootNavigate } from './actions';
+import {
+  setToken,
+  startOauthLogin,
+  startLoginWithPass,
+  loggedUserRequest,
+  registerRequest,
+  ui,
+  rootNavigate,
+} from './actions';
 import ApiRequest from './utils/ApiRequest';
 import { mobileSignUrl, colors } from './utils/constants';
 import LoginHeader from './components/LoginHeader';
@@ -29,10 +37,15 @@ class Login extends Component {
     registerRequest: PropTypes.shape({
       processing: PropTypes.bool,
     }),
+    loggedUserReq: PropTypes.shape({
+      processing: PropTypes.bool,
+      ok: PropTypes.bool,
+    }),
     setToken: PropTypes.func.isRequired,
     startLoginWithPass: PropTypes.func.isRequired,
     navigate: PropTypes.func.isRequired,
     goToCalendar: PropTypes.func.isRequired,
+    getLoggedUser: PropTypes.func.isRequired,
     goToOauth: PropTypes.func.isRequired,
     startRegister: PropTypes.func.isRequired,
     setAuth: PropTypes.func.isRequired,
@@ -52,9 +65,20 @@ class Login extends Component {
 
   // Set up Linking
   componentDidMount() {
-    const { user: { token }, goToCalendar } = this.props;
+    const { user: { token }, getLoggedUser } = this.props;
     if (token) {
-      setTimeout(() => goToCalendar(), 300);
+      setTimeout(() => getLoggedUser(), 300);
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { goToCalendar, loggedUserReq } = this.props;
+    if (
+      loggedUserReq.processing === true &&
+      nextProps.loggedUserReq.processing === false &&
+      nextProps.loggedUserReq.ok === true
+    ) {
+      goToCalendar();
     }
   }
 
@@ -569,6 +593,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => ({
   user: state.user,
   registerRequest: state.registerRequest,
+  loggedUserReq: state.loggedUserRequest,
   ui: state.ui,
 });
 
@@ -583,6 +608,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(registerRequest.start({ name, username, password, password2 })),
     goToCalendar: () => dispatch(rootNavigate('TabsNavigator')),
     goToOauth: params => dispatch(rootNavigate('OAuthView', params)),
+    getLoggedUser: () => dispatch(loggedUserRequest.start()),
     setAuth: () => dispatch(ui.setAuth()),
     setReg: () => dispatch(ui.setReg()),
     navigate: navigation.navigate,

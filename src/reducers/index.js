@@ -10,6 +10,7 @@ import feedbacks from './feedbacks';
 import { coachTrainings, traineeTrainings } from './trainings';
 import { getTrainingAsCoach, getTrainingAsTrainee, setTrainingDescription } from './requests/trainingRequest';
 import { openTransaction, closeTransaction } from './requests/transactionRequest';
+import { loggedUserRequest } from './requests/loggedUserRequest';
 import { transactions } from './transactions';
 
 export default combineReducers({
@@ -22,6 +23,8 @@ export default combineReducers({
   traineeTrainings,
   transactions,
   // requests
+  // loggedUser
+  loggedUserRequest,
   registerRequest,
   // calendar
   findAsTraineeRequest,
