@@ -12,6 +12,7 @@ import QrScan from './QrScan';
 import FeedBack from './FeedBack';
 import Members from './Members';
 import Training from './Training';
+import TrainingEdit from './TrainingEdit';
 import { colors } from './utils/constants';
 import {
   calendarNavService,
@@ -31,6 +32,7 @@ const CalendarStack = StackNavigator({
   QrGen: { screen: QrGen },
   QrScan: { screen: QrScan },
   Training: { screen: Training },
+  TrainingEdit: { screen: TrainingEdit },
   FeedBack: { screen: FeedBack },
   Members: {
     screen: Members,

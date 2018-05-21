@@ -8,6 +8,11 @@ export const coachTrainings = (state = defaultState, action) => {
       return defaultState;
     case ActionTypes.ADD_COACH_TRAINING:
       return { ...state, ...item };
+    case ActionTypes.UPDATE_COACH_TRAINING: {
+      const training = state[action.id];
+      const updated = { [action.id]: { ...training, ...action.training } };
+      return { ...state, ...updated };
+    }
     default:
       return state;
   }

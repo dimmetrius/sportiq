@@ -50,6 +50,7 @@ function* setTrainingDescription(action) {
   const { id, description } = action;
   const {
     setTrainingDescription: { processing, success, failed },
+    updateCoachTraining,
   } = Actions;
 
   yield put(processing());
@@ -63,6 +64,7 @@ function* setTrainingDescription(action) {
   }
 
   if (training.status === 200) {
+    yield put(updateCoachTraining(id, { id, description }));
     yield put(success());
   } else {
     yield put(failed());

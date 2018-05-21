@@ -3,7 +3,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { View, Text, Image, TouchableOpacity, StyleSheet, ScrollView, TextInput } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { colors, COACH, TRAINEE, TRAINING_QR } from './utils/constants';
 import padStart from './utils/padStart';
@@ -11,7 +11,6 @@ import {
   getTrainingAsCoach,
   getTrainingAsTrainee,
   getFeedBackRequest,
-  setTrainingDescription,
   addCoachTraining,
   calendarNavigate,
   addTraineeTraining,
@@ -28,12 +27,10 @@ class Training extends Component {
     type: PropTypes.string,
     training: PropTypes.shape(),
     feedback: PropTypes.shape(),
-    trainingDescriptionRequest: PropTypes.shape(),
     startTrainingRequest: PropTypes.func,
     startFeedBackRequest: PropTypes.func,
-    startUpdateTrainingDescription: PropTypes.func,
-    setTraining: PropTypes.func,
     goToFeedBack: PropTypes.func,
+    goToTrainingEdit: PropTypes.func,
     goToQrGen: PropTypes.func,
     goToQrScan: PropTypes.func,
   };
@@ -70,32 +67,11 @@ class Training extends Component {
     };
   };
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      edit: false,
-      trainingText: '',
-    };
-  }
-
   componentDidMount() {
-    const { id, startTrainingRequest, startFeedBackRequest } = this.props;
+    const { id, startTrainingRequest, startFeedBackRequest, type } = this.props;
     startTrainingRequest(id);
-    startFeedBackRequest(id);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const { setTraining, training, id } = this.props;
-    const { trainingText } = this.state;
-    if (
-      this.props.trainingDescriptionRequest.processing === true &&
-      nextProps.trainingDescriptionRequest.processing === false &&
-      nextProps.trainingDescriptionRequest.ok === true
-    ) {
-      setTraining(id, { ...training, description: trainingText });
-      this.setState({
-        edit: false,
-      });
+    if (type === TRAINEE) {
+      startFeedBackRequest(id);
     }
   }
 
@@ -112,20 +88,9 @@ class Training extends Component {
     this.inputRef = ref;
   }
 
-  stopEdit = () => {
-    const { id, startUpdateTrainingDescription } = this.props;
-    const { trainingText } = this.state;
-    startUpdateTrainingDescription(id, trainingText);
-    this.setState({
-      edit: false,
-    });
-  };
-
   startEdit = () => {
-    this.setState({
-      edit: true,
-      trainingText: this.getText(),
-    });
+    const { id, goToTrainingEdit } = this.props;
+    goToTrainingEdit(id);
   };
 
   checkBlur = () => {
@@ -285,7 +250,6 @@ class Training extends Component {
 
   render() {
     const { training, feedback, type, goToFeedBack, id } = this.props;
-    const { edit } = this.state;
     const { result, coach, program, equipment } = feedback;
     const rating = Math.round((result + coach + program + equipment) * 10 / 4) / 10;
     const { club, group, coaches = [], trainees = [] } = training;
@@ -385,7 +349,7 @@ class Training extends Component {
                 </Text>
                 {type === COACH ?
                   <TouchableOpacity
-                    onPress={edit ? this.stopEdit : this.startEdit}
+                    onPress={this.startEdit}
                   >
                     <Text
                       style={{
@@ -394,36 +358,26 @@ class Training extends Component {
                         marginBottom: 11,
                       }}
                     >
-                      {edit ? 'Сохранить' : 'Изменить'}
+                      {'Изменить'}
                     </Text>
                   </TouchableOpacity> : <View />
                 }
 
               </View>
-              {edit ? (
-                <TextInput
-                  ref={this.setInputRef}
-                  multiline
-                  style={{ padding: 2, borderColor: colors.grassyGreen, borderRadius: 4, borderWidth: 1 }}
-                  onChangeText={text => this.setState({ trainingText: text })}
-                  value={this.state.trainingText}
-                />
-              ) : (
-                <ViewMore
-                  renderViewMore={onPress => (
-                    <Text style={styles.moreLess} onPress={onPress}>
+              <ViewMore
+                renderViewMore={onPress => (
+                  <Text style={styles.moreLess} onPress={onPress}>
                       Показать больше
-                    </Text>
-                  )}
-                  renderViewLess={onPress => (
-                    <Text style={styles.moreLess} onPress={onPress}>
+                  </Text>
+                )}
+                renderViewLess={onPress => (
+                  <Text style={styles.moreLess} onPress={onPress}>
                       Показать меньше
-                    </Text>
-                  )}
-                >
-                  <Text style={{ fontSize: 15 }}> {this.getText()} </Text>
-                </ViewMore>
-              )}
+                  </Text>
+                )}
+              >
+                <Text style={{ fontSize: 15 }}> {this.getText()} </Text>
+              </ViewMore>
             </View>
             <View
               style={{
@@ -433,7 +387,7 @@ class Training extends Component {
               {(coaches || []).map(trainer => this.renderCoach(trainer))}
             </View>
             {type === TRAINEE ? (
-              <View style={{ flex: 1, flexDirection: 'column', marginHorizontal: 30 }}>
+              <View style={{ flex: 1, flexDirection: 'column', marginTop: 18, marginHorizontal: 30 }}>
                 <View
                   style={{
                     marginBottom: 10,
@@ -552,17 +506,15 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   const startRequestAsTrainee = id => dispatch(getTrainingAsTrainee.start({ id }));
   const startTrainingRequest = type === COACH ? startRequestAsCoach : startRequestAsTrainee;
   const startFeedBackRequest = id => dispatch(getFeedBackRequest.start({ id }));
-  const startUpdateTrainingDescription = (id, description) =>
-    dispatch(setTrainingDescription.start({ id, description }));
   const setTraining = (id, training) => dispatch(type === COACH ?
     addCoachTraining(id, training) : addTraineeTraining(id, training));
   return {
     startTrainingRequest,
     startFeedBackRequest,
-    startUpdateTrainingDescription,
     goToFeedBack: id => dispatch(calendarNavigate('FeedBack', { id })),
     goToQrGen: (tp, data) => dispatch(calendarNavigate('QrGen', { type: tp, data })),
     goToQrScan: tp => dispatch(calendarNavigate('QrScan', { type: tp })),
+    goToTrainingEdit: id => dispatch(calendarNavigate('TrainingEdit', { id })),
     setTraining,
     // goToFeedBack: params => dispatch(rootNavigate('FeedBack', params)),
   };

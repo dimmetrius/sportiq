@@ -21,6 +21,7 @@ import * as Actions from '../actions';
 function* loggedUserRequest() {
   const {
     loggedUserRequest: { processing, success, failed },
+    logOut,
   } = Actions;
 
   yield put(processing());
@@ -39,6 +40,7 @@ function* loggedUserRequest() {
     yield put(Actions.setLoggedUser(json));
   } else {
     yield put(failed());
+    yield put(logOut());
   }
 }
 

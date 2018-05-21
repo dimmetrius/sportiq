@@ -11,6 +11,7 @@ export const RESET_STORE = 'RESET_STORE';
 
 export const ADD_TRAINEE_TRAINING = 'ADD_TRAINEE_TRAINING';
 export const ADD_COACH_TRAINING = 'ADD_COACH_TRAINING';
+export const UPDATE_COACH_TRAINING = 'UPDATE_COACH_TRAINING';
 
 export const UI_SET_AUTH = 'UI_SET_AUTH';
 export const UI_SET_REG = 'UI_SET_REG';
@@ -91,6 +92,7 @@ export const getTrainingAsTrainee = generateRequestActions('GET_TRAINING_AS_TRAI
 export const getTrainingAsCoach = generateRequestActions('GET_TRAINING_AS_COACH_REQUEST');
 export const setTrainingDescription = generateRequestActions('SET_TRAINING_DESCRIPTION');
 export const addCoachTraining = (id, training) => action(ADD_COACH_TRAINING, { id, training });
+export const updateCoachTraining = (id, training) => action(UPDATE_COACH_TRAINING, { id, training });
 export const addTraineeTraining = (id, training) => action(ADD_TRAINEE_TRAINING, { id, training });
 
 /* transactions */
