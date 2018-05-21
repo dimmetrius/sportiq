@@ -62,6 +62,7 @@ function* startLoginWithPass(action) {
   const loginData = yield call(ApiRequest.login, username, password, Math.random(1).toString(), '{}');
   if (loginData.token) {
     yield put(Actions.setToken(loginData.token));
+    yield put(Actions.loggedUserRequest.start());
     //
     yield put(Actions.rootNavigate('TabsNavigator'));
   }

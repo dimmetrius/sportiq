@@ -49,7 +49,7 @@ function generateRequestActions(code) {
     start: data => action(`${code}_START`, { ...data }),
     processing: () => action(`${code}_PROCESSING`, { processing: true }),
     success: data => action(`${code}_SUCCESS`, { ...data, processing: false }),
-    failed: data => action(`${code}_FAILED`, { ...data, processing: false }),
+    failed: data => action(`${code}_FAILED`, { error: true, ...data, processing: false }),
     ...codes,
   };
 }

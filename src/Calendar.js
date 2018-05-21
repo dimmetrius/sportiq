@@ -114,7 +114,7 @@ class AgendaScreen extends Component {
   canQrScan() {
     const { loggedUser } = this.props.user;
     // eslint-disable-next-line
-    return loggedUser && loggedUser._links && loggedUser._links.closeTransaction;
+    return loggedUser && loggedUser._links && loggedUser._links.check_access_code;
   }
 
   renderEmptyDate() {

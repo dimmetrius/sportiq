@@ -67,7 +67,7 @@ class Login extends Component {
   componentDidMount() {
     const { user: { token }, getLoggedUser } = this.props;
     if (token) {
-      setTimeout(() => getLoggedUser(), 300);
+      getLoggedUser();
     }
   }
 
@@ -97,6 +97,7 @@ class Login extends Component {
           stopLoading();
           // console.log(data);
           if (data.token) {
+            this.props.getLoggedUser();
             this.props.setToken(data.token);
             this.props.goToCalendar();
           } else {

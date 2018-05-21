@@ -31,12 +31,12 @@ function* closeTransaction(action) {
 
   const training = yield call(ApiRequest.closeTransaction, transactionId, timetableId);
 
-  if (training.status === 200) {
+  if (training.status === 200 || training.status === 208) {
     const json = yield training.json();
     yield put(success());
     yield put(Actions.addTransactionItem(timetableId, json));
   } else {
-    yield put(failed());
+    yield put(failed({ error: {} }));
   }
 }
 
