@@ -20,6 +20,7 @@ import {
 import ViewMore from './components/ViewMore';
 
 const ROW_HEIGHT = 85;
+const imWidth = ROW_HEIGHT - 30;
 
 class Training extends Component {
   static propTypes = {
@@ -146,9 +147,17 @@ class Training extends Component {
   }
 
   renderMember = (member) => {
-    const img = member.image.url;
+    const img = (member.image || {}).url || '';
     return (
-      <View key={img} style={{ flex: 1, borderRadius: 4, marginTop: 5, marginBottom: 5, backgroundColor: '#ffffff' }}>
+      <View
+        key={member.id}
+        style={{
+          flex: 1,
+          borderRadius: 4,
+          marginTop: 5,
+          marginBottom: 5,
+          backgroundColor: '#ffffff' }}
+      >
         <View style={{ flexDirection: 'row', alignItems: 'center', width: '100%', height: ROW_HEIGHT }}>
           <View
             style={{
@@ -159,7 +168,25 @@ class Training extends Component {
               height: ROW_HEIGHT,
             }}
           >
-            <Image style={{ borderRadius: 4, width: ROW_HEIGHT - 30, height: ROW_HEIGHT - 30 }} source={{ uri: img }} />
+            { img ?
+              (<Image style={{ borderRadius: 4, width: imWidth, height: imWidth }} source={{ uri: img }} />)
+              :
+              (<View style={{ flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
+                backgroundColor: colors.grassyGreen,
+                borderRadius: imWidth / 2,
+                width: imWidth,
+                height: imWidth }}
+              >
+                <Text style={{
+                  textAlign: 'justify',
+                  fontSize: 33,
+                  color: 'white' }}
+                > {(member.name || ' ')[0].toUpperCase()} </Text>
+              </View>
+              )
+            }
           </View>
           <View style={{ flex: 1, flexDirection: 'row', height: ROW_HEIGHT }}>
             <View
@@ -189,9 +216,16 @@ class Training extends Component {
   };
 
   renderCoach = (member) => {
-    const img = member.image.url;
+    const img = (member.image || {}).url || '';
     return (
-      <View key={img} style={{ flex: 1, borderRadius: 4, marginTop: 5, marginBottom: 5, backgroundColor: '#ffffff' }}>
+      <View
+        key={member.id}
+        style={{ flex: 1,
+          borderRadius: 4,
+          marginTop: 5,
+          marginBottom: 5,
+          backgroundColor: '#ffffff' }}
+      >
         <View style={{ flexDirection: 'row', alignItems: 'center', width: '100%', height: ROW_HEIGHT }}>
           <View
             style={{
@@ -202,7 +236,25 @@ class Training extends Component {
               height: ROW_HEIGHT,
             }}
           >
-            <Image style={{ borderRadius: 4, width: ROW_HEIGHT - 30, height: ROW_HEIGHT - 30 }} source={{ uri: img }} />
+            { img ?
+              (<Image style={{ borderRadius: 4, width: imWidth, height: imWidth }} source={{ uri: img }} />)
+              :
+              (<View style={{ flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
+                backgroundColor: colors.grassyGreen,
+                borderRadius: imWidth / 2,
+                width: imWidth,
+                height: imWidth }}
+              >
+                <Text style={{
+                  textAlign: 'justify',
+                  fontSize: 33,
+                  color: 'white' }}
+                > {(member.name || ' ')[0].toUpperCase()} </Text>
+              </View>
+              )
+            }
           </View>
           <View style={{ flex: 1, flexDirection: 'row', height: ROW_HEIGHT }}>
             <View
@@ -236,8 +288,8 @@ class Training extends Component {
     const { edit } = this.state;
     const { result, coach, program, equipment } = feedback;
     const rating = Math.round((result + coach + program + equipment) * 10 / 4) / 10;
-    const { club, group, trainees } = training;
-    const members = (((trainees || {})._embedded || {}).trainees || []);
+    const { club, group, coaches = [], trainees = [] } = training;
+    // const members = (((trainees || {})._embedded || {}).trainees || []);
     return (
       <View style={{ flex: 1, flexDirection: 'column' }} onStartShouldSetResponder={this.checkBlur}>
         <ScrollView>
@@ -283,30 +335,36 @@ class Training extends Component {
                     </Text>
                   </View>
                 </View>
-                <View style={{ flexDirection: 'column', justifyContent: 'center' }}>
-                  <TouchableOpacity
-                    style={{
-                      width: 45,
-                      height: 45,
-                      borderRadius: 4,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      backgroundColor: 'white',
-                      shadowColor: 'rgba(0, 0, 0, 0.1)',
-                      shadowOffset: {
-                        width: 0,
-                        height: 0.5,
-                      },
-                      shadowRadius: 24.5,
-                      shadowOpacity: 1,
-                      borderStyle: 'solid',
-                      borderWidth: 0.5,
-                      borderColor: colors.inputUnder,
-                    }}
-                    onPress={this.openQR}
-                  >
-                    <MaterialIcon name="qrcode-scan" size={25} color="black" />
-                  </TouchableOpacity>
+                <View style={{
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  width: 45 }}
+                >
+                  {type === TRAINEE ? (
+                    <TouchableOpacity
+                      style={{
+                        width: 45,
+                        height: 45,
+                        borderRadius: 4,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        backgroundColor: 'white',
+                        shadowColor: 'rgba(0, 0, 0, 0.1)',
+                        shadowOffset: {
+                          width: 0,
+                          height: 0.5,
+                        },
+                        shadowRadius: 24.5,
+                        shadowOpacity: 1,
+                        borderStyle: 'solid',
+                        borderWidth: 0.5,
+                        borderColor: colors.inputUnder,
+                      }}
+                      onPress={this.openQR}
+                    >
+                      <MaterialIcon name="qrcode-scan" size={25} color="black" />
+                    </TouchableOpacity>
+                  ) : null}
                 </View>
               </View>
             </View>
@@ -372,7 +430,7 @@ class Training extends Component {
                 marginHorizontal: 30,
               }}
             >
-              {(training.coaches || []).map(trainer => this.renderCoach(trainer))}
+              {(coaches || []).map(trainer => this.renderCoach(trainer))}
             </View>
             {type === TRAINEE ? (
               <View style={{ flex: 1, flexDirection: 'column', marginHorizontal: 30 }}>
@@ -445,10 +503,10 @@ class Training extends Component {
                 marginBottom: 18,
               }}
             >
-              { `УЧАСТНИКИ ГРУППЫ (${members.length.toString()})`}
+              { `УЧАСТНИКИ ГРУППЫ (${(trainees || []).length.toString()})`}
             </Text>
             <View>
-              {members.map(member => this.renderMember(member))}
+              {(trainees || []).map(member => this.renderMember(member))}
             </View>
           </View>
         </ScrollView>

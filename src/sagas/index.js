@@ -121,9 +121,7 @@ function* otherPress() {
 }
 
 function* onlogOut() {
-  const { /* setLoggedUser, setToken, */ rootNavigate, resetStore } = Actions;
-  // yield put(setLoggedUser({}));
-  // yield put(setToken(''));
+  const { rootNavigate, resetStore } = Actions;
   yield put(resetStore());
   yield put(rootNavigate('__reset__'));
 }

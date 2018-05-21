@@ -9,7 +9,7 @@ import { findAsTraineeRequest, calendarNavigate, findAsCoachRequest } from './ac
 import sport from './icons/sport';
 import padStart from './utils/padStart';
 import getStrTimer from './utils/getStrTimer';
-import { colors, TRAINEE, COACH } from './utils/constants';
+import { colors, TRAINEE, COACH, TRAINING_QR } from './utils/constants';
 import QrButton from './components/QrButton';
 
 LocaleConfig.locales.ru = {
@@ -114,7 +114,7 @@ class AgendaScreen extends Component {
   canQrScan() {
     const { loggedUser } = this.props.user;
     // eslint-disable-next-line
-    return loggedUser && loggedUser._links && loggedUser._links.check_access_code;
+    return loggedUser && loggedUser._links && loggedUser._links.closeTransaction;
   }
 
   renderEmptyDate() {
@@ -215,7 +215,7 @@ class AgendaScreen extends Component {
           // theme={{calendarBackground: 'red', agendaKnobColor: 'green'}}
           // renderDay={(day, item) => (<Text>{day ? day.day: ''}</Text>)}
         />
-        {this.canQrScan() ? <QrButton onPress={() => this.props.goToQrScan({ type: 'scan', mode: '0' })} /> : null}
+        {this.canQrScan() ? <QrButton onPress={() => this.props.goToQrScan(TRAINING_QR)} /> : null}
       </View>
     );
   }
@@ -252,7 +252,7 @@ const mapDispatchToProps = dispatch => ({
   findAsCoach: day => dispatch(findAsCoachRequest.start({ day })),
   goToFeedBack: id => dispatch(calendarNavigate('FeedBack', { id })),
   goToMembers: id => dispatch(calendarNavigate('Members', { id })),
-  goToQrScan: id => dispatch(calendarNavigate('QrScan', { id })),
+  goToQrScan: tp => dispatch(calendarNavigate('QrScan', { type: tp })),
   goToTraining: (id, type, date) => dispatch(calendarNavigate('Training', { id, type, date })),
 });
 
